@@ -1,831 +1,1408 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Muhammad Muqeet Khan — Frontend Developer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --green: #6EE7B7;
-    --blue:  #93C5FD;
-    --pink:  #FCA5A5;
-    --purple:#C4B5FD;
-    --yellow:#FDE68A;
-    --bg:    #080B12;
-    --bg2:   #0D1117;
-    --border:#1E293B;
-    --text:  #E2E8F0;
-    --muted: #64748B;
-    --dim:   #334155;
-  }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    cursor: none;
-  }
-  a, button { cursor: none; }
-  ::-webkit-scrollbar { width: 3px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Muhammad Muqeet Khan — Frontend Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* CURSOR */
-  #cursor-dot, #cursor-ring {
-    position: fixed; border-radius: 50%;
-    pointer-events: none; z-index: 9999;
-    transition: transform 0.15s ease;
-  }
-  #cursor-dot  { width:8px; height:8px; background:var(--green); transform:translate(-50%,-50%); }
-  #cursor-ring { width:36px; height:36px; border:1px solid rgba(110,231,183,0.35); transform:translate(-50%,-50%); transition: left .1s,top .1s,transform .2s; }
+    :root {
+      --green: #6EE7B7;
+      --blue: #93C5FD;
+      --pink: #FCA5A5;
+      --purple: #C4B5FD;
+      --yellow: #FDE68A;
+      --bg: #080B12;
+      --bg2: #0D1117;
+      --border: #1E293B;
+      --text: #E2E8F0;
+      --muted: #64748B;
+      --dim: #334155;
+    }
 
-  /* NAV */
-  nav {
-    position: fixed; top:0; left:0; right:0; z-index:100;
-    height: 64px; padding: 0 6%;
-    display: flex; align-items: center; justify-content: space-between;
-    transition: background .4s, border-color .4s, backdrop-filter .4s;
-  }
-  nav.scrolled {
-    background: rgba(8,11,18,0.95);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .logo { font-size:20px; font-weight:900; color:var(--green); letter-spacing:.04em; }
-  .logo span { color: var(--dim); }
-  .nav-links { display:flex; gap:28px; }
-  .nav-links button {
-    background:none; border:none; color:var(--muted);
-    font-size:13px; font-weight:500; letter-spacing:.06em;
-    font-family:'DM Sans',sans-serif;
-    padding:4px 0; border-bottom:1px solid transparent;
-    transition:color .2s, border-color .2s;
-  }
-  .nav-links button:hover, .nav-links button.active {
-    color: var(--green); border-bottom-color: var(--green);
-  }
+    html {
+      scroll-behavior: smooth;
+    }
 
-  /* SECTIONS */
-  section { padding: 100px 8%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+    }
 
-  /* SECTION HEADER */
-  .sec-title {
-    display:flex; align-items:center; gap:14px; margin-bottom:56px;
-  }
-  .sec-num { font-size:11px; color:var(--green); letter-spacing:.18em; font-weight:700; }
-  .sec-line { width:36px; height:1px; background:var(--green); flex-shrink:0; }
-  .sec-title h2 { font-size:clamp(26px,3.5vw,40px); font-weight:800; letter-spacing:-.02em; }
+    a,
+    button {
+      cursor: none;
+    }
 
-  /* HERO */
-  #about {
-    min-height:100vh; display:flex; align-items:center;
-    padding-top:80px; position:relative; overflow:hidden;
-  }
-  .hero-glow1 {
-    position:absolute; top:-15%; right:-8%; width:550px; height:550px;
-    border-radius:50%; background:radial-gradient(circle,rgba(110,231,183,.07) 0%,transparent 65%);
-    pointer-events:none;
-  }
-  .hero-glow2 {
-    position:absolute; bottom:0; left:5%; width:300px; height:300px;
-    border-radius:50%; background:radial-gradient(circle,rgba(147,197,253,.05) 0%,transparent 70%);
-    pointer-events:none;
-  }
-  .hero-content { max-width:680px; z-index:2; }
-  .hero-badge {
-    display:flex; align-items:center; gap:10px; margin-bottom:28px;
-    animation: fadeUp .7s ease .1s both;
-  }
-  .hero-badge-line { width:28px; height:2px; background:var(--green); border-radius:2px; }
-  .hero-badge span { font-size:12px; color:var(--green); letter-spacing:.18em; font-weight:600; }
-  .hero-name {
-    font-size:clamp(44px,6.5vw,80px); font-weight:900; line-height:1.0;
-    margin:0 0 16px; letter-spacing:-.03em;
-    animation: fadeUp .7s ease .2s both;
-  }
-  .hero-name .outline {
-    -webkit-text-stroke:1.5px rgba(226,232,240,.25); color:transparent;
-  }
-  .hero-role {
-    font-size:clamp(15px,1.8vw,20px); color:var(--green); font-weight:700;
-    margin-bottom:18px; letter-spacing:.04em;
-    animation: fadeUp .7s ease .3s both;
-  }
-  .hero-bio {
-    font-size:15px; line-height:1.8; color:var(--muted); max-width:500px;
-    margin-bottom:36px; animation: fadeUp .7s ease .4s both;
-  }
-  .hero-btns { display:flex; gap:14px; flex-wrap:wrap; animation:fadeUp .7s ease .5s both; }
-  .btn-primary {
-    background:var(--green); color:var(--bg); border:none;
-    padding:12px 26px; border-radius:6px; font-weight:700;
-    font-size:13px; letter-spacing:.06em; font-family:'DM Sans',sans-serif;
-    box-shadow:0 0 24px rgba(110,231,183,.2);
-    transition:transform .2s, box-shadow .2s;
-  }
-  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(110,231,183,.3); }
-  .btn-outline {
-    background:transparent; color:#94A3B8; border:1px solid var(--border);
-    padding:12px 26px; border-radius:6px; font-weight:600;
-    font-size:13px; letter-spacing:.06em; font-family:'DM Sans',sans-serif;
-    transition:border-color .2s, color .2s;
-  }
-  .btn-outline:hover { border-color:var(--green); color:var(--green); }
-  .hero-code {
-    position:absolute; right:4%; top:52%; transform:translateY(-50%);
-    opacity:.1; font-size:12px; font-family:'DM Mono',monospace;
-    line-height:2.2; color:var(--green); pointer-events:none; user-select:none;
-  }
-  .scroll-hint {
-    position:absolute; bottom:36px; left:8%;
-    display:flex; align-items:center; gap:10px;
-    color:var(--dim); font-size:11px; letter-spacing:.12em;
-  }
-  .scroll-line {
-    width:1px; height:40px;
-    background:linear-gradient(to bottom,transparent,var(--dim));
-    animation:pulse 2s infinite;
-  }
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
 
-  /* EXPERIENCE */
-  .exp-item {
-    border-left:2px solid rgba(255,255,255,.05);
-    padding-left:28px; margin-bottom:44px; position:relative;
-  }
-  .exp-dot {
-    position:absolute; left:-5px; top:8px;
-    width:8px; height:8px; border-radius:50%;
-  }
-  .exp-header {
-    display:flex; flex-wrap:wrap;
-    justify-content:space-between; align-items:flex-start;
-    gap:8px; margin-bottom:8px;
-  }
-  .exp-role { font-size:18px; font-weight:700; color:#F1F5F9; }
-  .exp-company { font-size:13px; font-weight:600; margin-top:3px; letter-spacing:.04em; }
-  .exp-period {
-    font-size:12px; color:#475569; border:1px solid var(--border);
-    padding:3px 12px; border-radius:20px; letter-spacing:.04em; white-space:nowrap;
-  }
-  .exp-bullets { margin-top:14px; list-style:none; display:grid; gap:9px; }
-  .exp-bullets li { display:flex; gap:10px; color:var(--muted); font-size:14px; line-height:1.7; }
-  .bullet-arrow { flex-shrink:0; margin-top:1px; }
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
 
-  /* PROJECTS */
-  #projects { background: rgba(255,255,255,.012); }
-  .projects-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-    gap:16px;
-  }
-  .project-card {
-    background:var(--bg2); border:1px solid var(--border);
-    border-radius:10px; padding:28px; position:relative; overflow:hidden;
-    transition:border-color .3s, transform .3s, box-shadow .3s;
-  }
-  .project-card:hover { transform:translateY(-5px); }
-  .card-glow {
-    position:absolute; top:-20px; right:-20px;
-    width:100px; height:100px; border-radius:50%;
-    pointer-events:none;
-  }
-  .card-top { display:flex; justify-content:space-between; margin-bottom:16px; }
-  .card-type { font-size:10px; color:#475569; letter-spacing:.14em; font-weight:700; }
-  .card-num { font-size:28px; font-weight:900; opacity:.15; line-height:1; }
-  .card-title { font-size:20px; font-weight:700; color:#F1F5F9; margin:0 0 4px; }
-  .card-url { font-size:11px; margin-bottom:10px; }
-  .card-url a { text-decoration:none; letter-spacing:.03em; opacity:.7; transition:opacity .2s; }
-  .card-url a:hover { opacity:1; }
-  .card-desc { font-size:13px; color:#475569; line-height:1.75; margin:0 0 16px; }
-  .card-highlights { list-style:none; margin:0 0 18px; display:grid; gap:7px; }
-  .card-highlights li { display:flex; gap:8px; font-size:12px; color:var(--muted); line-height:1.6; }
-  .card-tags { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
-  .tag {
-    font-size:10px; padding:3px 9px; border-radius:20px;
-    font-weight:700; letter-spacing:.05em;
-  }
-  .card-link { font-size:12px; font-weight:700; text-decoration:none; letter-spacing:.04em; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
 
-  /* SKILLS */
-  .skills-row {
-    display:grid; grid-template-columns:160px 1fr;
-    gap:20px; padding:18px 0; border-bottom:1px solid #0F172A; align-items:start;
-  }
-  .skill-cat { font-size:11px; color:var(--dim); font-weight:700; letter-spacing:.1em; padding-top:4px; }
-  .skill-tags { display:flex; flex-wrap:wrap; gap:7px; }
-  .skill-tag {
-    font-size:12px; color:var(--muted); background:var(--bg2);
-    border:1px solid var(--border); padding:4px 12px; border-radius:20px;
-  }
+    /* CURSOR */
+    #cursor-dot,
+    #cursor-ring {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease;
+    }
 
-  /* CONTACT */
-  #contact { text-align:center; position:relative; overflow:hidden; padding-bottom:100px; }
-  .contact-glow {
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    width:500px; height:500px; border-radius:50%;
-    background:radial-gradient(circle,rgba(110,231,183,.04) 0%,transparent 65%);
-    pointer-events:none;
-  }
-  .contact-inner { position:relative; z-index:1; }
-  .contact-p { font-size:15px; color:#475569; max-width:440px; margin:0 auto 36px; line-height:1.8; }
-  .btn-contact {
-    display:inline-block; color:var(--green);
-    border:1px solid var(--green); padding:13px 36px;
-    border-radius:6px; text-decoration:none; font-weight:700;
-    font-size:14px; letter-spacing:.08em;
-    transition:background .2s, color .2s;
-  }
-  .btn-contact:hover { background:var(--green); color:var(--bg); }
-  .social-links { display:flex; justify-content:center; gap:28px; margin-top:48px; }
-  .social-links a {
-    color:var(--dim); font-size:12px; text-decoration:none;
-    letter-spacing:.1em; font-weight:600; transition:color .2s;
-  }
-  .social-links a:hover { color:var(--green); }
+    #cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--green);
+      transform: translate(-50%, -50%);
+    }
 
-  /* FOOTER */
-  footer {
-    text-align:center; padding:20px;
-    border-top:1px solid #0F172A;
-    color:#1E293B; font-size:11px; letter-spacing:.1em;
-  }
+    #cursor-ring {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(110, 231, 183, 0.35);
+      transform: translate(-50%, -50%);
+      transition: left .1s, top .1s, transform .2s;
+    }
 
-  /* FADE IN */
-  .fade-in { opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
-  .fade-in.visible { opacity:1; transform:translateY(0); }
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 64px;
+      padding: 0 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background .4s, border-color .4s, backdrop-filter .4s;
+    }
 
-  /* PROJECT TABS */
-  .proj-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
-  .proj-tab {
-    background:transparent; border:1px solid var(--border);
-    color:var(--muted); padding:6px 16px; border-radius:20px;
-    font-size:12px; font-weight:600; letter-spacing:.05em;
-    font-family:'DM Sans',sans-serif;
-    transition:all .2s;
-  }
-  .proj-tab:hover, .proj-tab.active { color:var(--green); border-color:var(--green); background:rgba(110,231,183,.06); }
+    nav.scrolled {
+      background: rgba(8, 11, 18, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
 
-  /* ANIMATIONS */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes pulse  { 0%,100%{opacity:.3} 50%{opacity:1} }
+    .logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--green);
+      letter-spacing: .04em;
+    }
 
-  /* MOBILE */
-  @media(max-width:768px){
-    section { padding:80px 5%; }
-    .hero-code { display:none; }
-    .nav-links { gap:16px; }
-    .nav-links button { font-size:12px; }
-    .projects-grid { grid-template-columns:1fr; }
-    .skills-row { grid-template-columns:1fr; gap:10px; }
-    .skill-cat { padding-top:0; }
-  }
-</style>
+    .logo span {
+      color: var(--dim);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .nav-links button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: .06em;
+      font-family: 'DM Sans', sans-serif;
+      padding: 4px 0;
+      border-bottom: 1px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+
+    .nav-links button:hover,
+    .nav-links button.active {
+      color: var(--green);
+      border-bottom-color: var(--green);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 100px 8%;
+    }
+
+    /* SECTION HEADER */
+    .sec-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 56px;
+    }
+
+    .sec-num {
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: .18em;
+      font-weight: 700;
+    }
+
+    .sec-line {
+      width: 36px;
+      height: 1px;
+      background: var(--green);
+      flex-shrink: 0;
+    }
+
+    .sec-title h2 {
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    /* HERO */
+    #about {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .particles-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-glow1 {
+      position: absolute;
+      top: -15%;
+      right: -8%;
+      width: 550px;
+      height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110, 231, 183, .07) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-glow2 {
+      position: absolute;
+      bottom: 0;
+      left: 5%;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(147, 197, 253, .05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .hero-content {
+      max-width: 680px;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      animation: fadeUp .7s ease .1s both;
+    }
+
+    .hero-badge-line {
+      width: 28px;
+      height: 2px;
+      background: var(--green);
+      border-radius: 2px;
+    }
+
+    .hero-badge span {
+      font-size: 12px;
+      color: var(--green);
+      letter-spacing: .18em;
+      font-weight: 600;
+    }
+
+    .hero-name {
+      font-size: clamp(44px, 6.5vw, 80px);
+      font-weight: 900;
+      line-height: 1.0;
+      margin: 0 0 16px;
+      letter-spacing: -.03em;
+      animation: fadeUp .7s ease .2s both;
+    }
+
+    .hero-name .outline {
+      -webkit-text-stroke: 1.5px rgba(226, 232, 240, .25);
+      color: transparent;
+    }
+
+    .hero-role {
+      font-size: clamp(15px, 1.8vw, 20px);
+      color: var(--green);
+      font-weight: 700;
+      margin-bottom: 18px;
+      letter-spacing: .04em;
+      animation: fadeUp .7s ease .3s both;
+    }
+
+    .hero-bio {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 500px;
+      margin-bottom: 36px;
+      animation: fadeUp .7s ease .4s both;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      animation: fadeUp .7s ease .5s both;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: var(--bg);
+      border: none;
+      padding: 12px 26px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .06em;
+      font-family: 'DM Sans', sans-serif;
+      box-shadow: 0 0 24px rgba(110, 231, 183, .2);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(110, 231, 183, .3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #94A3B8;
+      border: 1px solid var(--border);
+      padding: 12px 26px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: .06em;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color .2s, color .2s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .hero-code {
+      position: absolute;
+      right: 4%;
+      top: 52%;
+      transform: translateY(-50%);
+      opacity: .1;
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      line-height: 2.2;
+      color: var(--green);
+      pointer-events: none;
+      user-select: none;
+      z-index: 1;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 8%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--dim);
+      font-size: 11px;
+      letter-spacing: .12em;
+      z-index: 1;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--dim));
+      animation: pulse 2s infinite;
+    }
+
+    /* EXPERIENCE */
+    .exp-item {
+      border-left: 2px solid rgba(255, 255, 255, .05);
+      padding-left: 28px;
+      margin-bottom: 44px;
+      position: relative;
+    }
+
+    .exp-dot {
+      position: absolute;
+      left: -5px;
+      top: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .exp-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .exp-role {
+      font-size: 18px;
+      font-weight: 700;
+      color: #F1F5F9;
+    }
+
+    .exp-company {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 3px;
+      letter-spacing: .04em;
+    }
+
+    .exp-period {
+      font-size: 12px;
+      color: #475569;
+      border: 1px solid var(--border);
+      padding: 3px 12px;
+      border-radius: 20px;
+      letter-spacing: .04em;
+      white-space: nowrap;
+    }
+
+    .exp-bullets {
+      margin-top: 14px;
+      list-style: none;
+      display: grid;
+      gap: 9px;
+    }
+
+    .exp-bullets li {
+      display: flex;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .bullet-arrow {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* PROJECTS */
+    #projects {
+      background: rgba(255, 255, 255, .012);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .3s, transform .3s, box-shadow .3s;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-glow {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-type {
+      font-size: 10px;
+      color: #475569;
+      letter-spacing: .14em;
+      font-weight: 700;
+    }
+
+    .card-num {
+      font-size: 28px;
+      font-weight: 900;
+      opacity: .15;
+      line-height: 1;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #F1F5F9;
+      margin: 0 0 4px;
+    }
+
+    .card-url {
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+
+    .card-url a {
+      text-decoration: none;
+      letter-spacing: .03em;
+      opacity: .7;
+      transition: opacity .2s;
+    }
+
+    .card-url a:hover {
+      opacity: 1;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.75;
+      margin: 0 0 16px;
+    }
+
+    .card-highlights {
+      list-style: none;
+      margin: 0 0 18px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .card-highlights li {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-weight: 700;
+      letter-spacing: .05em;
+    }
+
+    .card-link {
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: .04em;
+    }
+
+    /* SKILLS */
+    .skills-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 20px;
+      padding: 18px 0;
+      border-bottom: 1px solid #0F172A;
+      align-items: start;
+    }
+
+    .skill-cat {
+      font-size: 11px;
+      color: var(--dim);
+      font-weight: 700;
+      letter-spacing: .1em;
+      padding-top: 4px;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .skill-tag {
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* CONTACT */
+    #contact {
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 100px;
+    }
+
+    .contact-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(110, 231, 183, .04) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .contact-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .contact-p {
+      font-size: 15px;
+      color: #475569;
+      max-width: 440px;
+      margin: 0 auto 36px;
+      line-height: 1.8;
+    }
+
+    .btn-contact {
+      display: inline-block;
+      color: var(--green);
+      border: 1px solid var(--green);
+      padding: 13px 36px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: .08em;
+      transition: background .2s, color .2s;
+    }
+
+    .btn-contact:hover {
+      background: var(--green);
+      color: var(--bg);
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 48px;
+    }
+
+    .social-links a {
+      color: var(--dim);
+      font-size: 12px;
+      text-decoration: none;
+      letter-spacing: .1em;
+      font-weight: 600;
+      transition: color .2s;
+    }
+
+    .social-links a:hover {
+      color: var(--green);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #0F172A;
+      color: #1E293B;
+      font-size: 11px;
+      letter-spacing: .1em;
+    }
+
+    /* FADE IN */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* PROJECT TABS */
+    .proj-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .proj-tab {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .05em;
+      font-family: 'DM Sans', sans-serif;
+      transition: all .2s;
+    }
+
+    .proj-tab:hover,
+    .proj-tab.active {
+      color: var(--green);
+      border-color: var(--green);
+      background: rgba(110, 231, 183, .06);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: .3
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    /* MOBILE */
+    @media(max-width:768px) {
+      section {
+        padding: 80px 5%;
+      }
+
+      .hero-code {
+        display: none;
+      }
+
+      .nav-links {
+        gap: 16px;
+      }
+
+      .nav-links button {
+        font-size: 12px;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .skill-cat {
+        padding-top: 0;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- CURSOR -->
-<div id="cursor-dot"></div>
-<div id="cursor-ring"></div>
+  <!-- CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
 
-<!-- NAV -->
-<nav id="navbar">
-  <div class="logo">MK<span>.</span></div>
-  <div class="nav-links">
-    <button onclick="scrollTo('about')"    class="active">About</button>
-    <button onclick="scrollTo('experience')">Experience</button>
-    <button onclick="scrollTo('projects')">Projects</button>
-    <button onclick="scrollTo('skills')">Skills</button>
-    <button onclick="scrollTo('contact')">Contact</button>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section id="about">
-  <div class="hero-glow1"></div>
-  <div class="hero-glow2"></div>
-  <div class="hero-content">
-    <div class="hero-badge">
-      <div class="hero-badge-line"></div>
-      <span>AVAILABLE FOR WORK</span>
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="logo">MK<span>.</span></div>
+    <div class="nav-links">
+      <button onclick="scrollTo('about')" class="active">About</button>
+      <button onclick="scrollTo('experience')">Experience</button>
+      <button onclick="scrollTo('projects')">Projects</button>
+      <button onclick="scrollTo('skills')">Skills</button>
+      <button onclick="scrollTo('contact')">Contact</button>
     </div>
-    <h1 class="hero-name">
-      Muhammad<br>
-      <span class="outline">Muqeet</span>
-    </h1>
-    <div class="hero-role">Mid-Level Frontend Developer</div>
-    <p class="hero-bio">
-      I build fast, scalable, and visually compelling web experiences. 2+ years delivering production frontends — from real-time crypto dashboards and SaaS platforms to e-commerce marketplaces and Web3 DeFi apps.
-    </p>
-    <div class="hero-btns">
-      <button class="btn-primary" onclick="scrollTo('projects')">View Projects ↓</button>
-      <button class="btn-outline" onclick="scrollTo('contact')">Contact Me</button>
-    </div>
-  </div>
-  <div class="hero-code">
-    const dev = {<br>
-    &nbsp;&nbsp;name: "M. Muqeet",<br>
-    &nbsp;&nbsp;role: "Frontend Dev",<br>
-    &nbsp;&nbsp;stack: ["React","Next.js"],<br>
-    &nbsp;&nbsp;available: true<br>
-    };
-  </div>
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    SCROLL
-  </div>
-</section>
+  </nav>
 
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="sec-title fade-in">
-    <span class="sec-num">02</span>
-    <div class="sec-line"></div>
-    <h2>Experience</h2>
-  </div>
-
-  <div style="max-width:760px">
-
-    <div class="exp-item fade-in">
-      <div class="exp-dot" style="background:#6EE7B7;box-shadow:0 0 12px rgba(110,231,183,.5)"></div>
-      <div class="exp-header">
-        <div>
-          <div class="exp-role">Mid-Level Frontend Developer</div>
-          <div class="exp-company" style="color:#6EE7B7">Fexen Smart Solutions</div>
-        </div>
-        <span class="exp-period">2025 – Present</span>
+  <!-- HERO -->
+  <section id="about">
+    <canvas id="particles-canvas" class="particles-canvas"></canvas>
+    <div class="hero-glow1"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <div class="hero-badge-line"></div>
+        <span>AVAILABLE FOR WORK</span>
       </div>
-      <ul class="exp-bullets">
-        <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Led frontend on 10+ client projects spanning SaaS platforms, fintech dashboards, Web3 DeFi apps, and e-commerce marketplaces.</li>
-        <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Architected scalable frontends using React 18/19 and Next.js (App Router) with TypeScript, TanStack Router, and TanStack Query.</li>
-        <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Implemented complex features: drag-and-drop page builders, Web3 wallet integrations, RBAC systems, and real-time data dashboards.</li>
-        <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Built reusable component libraries (30–80+ components) using Radix UI primitives, Tailwind CSS, and shadcn/ui patterns.</li>
-        <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Integrated REST APIs, WebSockets, third-party services (Stripe, Brevo, Firebase, Google OAuth) with error handling and loading states.</li>
-      </ul>
-    </div>
-
-    <div class="exp-item fade-in" style="animation-delay:.12s">
-      <div class="exp-dot" style="background:#93C5FD;box-shadow:0 0 12px rgba(147,197,253,.5)"></div>
-      <div class="exp-header">
-        <div>
-          <div class="exp-role">Frontend Developer Intern</div>
-          <div class="exp-company" style="color:#93C5FD">Stack One Technologies</div>
-        </div>
-        <span class="exp-period">Sep 2024 – 2025</span>
-      </div>
-      <ul class="exp-bullets">
-        <li><span class="bullet-arrow" style="color:#93C5FD">▸</span>Built responsive UIs with React.js, Tailwind CSS, and Bootstrap; optimised performance via lazy loading and code splitting.</li>
-        <li><span class="bullet-arrow" style="color:#93C5FD">▸</span>Implemented form validation, dynamic rendering, and React Router for SPA experiences.</li>
-        <li><span class="bullet-arrow" style="color:#93C5FD">▸</span>Practiced Git-based version control and feature branching in an agile team environment.</li>
-      </ul>
-    </div>
-
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="sec-title fade-in">
-    <span class="sec-num">03</span>
-    <div class="sec-line"></div>
-    <h2>Projects</h2>
-  </div>
-
-  <!-- Filter tabs -->
-  <div class="proj-tabs fade-in">
-    <button class="proj-tab active" onclick="filterProjects('all',this)">All</button>
-    <button class="proj-tab" onclick="filterProjects('saas',this)">SaaS / Platforms</button>
-    <button class="proj-tab" onclick="filterProjects('web3',this)">Web3 / Crypto</button>
-    <button class="proj-tab" onclick="filterProjects('ecom',this)">E-Commerce</button>
-    <button class="proj-tab" onclick="filterProjects('site',this)">Marketing Sites</button>
-  </div>
-
-  <div class="projects-grid" id="projects-grid">
-
-    <!-- JITSUITE -->
-    <div class="project-card fade-in" data-cat="saas">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(110,231,183,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">SAAS PLATFORM</span>
-        <span class="card-num" style="color:#6EE7B7">01</span>
-      </div>
-      <div class="card-title">JitSuites</div>
-      <div class="card-url"><a href="https://jitsuites.com" target="_blank" style="color:#6EE7B7">jitsuites.com ↗</a></div>
-      <p class="card-desc">Multi-channel marketing automation platform — funnel builder, email/SMS marketing, social media auto-posting, and video marketing from a single dashboard.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Architected drag-and-drop funnel/landing page builder using @dnd-kit with element tree manipulation, undo/redo history, layer management, and JSON/HTML export.</li>
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Built visual email builder with React Email Editor, merge tag validation, and multi-platform scheduling via React Big Calendar.</li>
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Developed 30+ reusable UI components; data tables with server-side pagination, sorting, filtering, and URL state persistence via TanStack Table.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">React 19</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">TanStack Router</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">TanStack Query</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Zustand</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">@dnd-kit</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Radix UI</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Brevo API</span>
+      <h1 class="hero-name">
+        Muhammad<br>
+        <span class="outline">Muqeet</span>
+      </h1>
+      <div class="hero-role">Mid-Level Frontend Developer</div>
+      <p class="hero-bio">
+        I build fast, scalable, and visually compelling web experiences. 2+ years delivering production frontends — from
+        real-time crypto dashboards and SaaS platforms to e-commerce marketplaces and Web3 DeFi apps.
+      </p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="scrollTo('projects')">View Projects ↓</button>
+        <button class="btn-outline" onclick="scrollTo('contact')">Contact Me</button>
       </div>
     </div>
+    <div class="hero-code">
+      const dev = {<br>
+      &nbsp;&nbsp;name: "M. Muqeet",<br>
+      &nbsp;&nbsp;role: "Frontend Dev",<br>
+      &nbsp;&nbsp;stack: ["React","Next.js"],<br>
+      &nbsp;&nbsp;available: true<br>
+      };
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      SCROLL
+    </div>
+  </section>
 
-    <!-- DROPEX / KOMPRA -->
-    <div class="project-card fade-in" data-cat="ecom">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(147,197,253,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">E-COMMERCE MARKETPLACE</span>
-        <span class="card-num" style="color:#93C5FD">02</span>
-      </div>
-      <div class="card-title">Kompra</div>
-      <div class="card-url"><a href="https://dropex-marketplace.pages.dev" target="_blank" style="color:#93C5FD">dropex-marketplace.pages.dev ↗</a></div>
-      <p class="card-desc">Full-featured e-commerce marketplace with product browsing, cart, wishlist, reviews, OTP authentication, and multi-step checkout with multiple payment options.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Implemented dynamic category-based product recommendations using recursive tree traversal to find root parent categories and filter related products.</li>
-        <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Built multi-step checkout combining shipping management, payment validation, and order creation with optimistic UI updates and auto cart clearing.</li>
-        <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Integrated i18next for English/Spanish localization with lazy-loaded translation resources.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">React 18</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">TanStack Router</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Zustand</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">TypeScript</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">i18next</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Radix UI</span>
-      </div>
-    </div>
-
-    <!-- DROPI CLONE -->
-    <div class="project-card fade-in" data-cat="saas">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(253,230,138,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">B2B SAAS / LOGISTICS</span>
-        <span class="card-num" style="color:#FDE68A">03</span>
-      </div>
-      <div class="card-title">Dropi Clone</div>
-      <div class="card-url"><a href="https://dropi-clone.pages.dev" target="_blank" style="color:#FDE68A">dropi-clone.pages.dev ↗</a></div>
-      <p class="card-desc">B2B dropshipping and logistics SaaS for Latin American sellers. Manages products, orders, warehouses, and earnings with role-based access for sellers, order managers, and staff.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Implemented RBAC with three user types using TanStack Router's beforeLoad hooks, dynamic sidebar filtering, and token-based redirects.</li>
-        <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Built centralized API client with JWT injection, automatic refresh token storage, and content-type negotiation for JSON/FormData/CSV.</li>
-        <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Delivered 80+ reusable components, 15+ API service modules, Vitest unit tests, and TypeScript coverage across the entire codebase.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">React 18</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">TanStack Table</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Recharts</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Zod</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">React Hook Form</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">i18next</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Vitest</span>
-      </div>
-    </div>
-
-    <!-- EXTSY -->
-    <div class="project-card fade-in" data-cat="web3">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(196,181,253,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">CRYPTO TRADING PLATFORM</span>
-        <span class="card-num" style="color:#C4B5FD">04</span>
-      </div>
-      <div class="card-title">Extsy</div>
-      <div class="card-url"><a href="https://extsy.com" target="_blank" style="color:#C4B5FD">extsy.com ↗</a></div>
-      <p class="card-desc">Full-featured crypto trading platform with P2P trading, staking, virtual cards, and Web3 wallet integrations. Built as part of a 10–15 person team.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Integrated TronWeb and Wagmi for Web3 wallet connections; Stripe payments and Firebase authentication.</li>
-        <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Built complex modal systems (staking, KYC, payment flows), real-time data tables, and role-based route protection.</li>
-        <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Implemented dark/light theme with persistent state; Framer Motion and Lottie animations throughout.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Next.js 14</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Redux Toolkit</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Chakra UI</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Wagmi</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">TronWeb</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Framer Motion</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Stripe</span>
-      </div>
-    </div>
-
-    <!-- ASAP PAY -->
-    <div class="project-card fade-in" data-cat="web3">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(252,165,165,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">FINTECH SAAS DASHBOARD</span>
-        <span class="card-num" style="color:#FCA5A5">05</span>
-      </div>
-      <div class="card-title">ASAP Pay</div>
-      <div class="card-url"><a href="https://asap-stg.pages.dev" target="_blank" style="color:#FCA5A5">asap-stg.pages.dev ↗</a></div>
-      <p class="card-desc">Fintech SaaS enabling crypto/fiat wallet management, P2P trading, currency swapping, virtual card issuance, bill payments, and AI-powered financial assistance.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#FCA5A5;flex-shrink:0">▸</span>Built 40+ routes with responsive layouts, Framer Motion animations, and Ant Design components across the full dashboard.</li>
-        <li><span style="color:#FCA5A5;flex-shrink:0">▸</span>Developed P2P trading interfaces with trade modals, payment status indicators, countdown timers, and virtual card management.</li>
-        <li><span style="color:#FCA5A5;flex-shrink:0">▸</span>Implemented complete auth UI — login, signup, OTP verification, and 2FA setup using React Hook Form with validation.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">React 18</span>
-        <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">TypeScript</span>
-        <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">Ant Design</span>
-        <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">TanStack Query</span>
-        <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">Framer Motion</span>
-        <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">i18n</span>
-      </div>
-    </div>
-
-    <!-- ETHORO -->
-    <div class="project-card fade-in" data-cat="web3">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(110,231,183,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">WEB3 / DEFI</span>
-        <span class="card-num" style="color:#6EE7B7">06</span>
-      </div>
-      <div class="card-title">Ethoro</div>
-      <div class="card-url"><a href="https://dev.ethoro.io" target="_blank" style="color:#6EE7B7">dev.ethoro.io ↗</a></div>
-      <p class="card-desc">Crypto staking platform for ERC-20 tokens (ETH, USDT, EUSD) with Web3 wallet integration. Includes admin dashboard for managing tokens, subscriptions, and withdrawals.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Engineered Web3 deposit flow with ERC20 approval, smart contract interaction, token decimals conversion, allowance checks, and multi-step wallet confirmations.</li>
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Architected JWT-based protected routes with TanStack Router's beforeLoad hooks, automatic token refresh, and role-based redirects.</li>
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Built admin layer with Chart.js analytics, CSV data exports, and referral/withdrawal management using Reactstrap.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">React 19</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Wagmi / viem</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Reown AppKit</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">TanStack Query</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Tailwind CSS v4</span>
-        <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Sepolia Testnet</span>
-      </div>
-    </div>
-
-    <!-- KATANA HEALTHCARE -->
-    <div class="project-card fade-in" data-cat="site">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(147,197,253,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">MARKETING WEBSITE</span>
-        <span class="card-num" style="color:#93C5FD">07</span>
-      </div>
-      <div class="card-title">Katana Healthcare</div>
-      <div class="card-url"><a href="https://katana-healthcare.com" target="_blank" style="color:#93C5FD">katana-healthcare.com ↗</a></div>
-      <p class="card-desc">SaaS marketing site for a clinical decision support platform targeting healthcare professionals. Features BNF-based prescribing tools.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Engineered synchronized dual-vertical Swiper carousel with real-time center image updates, bidirectional slide sync, and responsive CSS custom properties.</li>
-        <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Implemented scroll-aware sticky header with directional visibility detection (hide on scroll-down, reveal on scroll-up).</li>
-        <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Deployed to Vercel with HubSpot forms, Google Analytics, and Microsoft Clarity integration.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Next.js 16</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">React 19</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Tailwind CSS 4</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Swiper 12</span>
-        <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">HubSpot</span>
-      </div>
-    </div>
-
-    <!-- ZAWAYA DAO -->
-    <div class="project-card fade-in" data-cat="site web3">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(196,181,253,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">WEB3 MARKETING SITE</span>
-        <span class="card-num" style="color:#C4B5FD">08</span>
-      </div>
-      <div class="card-title">ZawayaDAO</div>
-      <div class="card-url"><a href="https://zawayadao.com" target="_blank" style="color:#C4B5FD">zawayadao.com ↗</a></div>
-      <p class="card-desc">White-label SaaS for real estate tokenization with DAO-ready RWA infrastructure. Features a custom WebGL interactive background built with Three.js.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Engineered PixelBlast component with custom GLSL fragment shaders — FBM noise, liquid ripple effects, pointer tracking, and GPU auto-pause when offscreen.</li>
-        <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Implemented IntersectionObserver scroll animations, JSON-LD structured data, and SEO-optimized metadata across all routes.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Next.js 16</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Three.js</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">GLSL Shaders</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">TypeScript</span>
-        <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Tailwind CSS 4</span>
-      </div>
-    </div>
-
-    <!-- TRAVALEO -->
-    <div class="project-card fade-in" data-cat="site">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(253,230,138,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">REAL ESTATE PLATFORM</span>
-        <span class="card-num" style="color:#FDE68A">09</span>
-      </div>
-      <div class="card-title">Travaleo</div>
-      <div class="card-url"><a href="https://travaleo.com" target="_blank" style="color:#FDE68A">travaleo.com ↗</a></div>
-      <p class="card-desc">Tokenized real estate investment platform enabling fractional ownership of luxury properties through hybrid wealth vehicles for high-net-worth investors.</p>
-      <ul class="card-highlights">
-        <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Integrated dual CMS APIs (Strapi + custom REST) with unified TypeScript interfaces and React Query caching to prevent waterfall requests.</li>
-        <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Built TokenCard components with Swiper galleries, dynamic ROI calculations, and funding progress bars — rendering consistently across server and client.</li>
-        <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Full SEO stack: Schema.org structured data, Open Graph tags, Google Analytics, and server-side rendering for marketplace pages.</li>
-      </ul>
-      <div class="card-tags">
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Next.js 15</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Strapi CMS</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">TanStack Query</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Radix UI</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">shadcn/ui</span>
-        <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Swiper</span>
-      </div>
-    </div>
-
-    <!-- MORE SITES -->
-    <div class="project-card fade-in" data-cat="site web3">
-      <div class="card-glow" style="background:radial-gradient(circle,rgba(110,231,183,.1) 0%,transparent 70%)"></div>
-      <div class="card-top">
-        <span class="card-type">MARKETING SITES</span>
-        <span class="card-num" style="color:#6EE7B7">+</span>
-      </div>
-      <div class="card-title">More Projects</div>
-      <p class="card-desc" style="margin-bottom:20px">Additional production websites delivered during the same period:</p>
-      <ul class="card-highlights" style="margin-bottom:0">
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span><strong style="color:#94A3B8">Singularity</strong> — Web3 DeFi dashboard with multi-chain wallet auth (Ethereum, Arbitrum, Polygon) via Wagmi v3 + Reown AppKit.</li>
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span><strong style="color:#94A3B8">Blockyfy</strong> — Agency site with custom country code selector (50+ countries), Cal.com scheduling, and WhatsApp chat integration.</li>
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span><strong style="color:#94A3B8">NextSense Solution</strong> — Web3/AI tech site with complex multi-level dropdown nav and dynamic dark/light mode per page context.</li>
-        <li><span style="color:#6EE7B7;flex-shrink:0">▸</span><strong style="color:#94A3B8">Regen Digital</strong> — Real estate tokenization site with 8+ pages and a reusable GenesyButton component using class-variance-authority.</li>
-      </ul>
-    </div>
-
-  </div>
-
-  <div class="fade-in" style="text-align:center;margin-top:44px">
-    <a href="https://github.com/" target="_blank"
-      style="display:inline-flex;align-items:center;gap:8px;color:#475569;border:1px solid var(--border);padding:11px 28px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.06em;transition:color .2s,border-color .2s"
-      onmouseover="this.style.color='#6EE7B7';this.style.borderColor='#6EE7B7'"
-      onmouseout="this.style.color='#475569';this.style.borderColor='#1E293B'">
-      VIEW ALL ON GITHUB ↗
-    </a>
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills">
-  <div class="sec-title fade-in">
-    <span class="sec-num">04</span>
-    <div class="sec-line"></div>
-    <h2>Skills</h2>
-  </div>
-
-  <div style="max-width:720px">
-    <div class="skills-row fade-in">
-      <span class="skill-cat">LANGUAGES</span>
-      <div class="skill-tags">
-        <span class="skill-tag">JavaScript (ES6+)</span>
-        <span class="skill-tag">TypeScript</span>
-        <span class="skill-tag">HTML5</span>
-        <span class="skill-tag">CSS3</span>
-        <span class="skill-tag">GLSL</span>
-      </div>
-    </div>
-    <div class="skills-row fade-in">
-      <span class="skill-cat">FRAMEWORKS</span>
-      <div class="skill-tags">
-        <span class="skill-tag">React 18/19</span>
-        <span class="skill-tag">Next.js (App Router)</span>
-        <span class="skill-tag">TanStack Router</span>
-        <span class="skill-tag">TanStack Query</span>
-        <span class="skill-tag">TanStack Table</span>
-      </div>
-    </div>
-    <div class="skills-row fade-in">
-      <span class="skill-cat">STATE MGMT</span>
-      <div class="skill-tags">
-        <span class="skill-tag">Zustand</span>
-        <span class="skill-tag">Redux Toolkit</span>
-        <span class="skill-tag">Context API</span>
-        <span class="skill-tag">React Hook Form</span>
-        <span class="skill-tag">Zod</span>
-      </div>
-    </div>
-    <div class="skills-row fade-in">
-      <span class="skill-cat">STYLING</span>
-      <div class="skill-tags">
-        <span class="skill-tag">Tailwind CSS 4</span>
-        <span class="skill-tag">Radix UI</span>
-        <span class="skill-tag">shadcn/ui</span>
-        <span class="skill-tag">Framer Motion</span>
-        <span class="skill-tag">Chakra UI</span>
-        <span class="skill-tag">Ant Design</span>
-      </div>
-    </div>
-    <div class="skills-row fade-in">
-      <span class="skill-cat">WEB3</span>
-      <div class="skill-tags">
-        <span class="skill-tag">Wagmi / viem</span>
-        <span class="skill-tag">Reown AppKit</span>
-        <span class="skill-tag">TronWeb</span>
-        <span class="skill-tag">ERC-20</span>
-        <span class="skill-tag">Smart Contracts</span>
-        <span class="skill-tag">Three.js</span>
-      </div>
-    </div>
-    <div class="skills-row fade-in">
-      <span class="skill-cat">INTEGRATIONS</span>
-      <div class="skill-tags">
-        <span class="skill-tag">REST APIs</span>
-        <span class="skill-tag">WebSockets</span>
-        <span class="skill-tag">Stripe</span>
-        <span class="skill-tag">Firebase</span>
-        <span class="skill-tag">Google OAuth</span>
-        <span class="skill-tag">Brevo</span>
-        <span class="skill-tag">HubSpot</span>
-      </div>
-    </div>
-    <div class="skills-row fade-in">
-      <span class="skill-cat">TOOLING</span>
-      <div class="skill-tags">
-        <span class="skill-tag">Git / GitHub</span>
-        <span class="skill-tag">Vercel</span>
-        <span class="skill-tag">Vite</span>
-        <span class="skill-tag">Vitest</span>
-        <span class="skill-tag">ESLint / Prettier</span>
-        <span class="skill-tag">i18next</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="contact-glow"></div>
-  <div class="contact-inner">
-    <div class="sec-title fade-in" style="justify-content:center">
-      <span class="sec-num">05</span>
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="sec-title fade-in">
+      <span class="sec-num">02</span>
       <div class="sec-line"></div>
-      <h2>Get In Touch</h2>
+      <h2>Experience</h2>
     </div>
-    <p class="contact-p fade-in">Open to full-time roles, freelance projects, or a good conversation about frontend craft.</p>
-    <a href="mailto:muqeetkhan010@gmail.com" class="btn-contact fade-in">SAY HELLO ↗</a>
-    <div class="social-links fade-in">
-      <a href="https://github.com/" target="_blank">GitHub</a>
-      <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
-      <a href="tel:+923335248912">+92 333 5248912</a>
+
+    <div style="max-width:760px">
+
+      <div class="exp-item fade-in">
+        <div class="exp-dot" style="background:#6EE7B7;box-shadow:0 0 12px rgba(110,231,183,.5)"></div>
+        <div class="exp-header">
+          <div>
+            <div class="exp-role">Mid-Level Frontend Developer</div>
+            <div class="exp-company" style="color:#6EE7B7">Fexen Smart Solutions</div>
+          </div>
+          <span class="exp-period">2025 – Present</span>
+        </div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Led frontend on 10+ client projects spanning SaaS
+            platforms, fintech dashboards, Web3 DeFi apps, and e-commerce marketplaces.</li>
+          <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Architected scalable frontends using React 18/19
+            and Next.js (App Router) with TypeScript, TanStack Router, and TanStack Query.</li>
+          <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Implemented complex features: drag-and-drop page
+            builders, Web3 wallet integrations, RBAC systems, and real-time data dashboards.</li>
+          <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Built reusable component libraries (30–80+
+            components) using Radix UI primitives, Tailwind CSS, and shadcn/ui patterns.</li>
+          <li><span class="bullet-arrow" style="color:#6EE7B7">▸</span>Integrated REST APIs, WebSockets, third-party
+            services (Stripe, Brevo, Firebase, Google OAuth) with error handling and loading states.</li>
+        </ul>
+      </div>
+
+      <div class="exp-item fade-in" style="animation-delay:.12s">
+        <div class="exp-dot" style="background:#93C5FD;box-shadow:0 0 12px rgba(147,197,253,.5)"></div>
+        <div class="exp-header">
+          <div>
+            <div class="exp-role">Frontend Developer Intern</div>
+            <div class="exp-company" style="color:#93C5FD">Stack One Technologies</div>
+          </div>
+          <span class="exp-period">Sep 2024 – 2025</span>
+        </div>
+        <ul class="exp-bullets">
+          <li><span class="bullet-arrow" style="color:#93C5FD">▸</span>Built responsive UIs with React.js, Tailwind CSS,
+            and Bootstrap; optimised performance via lazy loading and code splitting.</li>
+          <li><span class="bullet-arrow" style="color:#93C5FD">▸</span>Implemented form validation, dynamic rendering,
+            and React Router for SPA experiences.</li>
+          <li><span class="bullet-arrow" style="color:#93C5FD">▸</span>Practiced Git-based version control and feature
+            branching in an agile team environment.</li>
+        </ul>
+      </div>
+
     </div>
-  </div>
-</section>
+  </section>
 
-<footer>
-  DESIGNED & BUILT BY MUHAMMAD MUQEET KHAN · <span id="year"></span>
-</footer>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="sec-title fade-in">
+      <span class="sec-num">03</span>
+      <div class="sec-line"></div>
+      <h2>Projects</h2>
+    </div>
 
-<script>
-  document.getElementById('year').textContent = new Date().getFullYear();
+    <!-- Filter tabs -->
+    <div class="proj-tabs fade-in">
+      <button class="proj-tab active" onclick="filterProjects('all',this)">All</button>
+      <button class="proj-tab" onclick="filterProjects('saas',this)">SaaS / Platforms</button>
+      <button class="proj-tab" onclick="filterProjects('web3',this)">Web3 / Crypto</button>
+      <button class="proj-tab" onclick="filterProjects('ecom',this)">E-Commerce</button>
+      <button class="proj-tab" onclick="filterProjects('site',this)">Marketing Sites</button>
+    </div>
 
-  // Cursor
-  const dot  = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  document.addEventListener('mousemove', e => {
-    dot.style.left  = e.clientX + 'px';
-    dot.style.top   = e.clientY + 'px';
-    ring.style.left = e.clientX + 'px';
-    ring.style.top  = e.clientY + 'px';
-  });
-  document.addEventListener('mouseover', e => {
-    if (e.target.closest('a,button,[data-hover]')) {
-      dot.style.transform  = 'translate(-50%,-50%) scale(2.5)';
-      ring.style.transform = 'translate(-50%,-50%) scale(1.8)';
-    }
-  });
-  document.addEventListener('mouseout', () => {
-    dot.style.transform  = 'translate(-50%,-50%) scale(1)';
-    ring.style.transform = 'translate(-50%,-50%) scale(1)';
-  });
+    <div class="projects-grid" id="projects-grid">
 
-  // Nav scroll
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 40);
-  });
+      <!-- JITSUITE -->
+      <div class="project-card fade-in" data-cat="saas">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(110,231,183,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">SAAS PLATFORM</span>
+          <span class="card-num" style="color:#6EE7B7">01</span>
+        </div>
+        <div class="card-title">JitSuites</div>
+        <div class="card-url"><a href="https://jitsuites.com" target="_blank" style="color:#6EE7B7">jitsuites.com ↗</a>
+        </div>
+        <p class="card-desc">Multi-channel marketing automation platform — funnel builder, email/SMS marketing, social
+          media auto-posting, and video marketing from a single dashboard.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Architected drag-and-drop funnel/landing page builder
+            using @dnd-kit with element tree manipulation, undo/redo history, layer management, and JSON/HTML export.
+          </li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Built visual email builder with React Email Editor,
+            merge tag validation, and multi-platform scheduling via React Big Calendar.</li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Developed 30+ reusable UI components; data tables with
+            server-side pagination, sorting, filtering, and URL state persistence via TanStack Table.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">React 19</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">TanStack Router</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">TanStack Query</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Zustand</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">@dnd-kit</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Radix UI</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Brevo API</span>
+        </div>
+      </div>
 
-  // Scroll to section
-  function scrollTo(id) {
-    document.getElementById(id)?.scrollIntoView({ behavior:'smooth' });
-    document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-  }
+      <!-- DROPEX / KOMPRA -->
+      <div class="project-card fade-in" data-cat="ecom">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(147,197,253,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">E-COMMERCE MARKETPLACE</span>
+          <span class="card-num" style="color:#93C5FD">02</span>
+        </div>
+        <div class="card-title">Kompra</div>
+        <div class="card-url"><a href="https://dropex-marketplace.pages.dev" target="_blank"
+            style="color:#93C5FD">dropex-marketplace.pages.dev ↗</a></div>
+        <p class="card-desc">Full-featured e-commerce marketplace with product browsing, cart, wishlist, reviews, OTP
+          authentication, and multi-step checkout with multiple payment options.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Implemented dynamic category-based product
+            recommendations using recursive tree traversal to find root parent categories and filter related products.
+          </li>
+          <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Built multi-step checkout combining shipping management,
+            payment validation, and order creation with optimistic UI updates and auto cart clearing.</li>
+          <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Integrated i18next for English/Spanish localization with
+            lazy-loaded translation resources.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">React 18</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">TanStack Router</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Zustand</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">TypeScript</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">i18next</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Radix UI</span>
+        </div>
+      </div>
 
-  // Fade in on scroll
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 60);
+      <!-- DROPI CLONE -->
+      <div class="project-card fade-in" data-cat="saas">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(253,230,138,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">B2B SAAS / LOGISTICS</span>
+          <span class="card-num" style="color:#FDE68A">03</span>
+        </div>
+        <div class="card-title">Dropi Clone</div>
+        <div class="card-url"><a href="https://dropi-clone.pages.dev" target="_blank"
+            style="color:#FDE68A">dropi-clone.pages.dev ↗</a></div>
+        <p class="card-desc">B2B dropshipping and logistics SaaS for Latin American sellers. Manages products, orders,
+          warehouses, and earnings with role-based access for sellers, order managers, and staff.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Implemented RBAC with three user types using TanStack
+            Router's beforeLoad hooks, dynamic sidebar filtering, and token-based redirects.</li>
+          <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Built centralized API client with JWT injection,
+            automatic refresh token storage, and content-type negotiation for JSON/FormData/CSV.</li>
+          <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Delivered 80+ reusable components, 15+ API service
+            modules, Vitest unit tests, and TypeScript coverage across the entire codebase.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">React 18</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">TanStack Table</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Recharts</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Zod</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">React Hook Form</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">i18next</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Vitest</span>
+        </div>
+      </div>
+
+      <!-- EXTSY -->
+      <div class="project-card fade-in" data-cat="web3">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(196,181,253,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">CRYPTO TRADING PLATFORM</span>
+          <span class="card-num" style="color:#C4B5FD">04</span>
+        </div>
+        <div class="card-title">Extsy</div>
+        <div class="card-url"><a href="https://extsy.com" target="_blank" style="color:#C4B5FD">extsy.com ↗</a></div>
+        <p class="card-desc">Full-featured crypto trading platform with P2P trading, staking, virtual cards, and Web3
+          wallet integrations. Built as part of a 10–15 person team.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Integrated TronWeb and Wagmi for Web3 wallet
+            connections; Stripe payments and Firebase authentication.</li>
+          <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Built complex modal systems (staking, KYC, payment
+            flows), real-time data tables, and role-based route protection.</li>
+          <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Implemented dark/light theme with persistent state;
+            Framer Motion and Lottie animations throughout.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Next.js 14</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Redux Toolkit</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Chakra UI</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Wagmi</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">TronWeb</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Framer Motion</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Stripe</span>
+        </div>
+      </div>
+
+      <!-- ASAP PAY -->
+      <div class="project-card fade-in" data-cat="web3">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(252,165,165,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">FINTECH SAAS DASHBOARD</span>
+          <span class="card-num" style="color:#FCA5A5">05</span>
+        </div>
+        <div class="card-title">ASAP Pay</div>
+        <div class="card-url"><a href="https://asap-stg.pages.dev" target="_blank"
+            style="color:#FCA5A5">asap-stg.pages.dev ↗</a></div>
+        <p class="card-desc">Fintech SaaS enabling crypto/fiat wallet management, P2P trading, currency swapping,
+          virtual card issuance, bill payments, and AI-powered financial assistance.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#FCA5A5;flex-shrink:0">▸</span>Built 40+ routes with responsive layouts, Framer Motion
+            animations, and Ant Design components across the full dashboard.</li>
+          <li><span style="color:#FCA5A5;flex-shrink:0">▸</span>Developed P2P trading interfaces with trade modals,
+            payment status indicators, countdown timers, and virtual card management.</li>
+          <li><span style="color:#FCA5A5;flex-shrink:0">▸</span>Implemented complete auth UI — login, signup, OTP
+            verification, and 2FA setup using React Hook Form with validation.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">React 18</span>
+          <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">TypeScript</span>
+          <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">Ant Design</span>
+          <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">TanStack Query</span>
+          <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">Framer Motion</span>
+          <span class="tag" style="color:#FCA5A5;background:rgba(252,165,165,.1)">i18n</span>
+        </div>
+      </div>
+
+      <!-- ETHORO -->
+      <div class="project-card fade-in" data-cat="web3">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(110,231,183,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">WEB3 / DEFI</span>
+          <span class="card-num" style="color:#6EE7B7">06</span>
+        </div>
+        <div class="card-title">Ethoro</div>
+        <div class="card-url"><a href="https://dev.ethoro.io" target="_blank" style="color:#6EE7B7">dev.ethoro.io ↗</a>
+        </div>
+        <p class="card-desc">Crypto staking platform for ERC-20 tokens (ETH, USDT, EUSD) with Web3 wallet integration.
+          Includes admin dashboard for managing tokens, subscriptions, and withdrawals.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Engineered Web3 deposit flow with ERC20 approval, smart
+            contract interaction, token decimals conversion, allowance checks, and multi-step wallet confirmations.</li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Architected JWT-based protected routes with TanStack
+            Router's beforeLoad hooks, automatic token refresh, and role-based redirects.</li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Built admin layer with Chart.js analytics, CSV data
+            exports, and referral/withdrawal management using Reactstrap.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">React 19</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Wagmi / viem</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Reown AppKit</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">TanStack Query</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Tailwind CSS v4</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Sepolia Testnet</span>
+        </div>
+      </div>
+
+      <!-- KATANA HEALTHCARE -->
+      <div class="project-card fade-in" data-cat="site">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(147,197,253,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">MARKETING WEBSITE</span>
+          <span class="card-num" style="color:#93C5FD">07</span>
+        </div>
+        <div class="card-title">Katana Healthcare</div>
+        <div class="card-url"><a href="https://katana-healthcare.com" target="_blank"
+            style="color:#93C5FD">katana-healthcare.com ↗</a></div>
+        <p class="card-desc">SaaS marketing site for a clinical decision support platform targeting healthcare
+          professionals. Features BNF-based prescribing tools.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Engineered synchronized dual-vertical Swiper carousel
+            with real-time center image updates, bidirectional slide sync, and responsive CSS custom properties.</li>
+          <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Implemented scroll-aware sticky header with directional
+            visibility detection (hide on scroll-down, reveal on scroll-up).</li>
+          <li><span style="color:#93C5FD;flex-shrink:0">▸</span>Deployed to Vercel with HubSpot forms, Google Analytics,
+            and Microsoft Clarity integration.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Next.js 16</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">React 19</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Tailwind CSS 4</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">Swiper 12</span>
+          <span class="tag" style="color:#93C5FD;background:rgba(147,197,253,.1)">HubSpot</span>
+        </div>
+      </div>
+
+      <!-- ZAWAYA DAO -->
+      <div class="project-card fade-in" data-cat="site web3">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(196,181,253,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">WEB3 MARKETING SITE</span>
+          <span class="card-num" style="color:#C4B5FD">08</span>
+        </div>
+        <div class="card-title">ZawayaDAO</div>
+        <div class="card-url"><a href="https://zawayadao.com" target="_blank" style="color:#C4B5FD">zawayadao.com ↗</a>
+        </div>
+        <p class="card-desc">White-label SaaS for real estate tokenization with DAO-ready RWA infrastructure. Features a
+          custom WebGL interactive background built with Three.js.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Engineered PixelBlast component with custom GLSL
+            fragment shaders — FBM noise, liquid ripple effects, pointer tracking, and GPU auto-pause when offscreen.
+          </li>
+          <li><span style="color:#C4B5FD;flex-shrink:0">▸</span>Implemented IntersectionObserver scroll animations,
+            JSON-LD structured data, and SEO-optimized metadata across all routes.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Next.js 16</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Three.js</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">GLSL Shaders</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">TypeScript</span>
+          <span class="tag" style="color:#C4B5FD;background:rgba(196,181,253,.1)">Tailwind CSS 4</span>
+        </div>
+      </div>
+
+      <!-- TRAVALEO -->
+      <div class="project-card fade-in" data-cat="site">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(253,230,138,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">REAL ESTATE PLATFORM</span>
+          <span class="card-num" style="color:#FDE68A">09</span>
+        </div>
+        <div class="card-title">Travaleo</div>
+        <div class="card-url"><a href="https://travaleo.com" target="_blank" style="color:#FDE68A">travaleo.com ↗</a>
+        </div>
+        <p class="card-desc">Tokenized real estate investment platform enabling fractional ownership of luxury
+          properties through hybrid wealth vehicles for high-net-worth investors.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Integrated dual CMS APIs (Strapi + custom REST) with
+            unified TypeScript interfaces and React Query caching to prevent waterfall requests.</li>
+          <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Built TokenCard components with Swiper galleries,
+            dynamic ROI calculations, and funding progress bars — rendering consistently across server and client.</li>
+          <li><span style="color:#FDE68A;flex-shrink:0">▸</span>Full SEO stack: Schema.org structured data, Open Graph
+            tags, Google Analytics, and server-side rendering for marketplace pages.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Next.js 15</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Strapi CMS</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">TanStack Query</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Radix UI</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">shadcn/ui</span>
+          <span class="tag" style="color:#FDE68A;background:rgba(253,230,138,.1)">Swiper</span>
+        </div>
+      </div>
+
+      <!-- SINGULARITY -->
+      <div class="project-card fade-in" data-cat="web3">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(110,231,183,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">WEB3 / DEFI</span>
+          <span class="card-num" style="color:#6EE7B7">10</span>
+        </div>
+        <div class="card-title">Singularity</div>
+        <div class="card-url"><a href="https://singularity-web-app-lime.vercel.app" target="_blank" style="color:#6EE7B7">singularity-web-app-lime.vercel.app ↗</a></div>
+        <p class="card-desc">DeFi yield farming platform with Ethereum wallet connectivity, smart contract interaction, and real-time on-chain metrics dashboard.</p>
+        <ul class="card-highlights">
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Implemented Ethereum wallet connectivity using Reown AppKit with wagmi/viem libraries, supporting mainnet and Sepolia testnet with automatic chain switching and wallet state management.</li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Built async data hooks using viem's contract read functions to fetch on-chain metrics, integrated with React Query for caching and real-time state synchronization.</li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Developed TypeScript API client with JWT token management via localStorage, Axios interceptors for auth header injection, and multi-chain header support.</li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span>Created Next.js 16 + React 19 App Router with protected routes validating wallet connection status and redirecting unauthorized users to landing page.</li>
+        </ul>
+        <div class="card-tags">
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Next.js 16</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">React 19</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Wagmi / viem</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Reown AppKit</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Ethereum</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Sepolia Testnet</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Smart Contracts</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">DeFi</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Yield Farming</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Web3 Auth</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">ERC-20</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">TanStack Query</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Tailwind CSS 4</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Radix UI</span>
+          <span class="tag" style="color:#6EE7B7;background:rgba(110,231,183,.1)">Recharts</span>
+        </div>
+      </div>
+
+      <!-- MORE SITES -->
+      <div class="project-card fade-in" data-cat="site web3">
+        <div class="card-glow" style="background:radial-gradient(circle,rgba(110,231,183,.1) 0%,transparent 70%)"></div>
+        <div class="card-top">
+          <span class="card-type">MARKETING SITES</span>
+          <span class="card-num" style="color:#6EE7B7">+</span>
+        </div>
+        <div class="card-title">More Projects</div>
+        <p class="card-desc" style="margin-bottom:20px">Additional production websites delivered during the same period:
+        </p>
+        <ul class="card-highlights" style="margin-bottom:0">
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span><strong style="color:#94A3B8">Blockyfy</strong> — Agency
+            site with custom country code selector (50+ countries), Cal.com scheduling, and WhatsApp chat integration.
+          </li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span><strong style="color:#94A3B8">NextSense
+              Solution</strong> — Web3/AI tech site with complex multi-level dropdown nav and dynamic dark/light mode
+            per page context.</li>
+          <li><span style="color:#6EE7B7;flex-shrink:0">▸</span><strong style="color:#94A3B8">Regen Digital</strong> —
+            Real estate tokenization site with 8+ pages and a reusable GenesyButton component using
+            class-variance-authority.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="fade-in" style="text-align:center;margin-top:44px">
+      <a href="https://github.com/" target="_blank"
+        style="display:inline-flex;align-items:center;gap:8px;color:#475569;border:1px solid var(--border);padding:11px 28px;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.06em;transition:color .2s,border-color .2s"
+        onmouseover="this.style.color='#6EE7B7';this.style.borderColor='#6EE7B7'"
+        onmouseout="this.style.color='#475569';this.style.borderColor='#1E293B'">
+        VIEW ALL ON GITHUB ↗
+      </a>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="sec-title fade-in">
+      <span class="sec-num">04</span>
+      <div class="sec-line"></div>
+      <h2>Skills</h2>
+    </div>
+
+    <div style="max-width:720px">
+      <div class="skills-row fade-in">
+        <span class="skill-cat">LANGUAGES</span>
+        <div class="skill-tags">
+          <span class="skill-tag">JavaScript (ES6+)</span>
+          <span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">HTML5</span>
+          <span class="skill-tag">CSS3</span>
+          <span class="skill-tag">GLSL</span>
+        </div>
+      </div>
+      <div class="skills-row fade-in">
+        <span class="skill-cat">FRAMEWORKS</span>
+        <div class="skill-tags">
+          <span class="skill-tag">React 18/19</span>
+          <span class="skill-tag">Next.js (App Router)</span>
+          <span class="skill-tag">TanStack Router</span>
+          <span class="skill-tag">TanStack Query</span>
+          <span class="skill-tag">TanStack Table</span>
+        </div>
+      </div>
+      <div class="skills-row fade-in">
+        <span class="skill-cat">STATE MGMT</span>
+        <div class="skill-tags">
+          <span class="skill-tag">Zustand</span>
+          <span class="skill-tag">Redux Toolkit</span>
+          <span class="skill-tag">Context API</span>
+          <span class="skill-tag">React Hook Form</span>
+          <span class="skill-tag">Zod</span>
+        </div>
+      </div>
+      <div class="skills-row fade-in">
+        <span class="skill-cat">STYLING</span>
+        <div class="skill-tags">
+          <span class="skill-tag">Tailwind CSS 4</span>
+          <span class="skill-tag">Radix UI</span>
+          <span class="skill-tag">shadcn/ui</span>
+          <span class="skill-tag">Framer Motion</span>
+          <span class="skill-tag">Chakra UI</span>
+          <span class="skill-tag">Ant Design</span>
+        </div>
+      </div>
+      <div class="skills-row fade-in">
+        <span class="skill-cat">WEB3</span>
+        <div class="skill-tags">
+          <span class="skill-tag">Wagmi / viem</span>
+          <span class="skill-tag">Reown AppKit</span>
+          <span class="skill-tag">TronWeb</span>
+          <span class="skill-tag">ERC-20</span>
+          <span class="skill-tag">Smart Contracts</span>
+          <span class="skill-tag">Three.js</span>
+        </div>
+      </div>
+      <div class="skills-row fade-in">
+        <span class="skill-cat">INTEGRATIONS</span>
+        <div class="skill-tags">
+          <span class="skill-tag">REST APIs</span>
+          <span class="skill-tag">WebSockets</span>
+          <span class="skill-tag">Stripe</span>
+          <span class="skill-tag">Firebase</span>
+          <span class="skill-tag">Google OAuth</span>
+          <span class="skill-tag">Brevo</span>
+          <span class="skill-tag">HubSpot</span>
+        </div>
+      </div>
+      <div class="skills-row fade-in">
+        <span class="skill-cat">TOOLING</span>
+        <div class="skill-tags">
+          <span class="skill-tag">Git / GitHub</span>
+          <span class="skill-tag">Vercel</span>
+          <span class="skill-tag">Vite</span>
+          <span class="skill-tag">Vitest</span>
+          <span class="skill-tag">ESLint / Prettier</span>
+          <span class="skill-tag">i18next</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-glow"></div>
+    <div class="contact-inner">
+      <div class="sec-title fade-in" style="justify-content:center">
+        <span class="sec-num">05</span>
+        <div class="sec-line"></div>
+        <h2>Get In Touch</h2>
+      </div>
+      <p class="contact-p fade-in">Open to full-time roles, freelance projects, or a good conversation about frontend
+        craft.</p>
+      <a href="mailto:muqeetkhan010@gmail.com" class="btn-contact fade-in">SAY HELLO ↗</a>
+      <div class="social-links fade-in">
+        <a href="https://github.com/" target="_blank">GitHub</a>
+        <a href="https://linkedin.com/in/" target="_blank">LinkedIn</a>
+        <a href="tel:+923335248912">+92 333 5248912</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    DESIGNED & BUILT BY MUHAMMAD MUQEET KHAN · <span id="year"></span>
+  </footer>
+
+  <script>
+    document.getElementById( 'year' ).textContent = new Date().getFullYear();
+
+    // Cursor
+    const dot = document.getElementById( 'cursor-dot' );
+    const ring = document.getElementById( 'cursor-ring' );
+    document.addEventListener( 'mousemove', e => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top = e.clientY + 'px';
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    } );
+    document.addEventListener( 'mouseover', e => {
+      if ( e.target.closest( 'a,button,[data-hover]' ) ) {
+        dot.style.transform = 'translate(-50%,-50%) scale(2.5)';
+        ring.style.transform = 'translate(-50%,-50%) scale(1.8)';
       }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    } );
+    document.addEventListener( 'mouseout', () => {
+      dot.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1)';
+    } );
 
-  // Project filter
-  function filterProjects(cat, btn) {
-    document.querySelectorAll('.proj-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.project-card').forEach(card => {
-      const cats = card.dataset.cat || '';
-      const show = cat === 'all' || cats.includes(cat);
-      card.style.display = show ? 'block' : 'none';
-    });
-  }
-</script>
+    // Nav scroll
+    const navbar = document.getElementById( 'navbar' );
+    window.addEventListener( 'scroll', () => {
+      navbar.classList.toggle( 'scrolled', window.scrollY > 40 );
+    } );
+
+    // Scroll to section
+    function scrollTo ( id ) {
+      document.getElementById( id )?.scrollIntoView( { behavior: 'smooth' } );
+      document.querySelectorAll( '.nav-links button' ).forEach( b => b.classList.remove( 'active' ) );
+      event.target.classList.add( 'active' );
+    }
+
+    // Fade in on scroll
+    const observer = new IntersectionObserver( entries => {
+      entries.forEach( ( e, i ) => {
+        if ( e.isIntersecting ) {
+          setTimeout( () => e.target.classList.add( 'visible' ), i * 60 );
+        }
+      } );
+    }, { threshold: 0.1 } );
+    document.querySelectorAll( '.fade-in' ).forEach( el => observer.observe( el ) );
+
+    // Project filter
+    function filterProjects ( cat, btn ) {
+      document.querySelectorAll( '.proj-tab' ).forEach( b => b.classList.remove( 'active' ) );
+      btn.classList.add( 'active' );
+      document.querySelectorAll( '.project-card' ).forEach( card => {
+        const cats = card.dataset.cat || '';
+        const show = cat === 'all' || cats.includes( cat );
+        card.style.display = show ? 'block' : 'none';
+      } );
+    }
+  </script>
+  <script type="module" src="/particles.js"></script>
 </body>
+
 </html>
