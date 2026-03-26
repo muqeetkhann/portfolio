@@ -1,21 +1,5 @@
 import type { Metadata } from 'next'
-import { DM_Sans, DM_Mono } from 'next/font/google'
 import './globals.css'
-import SmoothScroll from '@/components/SmoothScroll'
-import Cursor from '@/components/Cursor'
-import MeshBackground from '@/components/MeshBackground'
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  variable: '--font-dm-sans',
-  weight: ['400', '500', '600', '700', '800', '900'],
-})
-
-const dmMono = DM_Mono({
-  subsets: ['latin'],
-  variable: '--font-dm-mono',
-  weight: ['400', '500'],
-})
 
 export const metadata: Metadata = {
   title: 'Muhammad Muqeet Khan — Frontend Developer',
@@ -30,14 +14,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${dmMono.variable}`}>
-      <body>
-        <MeshBackground />
-        <Cursor />
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+    <html lang="en" style={{ overflow: 'hidden', height: '100%' }}>
+      <body style={{ overflow: 'hidden', height: '100%', margin: 0 }}>
+        {children}
       </body>
     </html>
   )
 }
+
