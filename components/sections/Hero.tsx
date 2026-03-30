@@ -226,7 +226,7 @@ export default function Hero() {
             }}
           >
             <a
-              href="/resume.pdf"
+              href="./m_muqeet_khan_CV.pdf"
               target="_blank"
               rel="noreferrer"
               style={{

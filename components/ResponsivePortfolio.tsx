@@ -102,7 +102,7 @@ export default function ResponsivePortfolio() {
             Let&apos;s talk
           </a>
           <a
-            href="/resume.pdf"
+            href="./m_muqeet_khan_CV.pdf"
             target="_blank"
             rel="noreferrer"
             className="rounded-full border border-neon-purple/50 px-5 py-3 text-[10px] font-bold uppercase tracking-[0.16em] text-neon-purple sm:px-6 sm:text-[11px] sm:tracking-[0.2em]"
