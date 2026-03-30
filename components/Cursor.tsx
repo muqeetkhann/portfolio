@@ -9,6 +9,8 @@ export default function Cursor() {
     const dot  = dotRef.current
     const ring = ringRef.current
     if (!dot || !ring) return
+    const dotEl = dot
+    const ringEl = ring
 
     let mouseX = -100, mouseY = -100
     let ringX  = -100, ringY  = -100
@@ -22,24 +24,24 @@ export default function Cursor() {
     const onOver = (e: MouseEvent) => {
       const t = e.target as HTMLElement
       if (t.closest('a,button,[data-hover]')) {
-        dot.style.transform  = 'translate(-50%,-50%) scale(2.5)'
-        ring.style.transform = 'translate(-50%,-50%) scale(1.8)'
-        ring.style.borderColor = 'rgba(110,231,183,0.6)'
+        dotEl.style.transform  = 'translate(-50%,-50%) scale(2.5)'
+        ringEl.style.transform = 'translate(-50%,-50%) scale(1.8)'
+        ringEl.style.borderColor = 'rgba(110,231,183,0.6)'
       }
     }
     const onOut = () => {
-      dot.style.transform  = 'translate(-50%,-50%) scale(1)'
-      ring.style.transform = 'translate(-50%,-50%) scale(1)'
-      ring.style.borderColor = 'rgba(110,231,183,0.35)'
+      dotEl.style.transform  = 'translate(-50%,-50%) scale(1)'
+      ringEl.style.transform = 'translate(-50%,-50%) scale(1)'
+      ringEl.style.borderColor = 'rgba(110,231,183,0.35)'
     }
 
     function animate() {
       ringX += (mouseX - ringX) * 0.12
       ringY += (mouseY - ringY) * 0.12
-      dot.style.left  = mouseX + 'px'
-      dot.style.top   = mouseY + 'px'
-      ring.style.left = ringX  + 'px'
-      ring.style.top  = ringY  + 'px'
+      dotEl.style.left  = mouseX + 'px'
+      dotEl.style.top   = mouseY + 'px'
+      ringEl.style.left = ringX  + 'px'
+      ringEl.style.top  = ringY  + 'px'
       raf = requestAnimationFrame(animate)
     }
 

@@ -2,9 +2,20 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PERSONAL } from '@/lib/data'
+import { useEffect } from 'react'
 
 export default function Navbar({ onNavigate }: { onNavigate?: (idx: number) => void }) {
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isOpen])
 
   const links = [
     { name: 'Introduction', idx: 0, num: '01' },
@@ -23,11 +34,11 @@ export default function Navbar({ onNavigate }: { onNavigate?: (idx: number) => v
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full z-[100] px-[4%] py-8 flex justify-between items-center mix-blend-difference">
+      <nav className="fixed left-0 top-0 z-[100] flex w-full items-center justify-between px-[5%] pb-4 pt-[max(1.1rem,env(safe-area-inset-top))] 2xl:mix-blend-difference sm:px-[4%] sm:pb-6 sm:pt-8">
         
         {/* Logo */}
         <div className="pointer-events-auto">
-          <span className="text-[14px] font-bold tracking-[0.4em] text-white uppercase select-none">
+          <span className="select-none text-[11px] font-bold uppercase tracking-[0.15em] text-white sm:text-[14px] sm:tracking-[0.28em]">
             {PERSONAL.initials} // PORTFOLIO
           </span>
         </div>
@@ -52,11 +63,11 @@ export default function Navbar({ onNavigate }: { onNavigate?: (idx: number) => v
             animate={{ y: 0 }}
             exit={{ y: '-100%' }}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 bg-white z-[100] flex items-center justify-center overflow-hidden"
+            className="fixed inset-0 z-[100] overflow-y-auto bg-white"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-20 px-[8%] w-full">
+            <div className="grid min-h-screen w-full grid-cols-1 gap-10 px-[8%] pb-10 pt-24 md:grid-cols-2 md:gap-20 md:pb-14 md:pt-28">
               
-              <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-6 self-center sm:gap-8">
                 {links.map((link, i) => (
                   <motion.button
                     key={link.name}
@@ -64,12 +75,12 @@ export default function Navbar({ onNavigate }: { onNavigate?: (idx: number) => v
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 + (i * 0.1) }}
                     onClick={() => handleScroll(link.idx)}
-                    className="flex items-baseline gap-6 group text-left"
+                    className="group flex items-baseline gap-4 text-left sm:gap-6"
                   >
                     <span className="text-[12px] font-bold tracking-widest text-black/20 group-hover:text-neon-cyan transition-colors">
                       {link.num}
                     </span>
-                    <span className="text-[clamp(40px,5vw,80px)] font-heading text-black leading-none group-hover:pl-4 transition-all">
+                    <span className="font-heading text-[clamp(26px,8vw,80px)] leading-[0.95] text-black transition-all group-hover:pl-4">
                       {link.name}
                     </span>
                   </motion.button>

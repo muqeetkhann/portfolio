@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import { PERSONAL } from '@/lib/data'
 
 const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 28 },
-  animate:    { opacity: 1, y: 0  },
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
   transition: { duration: 0.8, delay, ease: [0.25, 0.1, 0.25, 1] },
 })
 
@@ -99,75 +99,162 @@ export default function Hero() {
             >
               Let's Talk
             </a>
-            {/* ── RESUME BUTTON ──
-                Place your resume at /public/resume.pdf
-                This opens it in a new tab.              */}
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                padding: '14px 36px', background: 'transparent', color: '#BC13FE',
-                fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textDecoration: 'none',
-                textTransform: 'uppercase', border: '1px solid #BC13FE',
-                transition: 'background 0.25s, color 0.25s',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#BC13FE'; (e.currentTarget as HTMLElement).style.color = '#fff' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#BC13FE' }}
-            >
-              Resume ↓ PDF
-            </a>
           </motion.div>
         </div>
 
-        {/* Right — Photo placeholder + role label */}
+        {/* Right — atmospheric motion sculpture */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1.2, delay: 0.6 }}
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', position: 'relative', gap: 16 }}
-          className="hidden lg:flex"
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', gap: 16 }}
+          className="hidden lg:flex mt-auto"
         >
-          {/* ── PHOTO PLACEHOLDER ──
-              Replace the src below with your actual image path, e.g. src="/me.jpg"
-              Recommended: square image, at least 600×600px.               */}
           <div style={{
             width: 'clamp(220px, 22vw, 340px)',
             aspectRatio: '3/4',
-            border: '2px dashed rgba(255,255,255,0.15)',
             position: 'relative',
             overflow: 'hidden',
-            background: 'rgba(255,255,255,0.02)',
+            background: 'transparent',
+            WebkitMaskImage: 'radial-gradient(95% 88% at 50% 52%, #000 58%, rgba(0,0,0,0.72) 76%, transparent 100%)',
+            maskImage: 'radial-gradient(95% 88% at 50% 52%, #000 58%, rgba(0,0,0,0.72) 76%, transparent 100%)',
           }}>
-            {/* When you have a photo, replace this div with:
-                <img src="/your-photo.jpg" alt="Muhammad Muqeet" style={{width:'100%',height:'100%',objectFit:'cover'}} />
-            */}
+            <motion.div
+              animate={{ x: [-20, 18, -20], y: [-14, 16, -14] }}
+              transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute',
+                top: '-18%',
+                left: '-8%',
+                width: '78%',
+                height: '72%',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0,245,255,0.42) 0%, rgba(0,245,255,0.18) 34%, transparent 74%)',
+                filter: 'blur(28px)',
+                mixBlendMode: 'screen',
+              }}
+            />
+
+            <motion.div
+              animate={{ x: [16, -14, 16], y: [14, -14, 14] }}
+              transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute',
+                right: '-16%',
+                bottom: '-18%',
+                width: '82%',
+                height: '76%',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(188,19,254,0.34) 0%, rgba(188,19,254,0.12) 38%, transparent 76%)',
+                filter: 'blur(32px)',
+                mixBlendMode: 'screen',
+              }}
+            />
+
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+              style={{
+                position: 'absolute',
+                inset: '18%',
+                borderRadius: '50%',
+                border: '1px dashed rgba(255,255,255,0.26)',
+                boxShadow: '0 0 40px rgba(255,255,255,0.08)',
+              }}
+            />
+
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              style={{
+                position: 'absolute',
+                inset: '30%',
+                borderRadius: '50%',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}
+            />
+
             <div style={{
-              position: 'absolute', inset: 0,
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              gap: 12,
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: 'repeating-linear-gradient(115deg, transparent 0 18px, rgba(255,255,255,0.06) 18px 19px, transparent 19px 39px)',
+              backgroundSize: '220px 220px',
+              opacity: 0.16,
+            }} />
+
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 30%, transparent 62%)',
+              mixBlendMode: 'screen',
+            }} />
+
+            <motion.div
+              animate={{ opacity: [0.3, 0.55, 0.3] }}
+              transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                boxShadow: 'inset 0 0 100px rgba(0,0,0,0.72)',
+              }}
+            />
+
+            <div style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontFamily: 'Syne, sans-serif',
+              fontSize: 'clamp(44px, 5.4vw, 74px)',
+              fontWeight: 800,
+              letterSpacing: '-0.04em',
+              color: 'rgba(255,255,255,0.12)',
+              textTransform: 'uppercase',
+              userSelect: 'none',
             }}>
-              <span style={{ fontSize: 48, opacity: 0.15 }}>👤</span>
-              <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.3em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase', textAlign: 'center', padding: '0 16px', lineHeight: 1.8 }}>
-                Add your photo to<br />/public/me.jpg<br />and update the src here
-              </span>
+              MK
             </div>
           </div>
 
-          {/* Floating role label */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1, duration: 0.6 }}
             style={{
-              background: '#00F5FF', color: '#000',
-              padding: '8px 20px', fontSize: 11, fontWeight: 700,
-              letterSpacing: '0.12em', textTransform: 'uppercase',
-              alignSelf: 'flex-end',
+              marginTop: 'auto',
+              alignSelf: 'center',
             }}
           >
-            {PERSONAL.role}
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: 'inline-block',
+                padding: '10px 22px',
+                background: 'transparent',
+                color: '#fff',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.16em',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+                border: '1px solid rgba(255,255,255,0.45)',
+                transition: 'background 0.25s, color 0.25s, border-color 0.25s',
+              }}
+              onMouseEnter={e => {
+                ;(e.currentTarget as HTMLElement).style.background = '#fff'
+                ;(e.currentTarget as HTMLElement).style.color = '#000'
+                ;(e.currentTarget as HTMLElement).style.borderColor = '#fff'
+              }}
+              onMouseLeave={e => {
+                ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                ;(e.currentTarget as HTMLElement).style.color = '#fff'
+                ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.45)'
+              }}
+            >
+              View Resume
+            </a>
           </motion.div>
         </motion.div>
 
