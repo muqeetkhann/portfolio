@@ -8,48 +8,50 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-dm-sans)', 'sans-serif'],
+        heading: ['var(--font-syne)', 'sans-serif'],
+        sans: ['var(--font-space-grotesk)', 'Inter', 'sans-serif'],
         mono: ['var(--font-dm-mono)', 'monospace'],
       },
       colors: {
-        bg:     '#080B12',
-        bg2:    '#0D1117',
-        border: '#1E293B',
-        green:  '#6EE7B7',
-        blue:   '#93C5FD',
-        pink:   '#FCA5A5',
-        purple: '#C4B5FD',
-        yellow: '#FDE68A',
-        muted:  '#64748B',
-        dim:    '#334155',
+        bg: '#000000',
+        card: '#0D0D0D',
+        border: 'rgba(255, 255, 255, 0.1)',
+        neon: {
+          cyan: '#00F5FF',
+          purple: '#BC13FE',
+          magenta: '#FF00CC',
+          green: '#39FF14',
+          yellow: '#FFCC00',
+        },
+        muted: '#A1A1AA',
+        dim: '#3F3F46',
+      },
+      letterSpacing: {
+        'opus': '0.25em',
+        'tightest': '-0.04em',
       },
       keyframes: {
-        fadeUp: {
-          '0%':   { opacity: '0', transform: 'translateY(24px)' },
+        'fade-in': {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        pulse2: {
-          '0%, 100%': { opacity: '0.3' },
-          '50%':      { opacity: '1' },
+        'scroll-reveal': {
+          '0%': { opacity: '0', transform: 'translateX(-20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
         },
-        gradientShift: {
-          '0%':   { backgroundPosition: '0% 50%' },
-          '50%':  { backgroundPosition: '100% 50%' },
-          '100%': { backgroundPosition: '0% 50%' },
-        },
-        float: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%':      { transform: 'translateY(-20px)' },
+        'glow-pulse': {
+          '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+          '50%': { opacity: '0.6', transform: 'scale(1.05)' },
         },
       },
       animation: {
-        fadeUp:        'fadeUp 0.7s ease both',
-        pulse2:        'pulse2 2s infinite',
-        gradientShift: 'gradientShift 8s ease infinite',
-        float:         'float 6s ease-in-out infinite',
+        'fade-in': 'fade-in 0.8s ease-out forwards',
+        'scroll-reveal': 'scroll-reveal 1s ease-out forwards',
+        'glow-pulse': 'glow-pulse 4s ease-in-out infinite',
       },
     },
   },
   plugins: [],
 }
 export default config
+

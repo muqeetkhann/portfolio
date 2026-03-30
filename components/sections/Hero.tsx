@@ -2,126 +2,274 @@
 import { motion } from 'framer-motion'
 import { PERSONAL } from '@/lib/data'
 
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.8, delay, ease: [0.25, 0.1, 0.25, 1] },
+})
+
 export default function Hero() {
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id)
-    const lenis = (window as any).__lenis
-    if (lenis && el) lenis.scrollTo(el, { offset: -80, duration: 1.4 })
-    else el?.scrollIntoView({ behavior: 'smooth' })
-  }
-
   return (
-    <section id="about" className="relative min-h-screen flex items-center px-[8%] pt-20 overflow-hidden">
+    <div className="section-inner">
 
-      {/* Hero content */}
-      <div className="max-w-[700px] z-10">
+      {/* Background neon orbs */}
+      <div className="animate-glow" style={{
+        position: 'absolute', top: '-10%', right: '-5%',
+        width: 'clamp(300px,40vw,600px)', height: 'clamp(300px,40vw,600px)',
+        background: 'radial-gradient(circle, rgba(0,245,255,0.12) 0%, transparent 70%)',
+        borderRadius: '50%', pointerEvents: 'none',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '-5%', left: '20%',
+        width: 'clamp(200px,30vw,400px)', height: 'clamp(200px,30vw,400px)',
+        background: 'radial-gradient(circle, rgba(188,19,254,0.08) 0%, transparent 70%)',
+        borderRadius: '50%', pointerEvents: 'none',
+      }} />
 
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="flex items-center gap-3 mb-8"
-        >
-          <div className="w-7 h-[2px] bg-green rounded" />
-          <span className="text-[12px] text-green font-semibold tracking-[0.18em]">AVAILABLE FOR WORK</span>
-          <span className="w-2 h-2 rounded-full bg-green animate-pulse" />
-        </motion.div>
-
-        {/* Name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 32 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-          className="font-black leading-[0.95] mb-5 tracking-[-0.03em]"
-          style={{ fontSize: 'clamp(50px,7vw,90px)' }}
-        >
-          Muhammad<br />
-          <span style={{
-            WebkitTextStroke: '1.5px rgba(226,232,240,0.2)',
-            color: 'transparent',
-          }}>
-            Muqeet
-          </span>
-        </motion.h1>
-
-        {/* Role */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.35 }}
-          className="font-bold text-green tracking-[0.04em] mb-5"
-          style={{ fontSize: 'clamp(16px,2vw,22px)' }}
-        >
-          {PERSONAL.role}
-        </motion.div>
-
-        {/* Bio */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.45 }}
-          className="text-[15px] text-muted leading-[1.8] max-w-[500px] mb-10"
-        >
-          {PERSONAL.bio}
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.55 }}
-          className="flex gap-4 flex-wrap"
-        >
-          <button
-            onClick={() => scrollTo('projects')}
-            data-hover
-            className="bg-green text-bg px-7 py-3 rounded-lg font-bold text-[13px] tracking-widest
-              shadow-[0_0_24px_rgba(110,231,183,0.2)] hover:shadow-[0_8px_32px_rgba(110,231,183,0.35)]
-              hover:-translate-y-[2px] transition-all duration-200"
-          >
-            View Projects ↓
-          </button>
-          <button
-            onClick={() => scrollTo('contact')}
-            data-hover
-            className="border border-border text-[#94A3B8] px-7 py-3 rounded-lg font-semibold text-[13px] tracking-widest
-              hover:border-green hover:text-green transition-all duration-200"
-          >
-            Contact Me
-          </button>
-        </motion.div>
+      {/* Vertical section label */}
+      <div className="side-label" style={{ color: 'rgba(255,255,255,0.18)' }}>
+        01 // Introduction
       </div>
 
-      {/* Floating code block */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.08 }}
-        transition={{ duration: 1, delay: 1 }}
-        className="absolute right-[4%] top-1/2 -translate-y-1/2 font-mono text-[12px] leading-[2.2]
-          text-green pointer-events-none select-none hidden lg:block"
-      >
-        {[
-          'const dev = {',
-          '  name: "M. Muqeet",',
-          '  role: "Frontend Dev",',
-          '  stack: ["React","Next.js"],',
-          '  web3: true,',
-          '  available: true',
-          '};',
-        ].map((l, i) => <div key={i}>{l}</div>)}
-      </motion.div>
+      {/* Two-column layout */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr auto',
+        gap: 'clamp(32px, 6vw, 100px)',
+        width: '100%',
+        alignItems: 'center',
+        paddingLeft: 'clamp(32px, 4vw, 64px)',
+      }}>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-9 left-[8%] flex items-center gap-3 text-dim text-[11px] tracking-[0.12em]"
-      >
-        <div className="w-px h-10 bg-gradient-to-b from-transparent to-dim animate-pulse2" />
-        SCROLL
-      </motion.div>
-    </section>
+        {/* Left column */}
+        <div style={{ display: 'flex', flexDirection: 'column', maxWidth: 700 }}>
+
+          {/* Badge */}
+          <motion.div {...fadeUp(0)} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 'clamp(24px,4vh,48px)' }}>
+            <span style={{ width: 32, height: 1, background: '#00F5FF', display: 'block' }} />
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.22em', color: '#00F5FF' }}>
+              AVAILABLE FOR NEW PROJECTS
+            </span>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#00F5FF', animation: 'glow-pulse 2s infinite' }} />
+          </motion.div>
+
+          {/* Name */}
+          <motion.h1 {...fadeUp(0.15)} className="hero-title" style={{ lineHeight: 0.92, marginBottom: 'clamp(16px,2vh,28px)', letterSpacing: '-0.03em', fontFamily: 'Syne, sans-serif', textTransform: 'uppercase' }}>
+            {PERSONAL.name.split(' ').slice(0, 2).join(' ')}<br />
+            <span style={{
+              WebkitTextStroke: '1.5px rgba(255,255,255,0.15)',
+              color: 'transparent',
+            }}>
+              {PERSONAL.name.split(' ')[2] ?? ''}
+            </span>
+          </motion.h1>
+
+          {/* Role */}
+          <motion.p {...fadeUp(0.25)} style={{ fontSize: 'clamp(13px,1.4vw,18px)', fontWeight: 600, letterSpacing: '0.08em', color: '#00F5FF', marginBottom: 'clamp(12px,2vh,20px)' }}>
+            {PERSONAL.role}
+          </motion.p>
+
+          {/* Bio */}
+          <motion.p {...fadeUp(0.35)} style={{ fontSize: 'clamp(13px,1.2vw,16px)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, maxWidth: 490, marginBottom: 'clamp(24px,4vh,44px)' }}>
+            {PERSONAL.bio}
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div {...fadeUp(0.45)} style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+            <a href={PERSONAL.github} target="_blank" rel="noreferrer"
+              style={{
+                padding: '14px 36px', background: '#fff', color: '#000',
+                fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textDecoration: 'none',
+                textTransform: 'uppercase', transition: 'background 0.25s, color 0.25s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = '#00F5FF' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '#fff' }}
+            >
+              GitHub ↗
+            </a>
+            <a href={`mailto:${PERSONAL.email}`}
+              style={{
+                padding: '14px 36px', background: 'transparent', color: '#fff',
+                fontSize: 11, fontWeight: 700, letterSpacing: '0.2em', textDecoration: 'none',
+                textTransform: 'uppercase', border: '1px solid rgba(255,255,255,0.2)',
+                transition: 'border-color 0.25s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#00F5FF' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.2)' }}
+            >
+              Let's Talk
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Right — atmospheric motion sculpture */}
+        <motion.div
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1.2, delay: 0.6 }}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', gap: 16 }}
+          className="hidden lg:flex mt-auto"
+        >
+          <div style={{
+            width: 'clamp(220px, 22vw, 340px)',
+            aspectRatio: '3/4',
+            position: 'relative',
+            overflow: 'hidden',
+            background: 'transparent',
+            WebkitMaskImage: 'radial-gradient(95% 88% at 50% 52%, #000 58%, rgba(0,0,0,0.72) 76%, transparent 100%)',
+            maskImage: 'radial-gradient(95% 88% at 50% 52%, #000 58%, rgba(0,0,0,0.72) 76%, transparent 100%)',
+          }}>
+            <motion.div
+              animate={{ x: [-20, 18, -20], y: [-14, 16, -14] }}
+              transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute',
+                top: '-18%',
+                left: '-8%',
+                width: '78%',
+                height: '72%',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(0,245,255,0.42) 0%, rgba(0,245,255,0.18) 34%, transparent 74%)',
+                filter: 'blur(28px)',
+                mixBlendMode: 'screen',
+              }}
+            />
+
+            <motion.div
+              animate={{ x: [16, -14, 16], y: [14, -14, 14] }}
+              transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute',
+                right: '-16%',
+                bottom: '-18%',
+                width: '82%',
+                height: '76%',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(188,19,254,0.34) 0%, rgba(188,19,254,0.12) 38%, transparent 76%)',
+                filter: 'blur(32px)',
+                mixBlendMode: 'screen',
+              }}
+            />
+
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+              style={{
+                position: 'absolute',
+                inset: '18%',
+                borderRadius: '50%',
+                border: '1px dashed rgba(255,255,255,0.26)',
+                boxShadow: '0 0 40px rgba(255,255,255,0.08)',
+              }}
+            />
+
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              style={{
+                position: 'absolute',
+                inset: '30%',
+                borderRadius: '50%',
+                border: '1px solid rgba(255,255,255,0.2)',
+              }}
+            />
+
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: 'repeating-linear-gradient(115deg, transparent 0 18px, rgba(255,255,255,0.06) 18px 19px, transparent 19px 39px)',
+              backgroundSize: '220px 220px',
+              opacity: 0.16,
+            }} />
+
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 30%, transparent 62%)',
+              mixBlendMode: 'screen',
+            }} />
+
+            <motion.div
+              animate={{ opacity: [0.3, 0.55, 0.3] }}
+              transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                boxShadow: 'inset 0 0 100px rgba(0,0,0,0.72)',
+              }}
+            />
+
+            <div style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+              fontFamily: 'Syne, sans-serif',
+              fontSize: 'clamp(44px, 5.4vw, 74px)',
+              fontWeight: 800,
+              letterSpacing: '-0.04em',
+              color: 'rgba(255,255,255,0.12)',
+              textTransform: 'uppercase',
+              userSelect: 'none',
+            }}>
+              MK
+            </div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
+            style={{
+              marginTop: 'auto',
+              alignSelf: 'center',
+            }}
+          >
+            <a
+              href="./m_muqeet_khan_CV.pdf"
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: 'inline-block',
+                padding: '10px 22px',
+                background: 'transparent',
+                color: '#fff',
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.16em',
+                textDecoration: 'none',
+                textTransform: 'uppercase',
+                border: '1px solid rgba(255,255,255,0.45)',
+                transition: 'background 0.25s, color 0.25s, border-color 0.25s',
+              }}
+              onMouseEnter={e => {
+                ;(e.currentTarget as HTMLElement).style.background = '#fff'
+                ;(e.currentTarget as HTMLElement).style.color = '#000'
+                ;(e.currentTarget as HTMLElement).style.borderColor = '#fff'
+              }}
+              onMouseLeave={e => {
+                ;(e.currentTarget as HTMLElement).style.background = 'transparent'
+                ;(e.currentTarget as HTMLElement).style.color = '#fff'
+                ;(e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.45)'
+              }}
+            >
+              View Resume
+            </a>
+          </motion.div>
+        </motion.div>
+
+      </div>
+
+      {/* Scroll hint */}
+      <div style={{
+        position: 'absolute', right: '4%', bottom: 40,
+        display: 'flex', alignItems: 'center', gap: 12,
+        fontSize: 9, fontWeight: 700, letterSpacing: '0.45em',
+        color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase',
+      }}>
+        Scroll →
+        <div style={{ width: 32, height: 1, background: 'rgba(255,255,255,0.15)' }} />
+      </div>
+    </div>
   )
 }
