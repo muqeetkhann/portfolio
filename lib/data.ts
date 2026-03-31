@@ -1,19 +1,19 @@
 export const PERSONAL = {
   name: 'Muhammad Muqeet Khan',
   initials: 'MK',
-  role: 'Mid-Level Frontend Developer',
+  role: 'Frontend Engineer',
   location: 'Islamabad, Pakistan',
   email: 'muqeetkhan010@gmail.com',
   phone: '+92 333 5248912',
   github: 'https://github.com/muqeetkhann',
   linkedin: 'https://linkedin.com/in/muqeet-khan',
   portfolio: '#',
-  bio: 'I build fast, scalable, and visually compelling web experiences. 2+ years delivering production frontends — from real-time crypto dashboards and SaaS platforms to e-commerce marketplaces and Web3 DeFi apps.',
+  bio: 'I build fast, scalable, and visually compelling web experiences. 2 years delivering production frontends — from real-time crypto dashboards and SaaS platforms to e-commerce marketplaces and Web3 DeFi apps.',
 }
 
 export const EXPERIENCE = [
   {
-    role: 'Mid-Level Frontend Developer',
+    role: 'Frontend Engineer',
     company: 'Fexen Smart Solutions',
     period: '09/2024 – Present',
     location: 'Islamabad, Pakistan',

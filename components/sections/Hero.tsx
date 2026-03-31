@@ -102,118 +102,115 @@ export default function Hero() {
           </motion.div>
         </div>
 
-        {/* Right — atmospheric motion sculpture */}
+        {/* Right — blended ambient animation */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1.2, delay: 0.6 }}
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', gap: 16 }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            position: 'relative',
+            gap: 16,
+            width: 'clamp(240px, 24vw, 380px)',
+            height: 'clamp(360px, 56vh, 560px)',
+          }}
           className="hidden lg:flex mt-auto"
         >
-          <div style={{
-            width: 'clamp(220px, 22vw, 340px)',
-            aspectRatio: '3/4',
-            position: 'relative',
-            overflow: 'hidden',
-            background: 'transparent',
-            WebkitMaskImage: 'radial-gradient(95% 88% at 50% 52%, #000 58%, rgba(0,0,0,0.72) 76%, transparent 100%)',
-            maskImage: 'radial-gradient(95% 88% at 50% 52%, #000 58%, rgba(0,0,0,0.72) 76%, transparent 100%)',
-          }}>
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              pointerEvents: 'none',
+              overflow: 'hidden',
+              borderRadius: '50% 50% 44% 56% / 44% 58% 42% 56%',
+            }}
+          >
             <motion.div
-              animate={{ x: [-20, 18, -20], y: [-14, 16, -14] }}
-              transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ x: [-24, 20, -24], y: [-16, 14, -16], scale: [0.94, 1.04, 0.94] }}
+              transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
               style={{
                 position: 'absolute',
-                top: '-18%',
-                left: '-8%',
+                top: '8%',
+                left: '-16%',
                 width: '78%',
-                height: '72%',
+                height: '56%',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(0,245,255,0.42) 0%, rgba(0,245,255,0.18) 34%, transparent 74%)',
-                filter: 'blur(28px)',
+                background: 'radial-gradient(circle, rgba(0,245,255,0.36) 0%, rgba(0,245,255,0.12) 42%, transparent 78%)',
+                filter: 'blur(34px)',
                 mixBlendMode: 'screen',
               }}
             />
 
             <motion.div
-              animate={{ x: [16, -14, 16], y: [14, -14, 14] }}
-              transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ x: [18, -18, 18], y: [12, -14, 12], scale: [1, 0.9, 1] }}
+              transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
               style={{
                 position: 'absolute',
-                right: '-16%',
-                bottom: '-18%',
-                width: '82%',
-                height: '76%',
+                right: '-18%',
+                bottom: '8%',
+                width: '76%',
+                height: '56%',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(188,19,254,0.34) 0%, rgba(188,19,254,0.12) 38%, transparent 76%)',
-                filter: 'blur(32px)',
+                background: 'radial-gradient(circle, rgba(188,19,254,0.28) 0%, rgba(188,19,254,0.1) 42%, transparent 80%)',
+                filter: 'blur(36px)',
                 mixBlendMode: 'screen',
               }}
             />
 
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
               style={{
                 position: 'absolute',
-                inset: '18%',
+                inset: '22%',
                 borderRadius: '50%',
-                border: '1px dashed rgba(255,255,255,0.26)',
-                boxShadow: '0 0 40px rgba(255,255,255,0.08)',
+                background: 'conic-gradient(from 0deg, rgba(255,255,255,0), rgba(255,255,255,0.18), rgba(255,255,255,0), rgba(0,245,255,0.24), rgba(255,255,255,0))',
+                filter: 'blur(6px)',
+                opacity: 0.68,
               }}
             />
 
             <motion.div
               animate={{ rotate: -360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
               style={{
                 position: 'absolute',
-                inset: '30%',
+                inset: '32%',
                 borderRadius: '50%',
-                border: '1px solid rgba(255,255,255,0.2)',
+                background: 'conic-gradient(from 90deg, rgba(255,255,255,0), rgba(188,19,254,0.24), rgba(255,255,255,0), rgba(255,255,255,0.14), rgba(255,255,255,0))',
+                filter: 'blur(5px)',
+                opacity: 0.66,
               }}
             />
-
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: 'repeating-linear-gradient(115deg, transparent 0 18px, rgba(255,255,255,0.06) 18px 19px, transparent 19px 39px)',
-              backgroundSize: '220px 220px',
-              opacity: 0.16,
-            }} />
-
-            <div style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.04) 30%, transparent 62%)',
-              mixBlendMode: 'screen',
-            }} />
 
             <motion.div
-              animate={{ opacity: [0.3, 0.55, 0.3] }}
-              transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ opacity: [0.08, 0.2, 0.08] }}
+              transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
               style={{
                 position: 'absolute',
-                inset: 0,
-                boxShadow: 'inset 0 0 100px rgba(0,0,0,0.72)',
+                inset: '42%',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 72%)',
+                filter: 'blur(3px)',
               }}
+            />
+
+            <div
+              style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(ellipse at 58% 64%, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.04) 24%, transparent 62%)',
+              mixBlendMode: 'screen',
+            }}
             />
 
             <div style={{
               position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontFamily: 'Syne, sans-serif',
-              fontSize: 'clamp(44px, 5.4vw, 74px)',
-              fontWeight: 800,
-              letterSpacing: '-0.04em',
-              color: 'rgba(255,255,255,0.12)',
-              textTransform: 'uppercase',
-              userSelect: 'none',
-            }}>
-              MK
-            </div>
+              inset: 0,
+              background: 'radial-gradient(ellipse at center, transparent 32%, rgba(0,0,0,0.72) 100%)',
+            }} />
           </div>
 
           <motion.div
