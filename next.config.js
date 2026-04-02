@@ -1,15 +1,18 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === 'production'
+const isStaticExport = process.env.STATIC_EXPORT === 'true'
 
 const nextConfig = {
   reactStrictMode: true,
-  output: 'export',
-  trailingSlash: true,
   images: {
-    unoptimized: true,
+    unoptimized: isStaticExport,
   },
-  basePath: isProd ? '/portfolio' : '',
-  assetPrefix: isProd ? '/portfolio/' : '',
+}
+
+if (isStaticExport) {
+  nextConfig.output = 'export'
+  nextConfig.trailingSlash = true
+  nextConfig.basePath = '/portfolio'
+  nextConfig.assetPrefix = '/portfolio/'
 }
 
 module.exports = nextConfig

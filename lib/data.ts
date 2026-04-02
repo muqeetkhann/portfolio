@@ -13,9 +13,9 @@ export const PERSONAL = {
 
 export const EXPERIENCE = [
   {
-    role: 'Frontend Engineer',
+    role: 'Frontend Developer',
     company: 'Fexen Smart Solutions',
-    period: '09/2024 – Present',
+    period: 'Sep 2024 – Present',
     location: 'Islamabad, Pakistan',
     accent: '#6EE7B7',
     bullets: [
@@ -29,7 +29,7 @@ export const EXPERIENCE = [
   {
     role: 'Frontend Developer Intern',
     company: 'Stack One Technologies',
-    period: 'Sep 2024 – 2025',
+    period: 'June 2024 – August 2024',
     location: 'Islamabad, Pakistan',
     accent: '#93C5FD',
     bullets: [
@@ -77,7 +77,7 @@ export const PROJECTS = [
   },
   {
     id: 3,
-    title: 'Dropi Clone',
+    title: 'Kompra Seller portal',
     type: 'B2B SaaS / Logistics',
     url: 'https://dropi-clone.pages.dev',
     urlLabel: 'dropi-clone.pages.dev',
@@ -268,3 +268,9 @@ export const FILTERS = [
   { label: 'E-Commerce', value: 'ecom' },
   { label: 'Marketing Sites', value: 'site' },
 ]
+
+export const projectGroups = {
+  web3: PROJECTS.filter(project => project.cat.includes('web3')).slice(0, 4),
+  saas: PROJECTS.filter(project => project.cat.includes('saas') || project.cat.includes('ecom')).slice(0, 4),
+  sites: PROJECTS.filter(project => project.cat.includes('site') && !project.cat.includes('web3')).slice(0, 4),
+}

@@ -1,6 +1,6 @@
 # Muhammad Muqeet Khan — Portfolio
 
-Dark & modern Next.js portfolio with Lenis smooth scroll and Framer Motion animations.
+Dark & modern Next.js dual-layout portfolio (Desktop + Mobile responsive).
 
 ## 🚀 Quick Start
 
@@ -51,19 +51,19 @@ mkportfolio/
 │   ├── page.tsx          # Assembles all sections
 │   └── globals.css       # Global styles
 ├── components/
-│   ├── sections/
-│   │   ├── Hero.tsx
-│   │   ├── Experience.tsx
-│   │   ├── Projects.tsx
-│   │   ├── Skills.tsx
-│   │   └── Contact.tsx
-│   ├── Cursor.tsx        # Custom cursor with lag effect
-│   ├── FadeIn.tsx        # Scroll-triggered framer-motion fade
-│   ├── Footer.tsx
-│   ├── MeshBackground.tsx # Animated gradient mesh
-│   ├── Navbar.tsx
-│   ├── SectionTitle.tsx
-│   └── SmoothScroll.tsx  # Lenis smooth scroll
+│   ├── desktop/
+│   │   └── DesktopPortfolio.tsx  # Desktop specific view logic
+│   ├── layout/
+│   │   └── SiteHeader.tsx        # Mobile friendly header navigation
+│   ├── portfolio/
+│   │   ├── DeveloperSnapshot.tsx # Code snippet UI snippet component
+│   │   └── PortfolioPage.tsx     # Mobile mapping view logic
+│   ├── root/
+│   │   └── PortfolioRouter.tsx   # Top level router responding to matchMedia
+│   └── shared/
+│       ├── ProjectCard.tsx       # Reusable project card
+│       ├── SectionHeader.tsx     # Reusable section header
+│       └── WhatsAppButton.tsx    # Global sticky whatsapp CTA
 ├── lib/
 │   └── data.ts           # ⭐ ALL CONTENT HERE
 ├── package.json
@@ -87,8 +87,7 @@ mkportfolio/
 **`Module not found: @studio-freight/lenis`**
 → Run `npm install` again
 
-**Cursor not showing**
-→ Normal on touch devices. Works on desktop only.
+
 
 **Fonts not loading**
 → Needs internet connection for Google Fonts on first run.
