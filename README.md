@@ -1,93 +1,76 @@
 # Muhammad Muqeet Khan — Portfolio
 
-Dark & modern Next.js dual-layout portfolio (Desktop + Mobile responsive).
+Futuristic dark-neon portfolio. **Next.js 15 · React 19 · TypeScript · Tailwind**,
+with GSAP + Lenis scroll choreography and a React Three Fiber 3D layer.
+Desktop scrolls horizontally; mobile scrolls vertically. Statically exported to
+GitHub Pages.
 
-## 🚀 Quick Start
+## Quick start
 
 ```bash
+nvm use          # Node 22 (see .nvmrc) — 18.18+ works but 20+ recommended
 npm install
-npm run dev
+npm run dev      # → http://localhost:3000
 ```
 
-Open **http://localhost:3000**
+## Commands
 
-> Requires Node.js 18+. Check with `node -v`.
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Local dev server |
+| `npm run build` | Production build (sanity check) |
+| `npm run build:static` | GitHub Pages build → `out/` (basePath `/portfolio`) |
+| `npm run placeholders` | Generate missing placeholder project covers |
 
----
+## ✏️ Updating your info
 
-## ✏️ Update Your Content
+**Everything lives in [`lib/data.ts`](lib/data.ts)** — personal details, experience,
+projects, skills. Full guide: **[docs/CONTENT.md](docs/CONTENT.md)**.
 
-Everything is in **`lib/data.ts`** — one file for all your info:
-- Personal details, email, GitHub, LinkedIn
-- Work experience
-- Projects (add/remove/edit)
-- Skills
+Working in Claude Code? Type `/add-project` to add a project interactively.
 
-### Add a project
-```ts
-{
-  id:       12,
-  title:    'My Project',
-  type:     'SaaS Platform',
-  url:      'https://myproject.com',
-  urlLabel: 'myproject.com',
-  cat:      'saas',           // saas | web3 | ecom | site
-  accent:   '#6EE7B7',
-  num:      '12',
-  desc:     'Short description here.',
-  highlights: ['Point 1', 'Point 2', 'Point 3'],
-  tags:     ['React', 'Next.js'],
-}
-```
+Project images/videos go in `public/projects/<slug>/` — specs and tips are in the
+content guide. Branded SVG placeholders are already in place until you add real media.
 
----
+## Stack
 
-## 📁 Structure
+| Layer | Tech |
+|---|---|
+| Framework | Next.js 15 (App Router, static export), React 19, TypeScript |
+| Styling | Tailwind CSS, Syne + Space Grotesk (next/font) |
+| Scroll & motion | GSAP 3 + ScrollTrigger (`@gsap/react`), Lenis, Motion (`motion/react`) |
+| 3D | Three.js, React Three Fiber v9, drei, postprocessing |
+
+## Structure
 
 ```
-mkportfolio/
-├── app/
-│   ├── layout.tsx        # Root layout, fonts, metadata
-│   ├── page.tsx          # Assembles all sections
-│   └── globals.css       # Global styles
+├── app/                     # layout (fonts/meta), page, globals.css
 ├── components/
-│   ├── desktop/
-│   │   └── DesktopPortfolio.tsx  # Desktop specific view logic
-│   ├── layout/
-│   │   └── SiteHeader.tsx        # Mobile friendly header navigation
-│   ├── portfolio/
-│   │   ├── DeveloperSnapshot.tsx # Code snippet UI snippet component
-│   │   └── PortfolioPage.tsx     # Mobile mapping view logic
-│   ├── root/
-│   │   └── PortfolioRouter.tsx   # Top level router responding to matchMedia
-│   └── shared/
-│       ├── ProjectCard.tsx       # Reusable project card
-│       ├── SectionHeader.tsx     # Reusable section header
-│       └── WhatsAppButton.tsx    # Global sticky whatsapp CTA
-├── lib/
-│   └── data.ts           # ⭐ ALL CONTENT HERE
-├── package.json
-├── tailwind.config.ts
-├── next.config.js
-└── tsconfig.json
+│   ├── root/PortfolioRouter.tsx   # desktop/mobile switch (matchMedia ≥1280px)
+│   ├── desktop/                   # horizontal-scroll desktop experience
+│   ├── portfolio/                 # vertical mobile experience
+│   ├── layout/                    # header/nav
+│   └── shared/                    # ProjectCard, SectionHeader, …
+├── lib/data.ts              # ⭐ ALL CONTENT
+├── public/projects/<slug>/  # per-project media
+├── scripts/                 # placeholder generator
+├── docs/CONTENT.md          # how to update content & media
+└── .claude/                 # AI-assistant docs & skills (architecture, design
+                             # system, library rules, redesign plan, /add-project)
 ```
 
----
+## Deploy
 
-## 🌐 Deploy Free on Vercel
+Push to `main` → GitHub Actions builds the static export and publishes to GitHub
+Pages (`.github/workflows/deploy-pages.yml`). No manual steps.
 
-1. Push folder to GitHub
-2. Go to vercel.com → New Project → Import repo
-3. Deploy — live in 60 seconds
+> ⚠️ Static export means no server features (API routes, server actions). Asset
+> paths must be relative — see `.claude/docs/ARCHITECTURE.md` for the details.
 
----
+## Troubleshooting
 
-## 🐛 Common Issues
-
-**`Module not found: @studio-freight/lenis`**
-→ Run `npm install` again
-
-
-
-**Fonts not loading**
-→ Needs internet connection for Google Fonts on first run.
+- **Blank page on GitHub Pages, works locally** → an asset was referenced with a
+  leading `/`. Use relative paths (`./file.pdf`, `projects/...`).
+- **Fonts not loading on first run** → Google Fonts needs network access once.
+- **Type errors after `npm install`** → ensure `@types/react` is v19
+  (`npm ls @types/react`).

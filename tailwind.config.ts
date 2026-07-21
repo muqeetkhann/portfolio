@@ -8,8 +8,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['var(--font-syne)', 'sans-serif'],
-        sans: ['var(--font-space-grotesk)', 'Inter', 'sans-serif'],
+        heading: ['var(--font-clash)', 'Syne', 'sans-serif'],
+        sans: ['var(--font-satoshi)', 'Inter', 'sans-serif'],
       },
       colors: {
         bg: '#000000',
