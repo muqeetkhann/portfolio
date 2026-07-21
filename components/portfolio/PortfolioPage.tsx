@@ -1,31 +1,65 @@
-import type { ReactNode } from 'react'
+'use client'
+
+import { useState } from 'react'
 import SiteHeader from '@/components/layout/SiteHeader'
-import DeveloperSnapshot from '@/components/portfolio/DeveloperSnapshot'
+import ProjectSpotlight from '@/components/portfolio/ProjectSpotlight'
 import WhatsAppButton from '@/components/shared/WhatsAppButton'
-import { EXPERIENCE, PERSONAL, PROJECTS, SKILLS, projectGroups } from '@/lib/data'
+import SmoothScroll from '@/components/providers/SmoothScroll'
+import { EXPERIENCE, HERO_DOMAINS, PERSONAL, PROJECTS, SKILLS, type Project } from '@/lib/data'
 import { SectionHeader } from '@/components/shared/SectionHeader'
+import { Reveal } from '@/components/shared/Reveal'
+import dynamic from 'next/dynamic'
 import { ProjectCard } from '@/components/shared/ProjectCard'
 
-
+// Motion (framer) lives only in this lazy chunk — keeps the main bundle lean.
+const ProjectDetail = dynamic(
+  () => import('@/components/shared/ProjectDetail').then(m => m.ProjectDetail),
+  { ssr: false },
+)
 
 export default function PortfolioPage() {
   const nameParts = PERSONAL.name.split(' ')
   const lastName = nameParts.pop() ?? ''
   const firstNames = nameParts.join(' ')
+  const [selected, setSelected] = useState<Project | null>(null)
 
   return (
+    <SmoothScroll>
     <main className="relative min-h-screen overflow-x-hidden bg-black text-white">
       <SiteHeader />
       <WhatsAppButton />
+      <ProjectDetail project={selected} projects={PROJECTS} onChange={setSelected} onClose={() => setSelected(null)} />
 
-      <section id="intro" className="section-shell grid min-h-screen items-center gap-14 pb-16 pt-[max(7rem,calc(5rem+env(safe-area-inset-top)))] lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12">
+      <section id="intro" className="section-shell grid min-h-screen items-start gap-10 pb-16 pt-[max(6rem,calc(4.5rem+env(safe-area-inset-top)))] sm:gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
         <div className="relative max-w-3xl">
           <div className="absolute -left-6 top-10 hidden h-24 w-24 rounded-full bg-neon-cyan/10 blur-3xl sm:block" />
-          <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.24em] text-neon-cyan">Available for new projects</p>
-          <h1 className="font-heading text-[clamp(2.2rem,9vw,6rem)] uppercase leading-[0.88] tracking-[-0.05em]">
+
+          {/* meta row: status + location */}
+          <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-bold uppercase tracking-[0.24em]">
+            <span className="inline-flex items-center gap-2 text-neon-cyan">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon-cyan/70" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-neon-cyan" />
+              </span>
+              Available for new projects
+            </span>
+            <span className="text-white/35">{PERSONAL.location}</span>
+          </div>
+
+          <h1 className="font-heading text-[clamp(2.2rem,9vw,6rem)] uppercase leading-[0.86] tracking-[-0.05em]">
             {firstNames} <span className="masked-text-dark">{lastName}</span>
           </h1>
-          <p className="mt-5 max-w-2xl text-[15px] font-semibold uppercase tracking-[0.08em] text-neon-cyan/85 sm:text-lg">{PERSONAL.role}</p>
+          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <p className="text-[15px] font-semibold uppercase tracking-[0.1em] text-neon-cyan/90 sm:text-lg">{PERSONAL.role}</p>
+            <span className="hidden h-4 w-px bg-white/15 sm:inline-block" />
+            <ul className="flex flex-wrap gap-2">
+              {HERO_DOMAINS.map(domain => (
+                <li key={domain} className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
+                  {domain}
+                </li>
+              ))}
+            </ul>
+          </div>
           <p className="mt-6 max-w-2xl text-sm leading-7 text-white/70 sm:text-base">{PERSONAL.bio}</p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -41,12 +75,14 @@ export default function PortfolioPage() {
           </div>
         </div>
 
-        <DeveloperSnapshot />
+        <ProjectSpotlight onOpen={setSelected} className="mx-auto w-full max-w-[30rem] lg:mx-0" />
       </section>
 
       <section id="experience" className="bg-white py-16 text-black sm:py-20">
         <div className="section-shell">
-          <SectionHeader kicker="Journey" title={<>Professional</>} accent={<span className="masked-text-light">Milestones</span>} />
+          <Reveal>
+            <SectionHeader kicker="Journey" title={<>Professional</>} accent={<span className="masked-text-light">Milestones</span>} />
+          </Reveal>
 
           <div className="grid gap-5 lg:grid-cols-2">
             {EXPERIENCE.map((item, index) => (
@@ -71,42 +107,24 @@ export default function PortfolioPage() {
 
       <section id="projects" className="py-16 sm:py-20">
         <div className="section-shell">
-          <SectionHeader kicker="Selected Work" title={<>Projects</>} />
-
-          <div className="space-y-14">
-            <div>
-              <p className="mb-5 font-heading text-[clamp(1.1rem,3.4vw,1.75rem)] uppercase tracking-[0.08em] text-neon-purple">Web3 and DeFi</p>
-              <div className="grid gap-4 md:grid-cols-2">
-                {projectGroups.web3.map(project => (
-                  <ProjectCard key={project.id} title={project.title} type={project.type} desc={project.desc} tags={project.tags} url={project.url} />
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-5 font-heading text-[clamp(1.1rem,3.4vw,1.75rem)] uppercase tracking-[0.08em] text-neon-cyan">SaaS and Platforms</p>
-              <div className="grid gap-4 md:grid-cols-2">
-                {projectGroups.saas.map(project => (
-                  <ProjectCard key={project.id} title={project.title} type={project.type} desc={project.desc} tags={project.tags} url={project.url} />
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="mb-5 font-heading text-[clamp(1.1rem,3.4vw,1.75rem)] uppercase tracking-[0.08em] text-white/75">Digital Experiences</p>
-              <div className="grid gap-4 md:grid-cols-2">
-                {projectGroups.sites.map(project => (
-                  <ProjectCard key={project.id} title={project.title} type={project.type} desc={project.desc} tags={project.tags} url={project.url} />
-                ))}
-              </div>
-            </div>
+          <Reveal>
+            <SectionHeader kicker="Selected Work" title={<>Projects</>} />
+          </Reveal>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {PROJECTS.map((project, index) => (
+              <Reveal key={project.id} delay={(index % 2) * 0.08}>
+                <ProjectCard project={project} onOpen={setSelected} />
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
       <section id="stack" className="bg-[#080808] py-16 sm:py-20">
         <div className="section-shell">
-          <SectionHeader kicker="Technology" title={<>Technical</>} accent={<span className="masked-text-dark">Arsenal</span>} />
+          <Reveal>
+            <SectionHeader kicker="Technology" title={<>Technical</>} accent={<span className="masked-text-dark">Arsenal</span>} />
+          </Reveal>
 
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {SKILLS.map(skill => (
@@ -125,7 +143,9 @@ export default function PortfolioPage() {
 
       <section id="contact" className="py-16 sm:py-20">
         <div className="section-shell">
-          <SectionHeader kicker="Connect" title={<>Start a</>} accent={<span className="masked-text-dark">Conversation</span>} />
+          <Reveal>
+            <SectionHeader kicker="Connect" title={<>Start a</>} accent={<span className="masked-text-dark">Conversation</span>} />
+          </Reveal>
 
           <div className="panel grid gap-6 p-6 sm:grid-cols-2 sm:p-8">
             <div>
@@ -160,5 +180,6 @@ export default function PortfolioPage() {
         </div>
       </section>
     </main>
+    </SmoothScroll>
   )
 }

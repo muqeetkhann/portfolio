@@ -17,7 +17,7 @@ body {
   overflow-x: hidden;
   background: #000;
   color: #fff;
-  font-family: var(--font-space-grotesk), Inter, sans-serif;
+  font-family: var(--font-satoshi), Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -30,7 +30,7 @@ h1,
 h2,
 h3,
 .font-heading {
-  font-family: var(--font-syne), sans-serif;
+  font-family: var(--font-clash), Syne, sans-serif;
 }
 
 ::selection {
@@ -88,7 +88,7 @@ body::after {
 }
 
 .section-title {
-  font-family: var(--font-syne), sans-serif;
+  font-family: var(--font-clash), Syne, sans-serif;
   font-size: clamp(1.7rem, 6vw, 4.5rem);
   line-height: 0.92;
   letter-spacing: -0.03em;
@@ -156,6 +156,48 @@ body::after {
   50% {
     opacity: 0.5;
     transform: scale(1.06);
+  }
+}
+
+/* Crossfade used by the hero spotlight when its active project changes. */
+.animate-hero-fade {
+  animation: hero-fade 0.6s ease both;
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ambient slow zoom/drift so idle project covers feel alive. */
+.ken-burns {
+  animation: ken-burns 16s ease-in-out infinite alternate;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.02) translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: scale(1.1) translate3d(-1.8%, -1.4%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-glow,
+  .animate-hero-fade,
+  .ken-burns {
+    animation: none;
   }
 }
 

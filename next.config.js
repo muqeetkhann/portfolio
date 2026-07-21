@@ -6,6 +6,11 @@ const nextConfig = {
   images: {
     unoptimized: isStaticExport,
   },
+  env: {
+    // Inlined into client bundles so lib/utils.ts asset() can prefix media
+    // paths with the GitHub Pages basePath at build time.
+    NEXT_PUBLIC_BASE_PATH: isStaticExport ? '/portfolio' : '',
+  },
 }
 
 if (isStaticExport) {

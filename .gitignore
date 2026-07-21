@@ -34,3 +34,6 @@ Thumbs.db
 # Misc
 *.log
 *.tsbuildinfo
+
+# Raw source screenshots (processed copies live in public/projects/)
+PF-media/
