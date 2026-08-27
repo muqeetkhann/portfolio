@@ -27,8 +27,12 @@ remain only as named fallbacks.
 Patterns in use:
 - Hero: `clamp(3.4rem, 7vw, 6.2rem)`, `leading-[0.88]`, `tracking-[-0.05em]`, uppercase.
 - Section titles: `.section-title` → `clamp(1.7rem, 6vw, 4.5rem)`, uppercase.
-- Kickers: 10px, `font-bold`, `tracking-[0.24em]`, uppercase, 45% opacity.
-- Gradient text via `.masked-text-dark` (white→cyan) and `.masked-text-light`.
+- Kickers: `.section-kicker` — 10px, `font-bold`, `tracking-[0.24em]`, uppercase,
+  `color: inherit` at 45% opacity so it reads on both the black and the inverted
+  white sections.
+- Gradient text via `.masked-text-dark` (white→cyan) and `.masked-text-light`
+  (near-black→sky, for the inverted section). `SectionHeader`'s `tone` prop picks
+  between them — pass `tone="light"` on any white-background section.
 
 Redesign may add a third variable-font display face if it earns its bytes —
 document it here if so.
@@ -44,9 +48,14 @@ neon.purple   #BC13FE    secondary accent (roles, alt CTA)
 neon.magenta  #FF00CC    unused — candidate for redesign
 neon.green    #39FF14    unused
 neon.yellow   #FFCC00    unused
-muted     #A1A1AA
-dim       #3F3F46
+muted     #A1A1AA        unused
+dim       #3F3F46        unused
 ```
+
+The tokens marked unused are declared palette, not dead code — Tailwind emits
+nothing for a token no class references, so they cost zero bytes and stay
+available. Everything shipping today uses `neon.cyan`, `neon.purple`, and raw
+`white/N` alphas.
 
 Per-project accent hexes also live on each project in `lib/data.ts`
 (`#6EE7B7` mint, `#93C5FD` sky, `#FDE68A` sand, `#C4B5FD` lavender, `#FCA5A5` rose)

@@ -18,13 +18,4 @@ if (typeof window !== 'undefined') {
   }
 }
 
-/** True when the user asked the OS to minimise motion. */
-export function prefersReducedMotion() {
-  if (typeof window === 'undefined') return false
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
-/** Breakpoint used to split desktop (horizontal) from mobile (vertical). */
-export const DESKTOP_MQ = '(min-width: 1280px)'
-
 export { gsap, ScrollTrigger, SplitText, useGSAP }

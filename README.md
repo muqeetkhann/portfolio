@@ -37,7 +37,7 @@ content guide. Branded SVG placeholders are already in place until you add real 
 | Layer | Tech |
 |---|---|
 | Framework | Next.js 15 (App Router, static export), React 19, TypeScript |
-| Styling | Tailwind CSS, Syne + Space Grotesk (next/font) |
+| Styling | Tailwind CSS, Clash Display + Satoshi (next/font/local) |
 | Scroll & motion | GSAP 3 + ScrollTrigger (`@gsap/react`), Lenis, Motion (`motion/react`) |
 | 3D | Three.js, React Three Fiber v9, drei, postprocessing |
 
@@ -46,12 +46,16 @@ content guide. Branded SVG placeholders are already in place until you add real 
 ```
 ├── app/                     # layout (fonts/meta), page, globals.css
 ├── components/
-│   ├── root/PortfolioRouter.tsx   # desktop/mobile switch (matchMedia ≥1280px)
-│   ├── desktop/                   # horizontal-scroll desktop experience
-│   ├── portfolio/                 # vertical mobile experience
-│   ├── layout/                    # header/nav
-│   └── shared/                    # ProjectCard, SectionHeader, …
-├── lib/data.ts              # ⭐ ALL CONTENT
+│   ├── layouts/             # PortfolioRouter + Desktop/Mobile shells & nav
+│   ├── sections/            # section bodies shared by both layouts
+│   ├── shared/              # ProjectCard, SectionHeader, spotlight, modal, …
+│   ├── providers/           # SmoothScroll (Lenis ↔ GSAP)
+│   └── three/               # lazy R3F hero (HeroCanvas → HeroScene)
+├── lib/
+│   ├── data.ts              # ⭐ ALL CONTENT
+│   ├── gsap.ts              # single plugin registration
+│   ├── reduced-motion.ts    # prefersReducedMotion() + useReducedMotion()
+│   └── utils.ts             # cn() + asset() basePath helper
 ├── public/projects/<slug>/  # per-project media
 ├── scripts/                 # placeholder generator
 ├── docs/CONTENT.md          # how to update content & media
@@ -71,6 +75,5 @@ Pages (`.github/workflows/deploy-pages.yml`). No manual steps.
 
 - **Blank page on GitHub Pages, works locally** → an asset was referenced with a
   leading `/`. Use relative paths (`./file.pdf`, `projects/...`).
-- **Fonts not loading on first run** → Google Fonts needs network access once.
 - **Type errors after `npm install`** → ensure `@types/react` is v19
   (`npm ls @types/react`).

@@ -8,9 +8,10 @@ TypeScript, Tailwind. Statically exported and deployed to **GitHub Pages** under
 
 1. **All content lives in `lib/data.ts`** — never hardcode personal info, project
    copy, or skills inside components. Components render data; `data.ts` owns it.
-2. **Two layouts, one data source.** `components/root/PortfolioRouter.tsx` picks
-   Desktop (≥1280px, horizontal panel scroll) or Mobile (vertical scroll) via
-   `matchMedia`. Any new section must work in both.
+2. **Two layouts, one data source.** `components/layouts/PortfolioRouter.tsx`
+   picks Desktop (≥1280px, horizontal panel scroll) or Mobile (vertical scroll)
+   via `matchMedia`. Any new section must work in both — write its body once in
+   `components/sections/` with a `variant` prop and render it from both shells.
 3. **Static export must keep working.** `npm run build:static` sets
    `output: 'export'` + `basePath: '/portfolio'`. That means:
    - No server actions, no API routes, no dynamic SSR.
@@ -37,9 +38,15 @@ Node: use v20+ locally (`.nvmrc` says 22, matching CI). v18.18+ works but is EOL
 ## Key paths
 
 - `lib/data.ts` — ⭐ all content (personal, experience, projects, skills)
-- `components/root/PortfolioRouter.tsx` — desktop/mobile switch
-- `components/desktop/DesktopPortfolio.tsx` — horizontal-scroll desktop experience
-- `components/portfolio/PortfolioPage.tsx` — vertical mobile experience
+- `components/layouts/` — `PortfolioRouter` (desktop/mobile switch),
+  `DesktopPortfolio` + `DesktopNav` (horizontal track), `MobilePortfolio` +
+  `MobileNav` (vertical scroll)
+- `components/sections/` — section bodies shared by both layouts (`HeroIntro`,
+  `ExperienceList`, `SkillsGrid`, `ContactCard`)
+- `components/shared/` — reusable UI (`ProjectCard`, `ProjectSpotlight`,
+  `ProjectDetail` + its lazy `ProjectModal` wrapper, `SectionHeader`, `Reveal`,
+  `MagneticButton`, `WhatsAppButton`)
+- `lib/reduced-motion.ts` — `prefersReducedMotion()` + `useReducedMotion()`
 - `public/projects/<slug>/` — per-project media (cover + gallery + video)
 - `scripts/generate-placeholders.mjs` — placeholder covers; keep its slug list in
   sync with `lib/data.ts`
@@ -62,7 +69,10 @@ Node: use v20+ locally (`.nvmrc` says 22, matching CI). v18.18+ works but is EOL
 - TypeScript strict; no `any` unless unavoidable.
 - Tailwind utility-first; shared visual primitives live in `app/globals.css`
   (`.panel`, `.section-shell`, `.section-title`, masked-text classes).
-- Fonts via `next/font/google` with CSS variables (`--font-syne` headings,
-  `--font-space-grotesk` body).
+- Fonts via `next/font/local` with CSS variables (`--font-clash` headings,
+  `--font-satoshi` body); files in `app/fonts/`.
 - No semicolons, single quotes (match existing code style).
-- Keep components small; shared pieces go in `components/shared/`.
+- Keep components small. Section bodies → `components/sections/`; reusable UI →
+  `components/shared/`; layout shells and nav → `components/layouts/`.
+- Reach Lenis through `getLenis()` / `scrollToY()` / `scrollToTarget()` from
+  `components/providers/SmoothScroll.tsx` — never `window.__lenis` directly.

@@ -2,7 +2,8 @@
 
 import { useRef } from 'react'
 import type { ReactNode } from 'react'
-import { gsap, prefersReducedMotion } from '@/lib/gsap'
+import { gsap } from '@/lib/gsap'
+import { prefersReducedMotion } from '@/lib/reduced-motion'
 import { cn } from '@/lib/utils'
 
 /**

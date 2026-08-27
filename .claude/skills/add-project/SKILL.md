@@ -11,17 +11,17 @@ All portfolio content lives in `lib/data.ts`. Project media lives in
 ## Gather (ask only for what's missing)
 
 Required: **title**, **type** (e.g. "SaaS Platform"), **desc** (1–2 sentences),
-**tags** (3–7 tech names), **cat** — one of `saas` | `web3` | `ecom` | `site`
-(space-separate combos like `'site web3'`).
+**tags** (3–7 tech names).
 Optional: **url** (live link), **highlights** (2–3 achievement bullets, start with
 a strong verb: Architected / Built / Engineered / Implemented), media files.
 
 ## Steps
 
 1. **Derive a slug**: kebab-case of the title (`ASAP Pay` → `asap-pay`).
-2. **Edit `lib/data.ts`** — append to `PROJECTS` (or edit in place if the title
-   already exists), matching the existing object shape exactly:
-   - `id`: max existing id + 1; `num`: zero-padded id as string (`'14'`).
+2. **Edit `lib/data.ts`** — append to `CLIENT_PROJECTS` (or `FEATURED_MERN` for
+   headline work), matching the existing object shape exactly:
+   - `id`: max existing id + 1. `num` is recomputed from list position when
+     `PROJECTS` is built — set it to `''` and never hand-edit it.
    - `accent`: rotate through the pastel set `#6EE7B7 #93C5FD #FDE68A #C4B5FD #FCA5A5`
      — pick one not used by adjacent entries.
    - `urlLabel`: the url minus protocol, or `''`.
@@ -33,14 +33,14 @@ a strong verb: Architected / Built / Engineered / Implemented), media files.
    never overwrites real files). If the user supplied real media, place it as
    `public/projects/<slug>/cover.webp` (or `.jpg`) / `gallery-1.webp…` /
    `loop.mp4`, and point `media.*` at those instead.
-5. **Verify** — `npm run build` must pass. If the project should appear in a
-   specific desktop group, check how the rendering component groups projects
-   (`projectGroups` in data.ts buckets by `cat` and slices to 4 — a new project
-   may not surface on desktop unless its bucket has room; tell the user if so).
+5. **Verify** — `npm run build` must pass. Both layouts render the full
+   `PROJECTS` list, so nothing extra is needed for a project to show up. Note
+   that `SPOTLIGHT` (the rotating hero card) only picks up projects whose cover
+   is a real `.webp` — a placeholder `.svg` cover stays out of the hero.
 
 ## Removal / edits
 
-- Remove: delete the object from `PROJECTS`, the entry in
+- Remove: delete the object from `CLIENT_PROJECTS`/`FEATURED_MERN`, the entry in
   `generate-placeholders.mjs`, and the `public/projects/<slug>/` folder.
 - Don't renumber existing ids; gaps are fine.
 

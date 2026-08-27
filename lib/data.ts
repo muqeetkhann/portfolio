@@ -26,7 +26,6 @@ export const PERSONAL = {
   phone: '+92 333 5248912',
   github: 'https://github.com/muqeetkhann',
   linkedin: 'https://linkedin.com/in/muqeet-khan',
-  portfolio: '#',
   bio: 'Full-stack MERN developer building fast, scalable web apps end-to-end — React & Next.js frontends backed by Node.js / Express APIs and MongoDB. 2 years shipping production software across SaaS platforms, e-commerce marketplaces, and Web3 DeFi apps.',
 }
 
@@ -35,8 +34,6 @@ export const EXPERIENCE = [
     role: 'MERN Stack Developer',
     company: 'Fexen Smart Solutions',
     period: 'Sep 2024 – Present',
-    location: 'Islamabad, Pakistan',
-    accent: '#6EE7B7',
     bullets: [
       'Delivered full-stack features end-to-end on 10+ client projects — from React/Next.js frontends to Node.js/Express APIs and MongoDB data layers.',
       'Built REST APIs with Node.js and Express, Mongoose data models, JWT authentication, and role-based access control.',
@@ -49,8 +46,6 @@ export const EXPERIENCE = [
     role: 'Frontend Developer Intern',
     company: 'Stack One Technologies',
     period: 'June 2024 – August 2024',
-    location: 'Islamabad, Pakistan',
-    accent: '#93C5FD',
     bullets: [
       'Built responsive UIs with React.js, Tailwind CSS, and Bootstrap; optimised performance via lazy loading and code splitting.',
       'Implemented form validation, dynamic rendering, and React Router for SPA experiences.',
@@ -66,7 +61,6 @@ export type Project = {
   type: string
   url: string
   urlLabel: string
-  cat: string
   accent: string
   num: string
   slug: string
@@ -83,7 +77,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'SaaS Platform',
     url: 'https://jitsuites.com',
     urlLabel: 'jitsuites.com',
-    cat: 'saas',
     accent: '#6EE7B7',
     num: '01',
     slug: 'jitsuites',
@@ -102,7 +95,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'E-Commerce Marketplace',
     url: 'https://dropex-marketplace.pages.dev',
     urlLabel: 'dropex-marketplace.pages.dev',
-    cat: 'ecom',
     accent: '#93C5FD',
     num: '02',
     slug: 'kompra',
@@ -121,7 +113,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'B2B SaaS / Logistics',
     url: 'https://dropi-clone.pages.dev',
     urlLabel: 'dropi-clone.pages.dev',
-    cat: 'saas',
     accent: '#FDE68A',
     num: '03',
     slug: 'kompra-seller',
@@ -140,7 +131,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Crypto Trading Platform',
     url: 'https://extsy.com',
     urlLabel: 'extsy.com',
-    cat: 'web3',
     accent: '#C4B5FD',
     num: '04',
     slug: 'extsy',
@@ -159,7 +149,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Fintech SaaS Dashboard',
     url: 'https://asap-stg.pages.dev',
     urlLabel: 'asap-stg.pages.dev',
-    cat: 'web3',
     accent: '#FCA5A5',
     num: '05',
     slug: 'asap-pay',
@@ -178,7 +167,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Web3 / DeFi',
     url: 'https://dev.ethoro.io',
     urlLabel: 'dev.ethoro.io',
-    cat: 'web3',
     accent: '#6EE7B7',
     num: '06',
     slug: 'ethoro',
@@ -197,7 +185,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Marketing Website',
     url: 'https://katana-healthcare.com',
     urlLabel: 'katana-healthcare.com',
-    cat: 'site',
     accent: '#93C5FD',
     num: '07',
     slug: 'katana-healthcare',
@@ -216,7 +203,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Web3 Marketing Site',
     url: 'https://zawayadao.com',
     urlLabel: 'zawayadao.com',
-    cat: 'site web3',
     accent: '#C4B5FD',
     num: '08',
     slug: 'zawayadao',
@@ -237,7 +223,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Real Estate Platform',
     url: 'https://travaleo.com',
     urlLabel: 'travaleo.com',
-    cat: 'site',
     accent: '#FDE68A',
     num: '09',
     slug: 'travaleo',
@@ -256,7 +241,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Web3 / DeFi',
     url: 'https://singularity-web-app-lime.vercel.app',
     urlLabel: 'singularity-web-app-lime.vercel.app',
-    cat: 'web3',
     accent: '#6EE7B7',
     num: '10',
     slug: 'singularity',
@@ -278,7 +262,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Agency Website',
     url: '',
     urlLabel: '',
-    cat: 'site',
     accent: '#6EE7B7',
     num: '11',
     slug: 'blockyfy',
@@ -296,7 +279,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'Tech Website',
     url: '',
     urlLabel: '',
-    cat: 'site',
     accent: '#93C5FD',
     num: '12',
     slug: 'nextsense',
@@ -314,7 +296,6 @@ const CLIENT_PROJECTS: Project[] = [
     type: 'RWA Tokenization',
     url: '',
     urlLabel: '',
-    cat: 'site',
     accent: '#C4B5FD',
     num: '13',
     slug: 'regen-digital',
@@ -332,7 +313,6 @@ const FEATURED_MERN: Project[] = [
     type: 'Full-Stack LMS Platform',
     url: '',
     urlLabel: '',
-    cat: 'saas',
     accent: '#6EE7B7',
     num: '14',
     slug: 'ingles-academics',
@@ -354,7 +334,6 @@ const FEATURED_MERN: Project[] = [
     type: 'Full-Stack Sales CRM',
     url: '',
     urlLabel: '',
-    cat: 'saas',
     accent: '#93C5FD',
     num: '15',
     slug: 'ingles-crm',
@@ -402,10 +381,3 @@ export const SKILLS = [
   { cat: 'Tooling', items: ['Git / GitHub', 'Vercel', 'Vite', 'Vitest', 'ESLint / Prettier'] },
 ]
 
-export const FILTERS = [
-  { label: 'All', value: 'all' },
-  { label: 'SaaS / Platforms', value: 'saas' },
-  { label: 'Web3 / Crypto', value: 'web3' },
-  { label: 'E-Commerce', value: 'ecom' },
-  { label: 'Marketing Sites', value: 'site' },
-]

@@ -1,27 +1,30 @@
-import type { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
 
+/**
+ * Kicker + display title, with an optional gradient-masked accent word.
+ * `tone` picks the gradient that reads against the section background —
+ * 'light' for the inverted (white) Experience section.
+ */
 export function SectionHeader({
   kicker,
   title,
   accent,
-  variant = 'mobile',
+  tone = 'dark',
+  className,
 }: {
   kicker: string
-  title: ReactNode
-  accent?: ReactNode
-  variant?: 'desktop' | 'mobile'
+  title: string
+  accent?: string
+  tone?: 'dark' | 'light'
+  className?: string
 }) {
-  const isDesktop = variant === 'desktop'
-  
   return (
-    <div className={isDesktop ? 'mb-8' : 'mb-10'}>
+    <div className={cn('mb-10', className)}>
       <p className="section-kicker">{kicker}</p>
-      <h2 className={`section-title ${isDesktop ? 'text-white' : ''}`}>
+      <h2 className="section-title">
         {title}
-        {accent && isDesktop && typeof accent === 'string' ? (
-          <> <span className="masked-text-dark">{accent}</span></>
-        ) : accent ? (
-          <> {accent}</>
+        {accent ? (
+          <> <span className={tone === 'light' ? 'masked-text-light' : 'masked-text-dark'}>{accent}</span></>
         ) : null}
       </h2>
     </div>

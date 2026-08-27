@@ -2,7 +2,8 @@
 
 import { useRef } from 'react'
 import type { ReactNode } from 'react'
-import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap'
+import { gsap, useGSAP } from '@/lib/gsap'
+import { prefersReducedMotion } from '@/lib/reduced-motion'
 
 /**
  * Fade-and-rise reveal when the element scrolls into view (mobile layout).

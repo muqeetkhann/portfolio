@@ -36,7 +36,6 @@ Manual way — copy an existing entry in `PROJECTS` and change the fields:
   type: 'SaaS Platform',       // short label shown above the title
   url: 'https://myproject.com',
   urlLabel: 'myproject.com',
-  cat: 'saas',                 // saas | web3 | ecom | site (combine: 'site web3')
   accent: '#6EE7B7',           // pastel accent — rotate: 6EE7B7 93C5FD FDE68A C4B5FD FCA5A5
   num: '14',
   slug: 'my-project',          // kebab-case, used for the media folder

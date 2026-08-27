@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { SPOTLIGHT, type Project } from '@/lib/data'
 import { asset, cn } from '@/lib/utils'
-import { useReducedMotion } from '@/lib/hooks/useReducedMotion'
+import { useReducedMotion } from '@/lib/reduced-motion'
 
 const ROTATE_MS = 4200
 

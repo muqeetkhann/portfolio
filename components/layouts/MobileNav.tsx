@@ -11,7 +11,7 @@ const links = [
   { href: '#contact', label: 'Contact' },
 ]
 
-export default function SiteHeader() {
+export default function MobileNav() {
   const [isOpen, setIsOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [isScrolled, setIsScrolled] = useState(false)

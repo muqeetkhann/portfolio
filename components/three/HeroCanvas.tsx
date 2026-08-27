@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { useEffect, useRef, useState } from 'react'
-import { useReducedMotion } from '@/lib/hooks/useReducedMotion'
+import { useReducedMotion } from '@/lib/reduced-motion'
 import { cn } from '@/lib/utils'
 
 // Three.js arrives only in this lazy chunk, after first paint.

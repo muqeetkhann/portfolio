@@ -6,12 +6,18 @@ build pipeline.
 ## Rendering & deployment model
 
 ```
-app/layout.tsx        → fonts (Syne + Space Grotesk via next/font), metadata, <body>
+app/layout.tsx        → fonts (Clash Display + Satoshi, next/font/local), metadata, <body>
 app/page.tsx          → renders <PortfolioRouter/>
-PortfolioRouter.tsx   → 'use client'; matchMedia('(min-width: 1280px)')
+components/layouts/
+  PortfolioRouter.tsx → 'use client'; matchMedia('(min-width: 1280px)')
                         ├── true  → DesktopPortfolio   (horizontal panels)
-                        └── false → PortfolioPage      (vertical scroll)
+                        └── false → MobilePortfolio    (vertical scroll)
 ```
+
+Both shells render the SAME section bodies from `components/sections/`
+(`HeroIntro`, `ExperienceList`, `SkillsGrid`, `ContactCard`), each taking a
+`variant` of `'desktop' | 'mobile'` that tunes only type scale and grid columns.
+**A new section belongs there** — add it once, render it from both shells.
 
 - Everything below the router is client-rendered. The router returns `null` until
   it knows the viewport (avoids hydration mismatch) — keep that behavior.
@@ -25,30 +31,34 @@ PortfolioRouter.tsx   → 'use client'; matchMedia('(min-width: 1280px)')
 ## The two scroll worlds
 
 ### Desktop (≥1280px) — horizontal
-`DesktopPortfolio.tsx` today: a `fixed inset-0` shell containing a flex track of
-`w-[100dvw]` sections. Wheel/touch events are intercepted (`preventDefault`) and
-translated into "go to panel N" with a 700ms lockout; the track scrolls via
-`scrollTo({left: index * innerWidth})`. Progress bar + `01/06` counter are fixed
-overlays driven by `activeIndex`.
+`DesktopPortfolio.tsx`: a **GSAP ScrollTrigger pin** over a tall vertical scroll
+body, driving a 5-segment timeline (`TL_DURATION`) that translates a flex track
+horizontally. Segment 2 is a *vertical* sub-scroll inside the projects panel, so
+the track parks, scrolls the card list, then continues sideways. Progress rail +
+`01/05` counter are fixed overlays driven by `activeIndex`/`progress`.
 
-**Redesign intent** (see REDESIGN-PLAN.md): replace the hand-rolled wheel hijack
-with **GSAP ScrollTrigger pinning** — a tall vertical scroll body where a pinned
-track translates horizontally (`xPercent`), so native scrollbars, keyboard, a11y
-and momentum all keep working. Sections that need internal vertical scroll become
-nested pinned segments of the same timeline (scroll "parks" horizontally, plays a
-vertical sub-scroll, then continues horizontally).
+Snapping is hand-rolled (`scheduleSnap`): ScrollTrigger's built-in `snap` never
+fires because Lenis owns the scroll position, so a debounced scroll listener
+glides to the nearest `NAV_TIME` rest point via `scrollToY()`. The projects
+sub-scroll window (`PROJECTS_FREE`) is deliberately exempt.
+
+Under `prefers-reduced-motion` the whole timeline is skipped and the panels
+stack vertically (`panelBase` swaps to `w-full min-h-screen`), with nav falling
+back to `scrollToTarget('#panel-N')`.
 
 ### Mobile (<1280px) — vertical
-`PortfolioPage.tsx`: conventional anchored sections (`#intro`, `#experience`,
-`#projects`, `#stack`, `#contact`) with `SiteHeader` (hide-on-scroll-down) and a
-full-screen menu overlay. Lenis smooth scroll + lighter reveal animations apply
-here; no pinning gymnastics on touch devices.
+`MobilePortfolio.tsx`: conventional anchored sections (`#intro`, `#experience`,
+`#projects`, `#stack`, `#contact`) with `MobileNav` (hide-on-scroll-down) and a
+full-screen menu overlay. Lenis smooth scroll + `Reveal` (GSAP ScrollTrigger)
+apply here; no pinning gymnastics on touch devices.
 
 ## Data flow
 
-`lib/data.ts` exports `PERSONAL`, `EXPERIENCE`, `PROJECTS`, `SKILLS`, `FILTERS`,
-and derived `projectGroups` (web3 / saas / sites buckets, sliced to 4 each).
-Components import what they render. Projects carry an optional media contract:
+`lib/data.ts` exports `PERSONAL`, `EXPERIENCE`, `HERO_DOMAINS`, `SKILLS`, and
+two derived lists: `PROJECTS` (`FEATURED_MERN` then `CLIENT_PROJECTS`, with `num`
+badges recomputed from position) and `SPOTLIGHT` (the ≤5 projects shipping a real
+`.webp` cover, for the rotating hero card). Components import what they render.
+Projects carry a media contract:
 
 ```
 media?: {
@@ -71,13 +81,19 @@ time so basePath works in both dev (`/`) and Pages (`/portfolio/`).
 
 ## Things that will bite you
 
-1. **Leading-slash asset paths** break on GitHub Pages (`/me.png` → 404; needs
-   `/portfolio/me.png`). Use relative `./` paths or a small `asset()` helper.
-2. **`Date.now()` wheel-lock logic** in the current desktop scroller fights any
-   library-driven scroll. Remove it entirely when GSAP takes over — don't layer.
+1. **Leading-slash asset paths** break on GitHub Pages (`/og-image.png` → 404;
+   needs `/portfolio/og-image.png`). Use relative `./` paths, or `asset()` from
+   `lib/utils.ts` for anything under `public/`.
+2. **Don't layer scroll hijacks.** Lenis owns the scroll position; anything that
+   calls `preventDefault()` on wheel events, or scrolls the window directly,
+   will fight it.
 3. **R3F + static export**: Three.js must never render on the server. Always
    `next/dynamic(() => import(...), { ssr: false })`.
 4. **The router's `null` first paint** means anything measuring the DOM on mount
    (GSAP pins, Lenis) must init inside the chosen layout, not in `layout.tsx`.
-5. **Node 18 locally vs 22 in CI** — if a dependency's engine field complains,
+5. **Lenis is reached via `getLenis()`** (`components/providers/SmoothScroll.tsx`),
+   never `window.__lenis` directly — it is `undefined` under reduced motion, so
+   every caller needs the native-scroll fallback that `scrollToY`/`scrollToTarget`
+   already provide.
+6. **Node 18 locally vs 22 in CI** — if a dependency's engine field complains,
    trust CI's Node 22; `.nvmrc` pins 22.

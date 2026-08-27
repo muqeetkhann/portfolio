@@ -3,7 +3,17 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
-import { prefersReducedMotion } from '@/lib/gsap'
+import { prefersReducedMotion } from '@/lib/reduced-motion'
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __lenis: Lenis | undefined
+}
+
+/** The live Lenis instance, or undefined (SSR, or reduced motion). */
+export function getLenis() {
+  return typeof window === 'undefined' ? undefined : globalThis.__lenis
+}
 
 /**
  * Site-wide smooth momentum scroll (Lenis) wired into the GSAP ticker so
@@ -11,15 +21,14 @@ import { prefersReducedMotion } from '@/lib/gsap'
  * because PortfolioRouter renders null on first paint.
  *
  * Skipped entirely under prefers-reduced-motion (native scroll takes over).
- * Exposes the instance on window.__lenis so nav links can scrollTo().
+ * Exposes the instance via getLenis() so nav/snap logic can scroll it.
  */
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (prefersReducedMotion()) return
 
     const lenis = new Lenis({ autoRaf: false, duration: 1.1 })
-    // @ts-expect-error — intentional escape hatch for anchor navigation
-    window.__lenis = lenis
+    globalThis.__lenis = lenis
 
     lenis.on('scroll', ScrollTrigger.update)
 
@@ -30,18 +39,23 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     return () => {
       gsap.ticker.remove(raf)
       lenis.destroy()
-      // @ts-expect-error — cleanup
-      delete window.__lenis
+      globalThis.__lenis = undefined
     }
   }, [])
 
   return <>{children}</>
 }
 
+/** Scroll to an absolute Y offset, Lenis-aware. */
+export function scrollToY(y: number, duration?: number) {
+  const lenis = getLenis()
+  if (lenis) lenis.scrollTo(y, duration === undefined ? undefined : { duration })
+  else window.scrollTo({ top: y, behavior: 'smooth' })
+}
+
 /** Smoothly scroll to a target (selector or element), Lenis-aware. */
 export function scrollToTarget(target: string | HTMLElement, offset = 0) {
-  // @ts-expect-error — set by SmoothScroll
-  const lenis = typeof window !== 'undefined' ? window.__lenis : undefined
+  const lenis = getLenis()
   if (lenis) {
     lenis.scrollTo(target, { offset })
     return

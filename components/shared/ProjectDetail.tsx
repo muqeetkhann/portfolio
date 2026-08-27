@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import type { Project } from '@/lib/data'
+import { getLenis } from '@/components/providers/SmoothScroll'
 import { asset, cn } from '@/lib/utils'
 
 type Slide = { type: 'video' | 'image'; src: string }
@@ -69,8 +70,7 @@ export function ProjectDetail({
     if (!project) return
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    // @ts-expect-error — Lenis set by SmoothScroll
-    const lenis = window.__lenis
+    const lenis = getLenis()
     lenis?.stop()
     return () => {
       document.body.style.overflow = prevOverflow

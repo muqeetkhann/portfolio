@@ -34,10 +34,7 @@ export function ProjectCard({
       onClick={() => onOpen?.(project)}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className={cn(
-        'panel group flex h-full cursor-pointer flex-col overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1',
-        isDesktop ? 'p-0' : 'p-0',
-      )}
+      className="panel group flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left transition-transform duration-300 hover:-translate-y-1"
     >
       {/* cover */}
       <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-white/10 bg-black/40">

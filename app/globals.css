@@ -84,7 +84,8 @@ body::after {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.24em;
-  color: rgba(255, 255, 255, 0.45);
+  color: inherit;
+  opacity: 0.45;
 }
 
 .section-title {
@@ -110,24 +111,6 @@ body::after {
   padding: 0 8%;
   position: relative;
   overflow: hidden;
-}
-
-.side-label {
-  position: absolute;
-  left: 2%;
-  top: 50%;
-  transform: translateY(-50%) rotate(-90deg);
-  transform-origin: center;
-  white-space: nowrap;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-.hero-title {
-  font-size: clamp(48px, 8vw, 120px);
 }
 
 .animate-glow {
