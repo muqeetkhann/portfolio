@@ -31,16 +31,25 @@ export function ProjectCard({
 
   return (
     <article
+      role="button"
+      tabIndex={0}
+      aria-label={title}
       onClick={() => onOpen?.(project)}
+      onKeyDown={event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onOpen?.(project)
+        }
+      }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="panel group flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left transition-transform duration-300 hover:-translate-y-1"
+      className="panel group flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neon-cyan"
     >
       {/* cover */}
       <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-white/10 bg-black/40">
         <img
           src={asset(media.cover)}
-          alt={`${title} — ${type}`}
+          alt={media.coverAlt ?? `${title} — ${type}`}
           loading="lazy"
           className={cn(
             'h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]',

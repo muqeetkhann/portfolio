@@ -27,7 +27,9 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (prefersReducedMotion()) return
 
-    const lenis = new Lenis({ autoRaf: false, duration: 1.1 })
+    // Let inner panels consume input only while they can scroll in that direction.
+    // At either edge Lenis takes over again to move through the horizontal track.
+    const lenis = new Lenis({ autoRaf: false, duration: 1.1, allowNestedScroll: true })
     globalThis.__lenis = lenis
 
     lenis.on('scroll', ScrollTrigger.update)

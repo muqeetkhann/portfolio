@@ -12,7 +12,7 @@ const FIRST_NAMES = NAME_PARTS.slice(0, -1).join(' ')
 const CTAS = [
   { label: 'GitHub', href: PERSONAL.github, external: true, tone: 'bg-white text-black hover:bg-neon-cyan' },
   { label: "Let's talk", href: `mailto:${PERSONAL.email}`, external: false, tone: 'border border-white/15 text-white hover:border-neon-cyan hover:text-neon-cyan' },
-  { label: 'Resume PDF', href: './m_muqeet_khan_CV.pdf', external: true, tone: 'border border-neon-purple/40 text-neon-purple hover:bg-neon-purple/10' },
+  { label: 'Resume PDF', href: PERSONAL.resume, external: true, tone: 'border border-neon-purple/40 text-neon-purple hover:bg-neon-purple/10' },
 ]
 
 /**
@@ -39,13 +39,13 @@ export function HeroIntro({
         )}
       />
 
-      <div {...fade} className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-bold uppercase tracking-[0.24em]">
+      <div {...fade} className={cn('flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-bold uppercase tracking-[0.24em]', isDesktop ? 'mb-4' : 'mb-6')}>
         <span className="inline-flex items-center gap-2 text-neon-cyan">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon-cyan/70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-neon-cyan" />
           </span>
-          Available for new projects
+          {PERSONAL.availability}
         </span>
         <span className="text-white/35">{PERSONAL.location}</span>
       </div>
@@ -54,13 +54,13 @@ export function HeroIntro({
         ref={titleRef}
         className={cn(
           'font-heading uppercase leading-[0.86] tracking-[-0.05em]',
-          isDesktop ? 'text-[clamp(3.4rem,7vw,6.4rem)]' : 'text-[clamp(2.2rem,9vw,6rem)]',
+          isDesktop ? 'text-[clamp(3rem,4.4vw,6.4rem)]' : 'text-[clamp(2.2rem,9vw,6rem)]',
         )}
       >
         {FIRST_NAMES} <span className="masked-text-dark">{LAST_NAME}</span>
       </h1>
 
-      <div {...fade} className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
+      <div {...fade} className={cn('flex flex-wrap items-center gap-x-4 gap-y-3', isDesktop ? 'mt-4' : 'mt-5')}>
         <p className={cn('font-semibold uppercase tracking-[0.1em] text-neon-cyan/90', isDesktop ? 'text-[17px]' : 'text-[15px] sm:text-lg')}>
           {PERSONAL.role}
         </p>
@@ -74,11 +74,11 @@ export function HeroIntro({
         </ul>
       </div>
 
-      <p {...fade} className={cn('mt-6 max-w-2xl text-white/70', isDesktop ? 'text-base leading-8' : 'text-sm leading-7 sm:text-base')}>
+      <p {...fade} className={cn('max-w-xl text-balance text-base font-medium leading-7 text-white/75 sm:text-lg', isDesktop ? 'mt-4' : 'mt-6')}>
         {PERSONAL.bio}
       </p>
 
-      <div {...fade} className="mt-8 flex flex-wrap gap-3">
+      <div {...fade} className={cn('flex flex-wrap gap-3', isDesktop ? 'mt-6' : 'mt-8')}>
         {CTAS.map(cta => {
           const link = (
             <a

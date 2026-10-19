@@ -37,3 +37,4 @@ Thumbs.db
 
 # Raw source screenshots (processed copies live in public/projects/)
 PF-media/
+.originkit/

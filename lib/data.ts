@@ -11,6 +11,9 @@
 export type ProjectMedia = {
   /** 16:9 cover, 1600×900. Placeholder .svg until a real .webp/.jpg replaces it. */
   cover: string
+  /** Optional accessible description and disclosure for conceptual cover art. */
+  coverAlt?: string
+  caption?: string
   /** Optional extra stills: 'projects/<slug>/gallery-1.webp', ... */
   gallery?: string[]
   /** Optional short muted loop: 'projects/<slug>/loop.mp4' (≤8s, ≤3MB). */
@@ -20,37 +23,125 @@ export type ProjectMedia = {
 export const PERSONAL = {
   name: 'Muhammad Muqeet Khan',
   initials: 'MK',
-  role: 'MERN Stack Developer',
+  role: 'Full-Stack Developer',
   location: 'Islamabad, Pakistan',
   email: 'muqeetkhan010@gmail.com',
   phone: '+92 333 5248912',
   github: 'https://github.com/muqeetkhann',
   linkedin: 'https://linkedin.com/in/muqeet-khan',
-  bio: 'Full-stack MERN developer building fast, scalable web apps end-to-end — React & Next.js frontends backed by Node.js / Express APIs and MongoDB. 2 years shipping production software across SaaS platforms, e-commerce marketplaces, and Web3 DeFi apps.',
+  availability: 'Available for new projects',
+  resume: './m_muqeet_khan_CV.pdf',
+  bio: 'I build intuitive web and mobile apps that make complex work feel simple.',
+}
+
+export const SITE_METADATA = {
+  url: 'https://muqeetkhann.github.io/portfolio',
+  title: `${PERSONAL.name} | ${PERSONAL.role}`,
+  description: 'Full-stack developer with 2+ years building web and mobile applications across SaaS, CRM, AI, Web3, and e-commerce, including RAG workflows and automation.',
+  keywords: ['Full-Stack Developer', 'MERN Stack Developer', 'React', 'React Native', 'Node.js', 'Next.js', 'TypeScript', 'AI', 'RAG', 'Automation', 'Portfolio', 'Islamabad'],
+  image: 'og-image.png',
+  imageAlt: `${PERSONAL.name} — ${PERSONAL.role}`,
+  imageTechnologies: ['React', 'Next.js', 'TypeScript', 'Node.js', 'AI', 'Automation'],
+}
+
+export const JOURNEY_COPY = {
+  regionLabel: 'Work experience and education',
+  educationTitle: 'Education & Training',
+  dateLabel: 'Date listed',
+  showMore: 'Show all responsibilities',
+  showLess: 'Show fewer responsibilities',
+}
+
+export const SKILLS_REGION_LABEL = 'Technical skills'
+
+export const SPOTLIGHT_COPY = {
+  heading: 'Featured work',
+  open: 'View case study',
+  previous: 'Previous project',
+  next: 'Next project',
+  pause: 'Pause',
+  resume: 'Play',
+  pauseLabel: 'Pause autoplay',
+  resumeLabel: 'Play autoplay',
+  autoplay: 'Autoplay',
+  navigation: 'Choose a featured project',
+  select: 'Show project',
+  unavailable: 'Preview unavailable',
+  artwork: 'images/featured-sculpture.webp',
+}
+
+export const PROJECT_DETAIL_COPY = {
+  heading: 'Case study',
+  preview: 'Project preview',
+  overview: 'Overview',
+  highlights: 'Selected contributions',
+  technologies: 'Built with',
+  visit: 'Visit project',
+  close: 'Close case study',
+  previous: 'Previous',
+  next: 'Next',
+  previousProject: 'Previous project',
+  nextProject: 'Next project',
+  previousImage: 'Previous image',
+  nextImage: 'Next image',
+  selectImage: 'Show preview',
+  fullSize: 'Full size',
+  comingSoon: 'Product images coming soon',
+  unavailable: 'Preview unavailable',
+  video: 'Video',
+  image: 'Image',
 }
 
 export const EXPERIENCE = [
   {
     role: 'MERN Stack Developer',
     company: 'Fexen Smart Solutions',
-    period: 'Sep 2024 – Present',
+    period: 'Dec 2024 – Present',
     bullets: [
-      'Delivered full-stack features end-to-end on 10+ client projects — from React/Next.js frontends to Node.js/Express APIs and MongoDB data layers.',
-      'Built REST APIs with Node.js and Express, Mongoose data models, JWT authentication, and role-based access control.',
-      'Engineered advanced features: drag-and-drop page builders, real-time WebSocket dashboards, and multi-tenant SaaS flows.',
-      'Developed and maintained component libraries of 30–80+ components using Radix UI, Tailwind CSS, and shadcn/ui.',
-      'Integrated third-party services including Stripe, Firebase, Google OAuth, Brevo, and Web3 wallet providers.',
+      'Delivered 10+ production-ready SaaS, CRM, AI, blockchain, and e-commerce products, translating business requirements into reliable, scalable features.',
+      'Built and maintained product workflows covering onboarding, authentication, payments, AI features, REST APIs, and third-party integrations.',
+      'Improved performance and scalability through better data loading, filtering, pagination, database queries, and frontend state handling.',
+      'Created real-time integrations, scheduled jobs, and monitoring workflows to synchronize systems, reduce manual work, and resolve operational issues.',
+      'Automated marketing, sales, and support processes across connected platforms, improving data flow and reducing repetitive tasks.',
+      'Built AI-assisted automation workflows connecting business tools, processing campaign data, and supporting chatbot and product workflows.',
     ],
   },
   {
     role: 'Frontend Developer Intern',
     company: 'Stack One Technologies',
-    period: 'June 2024 – August 2024',
+    period: 'May 2024 – Nov 2024',
     bullets: [
-      'Built responsive UIs with React.js, Tailwind CSS, and Bootstrap; optimised performance via lazy loading and code splitting.',
-      'Implemented form validation, dynamic rendering, and React Router for SPA experiences.',
-      'Practised Git-based version control and feature branching in an agile team environment.',
+      'Built responsive websites using HTML, CSS, JavaScript, React, and Next.js.',
+      'Used Tailwind CSS and Bootstrap to create responsive interfaces.',
+      'Improved frontend performance by reducing DOM manipulations and lazily loading components.',
+      'Added form validation and dynamic and conditional rendering to improve user experience.',
+      'Collaborated through Git/GitHub version control and feature branches.',
     ],
+  },
+]
+
+export type Education = {
+  qualification: string
+  institution: string
+  date: string
+  location: string
+  level: string
+}
+
+export const EDUCATION: Education[] = [
+  {
+    qualification: 'BSc (Hons) Information Technology',
+    institution: 'Roots Ivy International University',
+    date: '30 Sep 2024',
+    location: 'Islamabad, Pakistan',
+    level: 'EQF level 6',
+  },
+  {
+    qualification: 'ACCA (Fundamentals)',
+    institution: 'SKANS School of Accountancy',
+    date: '1 Jun 2020',
+    location: 'Islamabad, Pakistan',
+    level: 'EQF level 6',
   },
 ]
 
@@ -74,20 +165,20 @@ const CLIENT_PROJECTS: Project[] = [
   {
     id: 1,
     title: 'JitSuites',
-    type: 'SaaS Platform',
-    url: 'https://jitsuites.com',
-    urlLabel: 'jitsuites.com',
+    type: 'AI Marketing SaaS Platform',
+    url: 'https://app.jitsuites.com',
+    urlLabel: 'app.jitsuites.com',
     accent: '#6EE7B7',
     num: '01',
     slug: 'jitsuites',
     media: { cover: 'projects/jitsuites/cover.svg' },
-    desc: 'Multi-channel marketing automation platform — funnel builder, email/SMS marketing, social media auto-posting, and video marketing from a single dashboard.',
+    desc: 'AI marketing SaaS for creators and businesses, combining email, SMS, social publishing, AI video, and funnel automation in a single platform.',
     highlights: [
-      'Architected drag-and-drop funnel/landing page builder using @dnd-kit with element tree manipulation, undo/redo history, layer management, and JSON/HTML export.',
-      'Built visual email builder with React Email Editor, merge tag validation, and multi-platform scheduling via React Big Calendar.',
-      'Developed 30+ reusable UI components; data tables with server-side pagination, sorting, filtering, and URL state persistence via TanStack Table.',
+      'Developed the complete frontend and a drag-and-drop funnel builder with dnd-kit for creating landing pages and campaigns.',
+      'Implemented JWT authentication, OAuth, polling, and integrations with Brevo and Stripe.',
+      'Built reusable interfaces for connected email, SMS, social publishing, AI video, and campaign workflows.',
     ],
-    tags: ['React 19', 'TanStack Router', 'TanStack Query', 'Zustand', '@dnd-kit', 'Radix UI', 'Brevo API'],
+    tags: ['React 19', 'TypeScript', 'NestJS', 'TanStack Router', 'TanStack Query', 'Zustand', 'Tailwind CSS', 'shadcn/ui', 'dnd-kit', 'JWT', 'Stripe', 'OAuth', 'Brevo'],
   },
   {
     id: 2,
@@ -129,19 +220,19 @@ const CLIENT_PROJECTS: Project[] = [
     id: 4,
     title: 'Extsy',
     type: 'Crypto Trading Platform',
-    url: 'https://extsy.com',
-    urlLabel: 'extsy.com',
+    url: 'https://linktr.ee/ExtsyPlatform',
+    urlLabel: 'linktr.ee/ExtsyPlatform',
     accent: '#C4B5FD',
     num: '04',
     slug: 'extsy',
     media: { cover: 'projects/extsy/cover.svg' },
-    desc: 'Full-featured crypto trading platform with P2P trading, staking, virtual cards, and Web3 wallet integrations. Built as part of a 10–15 person team.',
+    desc: 'Contributed frontend features and UI/UX improvements to a large crypto exchange platform supporting P2P trading, staking, virtual cards, and Web3 wallets.',
     highlights: [
       'Integrated TronWeb and Wagmi for Web3 wallet connections; Stripe payments and Firebase authentication.',
       'Built complex modal systems (staking, KYC, payment flows), real-time data tables, and role-based route protection.',
       'Implemented dark/light theme with persistent state; Framer Motion and Lottie animations throughout.',
     ],
-    tags: ['Next.js 14', 'Redux Toolkit', 'Chakra UI', 'Wagmi', 'TronWeb', 'Framer Motion', 'Stripe'],
+    tags: ['Next.js', 'Redux Toolkit', 'Chakra UI', 'Wagmi', 'TronWeb', 'Framer Motion', 'Stripe'],
   },
   {
     id: 5,
@@ -165,19 +256,19 @@ const CLIENT_PROJECTS: Project[] = [
     id: 6,
     title: 'Ethoro',
     type: 'Web3 / DeFi',
-    url: 'https://dev.ethoro.io',
-    urlLabel: 'dev.ethoro.io',
+    url: 'https://ethoro.io/',
+    urlLabel: 'ethoro.io',
     accent: '#6EE7B7',
     num: '06',
     slug: 'ethoro',
     media: { cover: 'projects/ethoro/cover.svg' },
-    desc: 'Crypto staking platform for ERC-20 tokens with Web3 wallet integration and admin dashboard for managing tokens, subscriptions, and withdrawals.',
+    desc: 'Developed the frontend and smart-contract integrations for a crypto staking platform, including yield tracking, Web3 wallets, and token deposit and withdrawal workflows.',
     highlights: [
       'Engineered Web3 deposit flow with ERC20 approval, smart contract interaction, token decimals conversion, and multi-step wallet confirmations.',
       'Architected JWT-based protected routes with TanStack Router beforeLoad hooks, automatic token refresh, and role-based redirects.',
       'Built admin layer with Chart.js analytics, CSV data exports, and referral/withdrawal management.',
     ],
-    tags: ['React 19', 'Wagmi / viem', 'Reown AppKit', 'TanStack Query', 'Tailwind CSS v4', 'Sepolia'],
+    tags: ['React', 'Wagmi / viem', 'Reown AppKit', 'TanStack Query', 'Tailwind CSS', 'Ethereum'],
   },
   {
     id: 7,
@@ -189,18 +280,18 @@ const CLIENT_PROJECTS: Project[] = [
     num: '07',
     slug: 'katana-healthcare',
     media: { cover: 'projects/katana-healthcare/cover.svg' },
-    desc: 'SaaS marketing site for a clinical decision support platform targeting healthcare professionals with BNF-based prescribing tools.',
+    desc: 'Responsive Next.js healthcare website developed during the Stack One internship, with reusable components, optimized loading, and engagement analytics.',
     highlights: [
-      'Engineered synchronized dual-vertical Swiper carousel with real-time center image updates and bidirectional slide sync.',
-      'Implemented scroll-aware sticky header with directional visibility detection (hide on scroll-down, reveal on scroll-up).',
-      'Deployed to Vercel with HubSpot forms, Google Analytics, and Microsoft Clarity integration.',
+      'Built reusable, cross-device interfaces and smooth transitions for a responsive healthcare website.',
+      'Improved frontend performance and initial load times with component code splitting and lazy loading.',
+      'Integrated Google Analytics and Microsoft Clarity to track engagement, user sessions, and conversions.',
     ],
-    tags: ['Next.js 16', 'React 19', 'Tailwind CSS 4', 'Swiper 12', 'HubSpot'],
+    tags: ['Next.js', 'React', 'Google Analytics', 'Microsoft Clarity'],
   },
   {
     id: 8,
     title: 'ZawayaDAO',
-    type: 'Web3 Marketing Site',
+    type: 'Real Estate Tokenization',
     url: 'https://zawayadao.com',
     urlLabel: 'zawayadao.com',
     accent: '#C4B5FD',
@@ -210,12 +301,13 @@ const CLIENT_PROJECTS: Project[] = [
       cover: 'projects/zawayadao/cover.webp',
       gallery: ['projects/zawayadao/gallery-1.webp', 'projects/zawayadao/gallery-2.webp', 'projects/zawayadao/gallery-3.webp'],
     },
-    desc: 'White-label SaaS for real estate tokenization with DAO-ready RWA infrastructure and a custom WebGL interactive background.',
+    desc: 'Developed the complete UI and API integrations for real-estate tokenization workflows, with DAO-ready infrastructure and a custom WebGL background.',
     highlights: [
+      'Built the complete frontend and connected APIs for real-estate tokenization workflows.',
       'Engineered PixelBlast component with custom GLSL fragment shaders — FBM noise, liquid ripple effects, and pointer tracking.',
       'Implemented IntersectionObserver scroll animations, JSON-LD structured data, and SEO-optimized metadata.',
     ],
-    tags: ['Next.js 16', 'Three.js', 'GLSL Shaders', 'TypeScript', 'Tailwind CSS 4'],
+    tags: ['Next.js', 'TypeScript', 'REST APIs', 'Three.js', 'GLSL Shaders', 'Tailwind CSS'],
   },
   {
     id: 9,
@@ -227,13 +319,13 @@ const CLIENT_PROJECTS: Project[] = [
     num: '09',
     slug: 'travaleo',
     media: { cover: 'projects/travaleo/cover.svg' },
-    desc: 'Tokenized real estate investment platform enabling fractional ownership of luxury properties for high-net-worth investors.',
+    desc: 'Developed the frontend for a tokenized luxury real-estate investment platform, enabling fractional property ownership and investment tracking.',
     highlights: [
       'Integrated dual CMS APIs (Strapi + custom REST) with unified TypeScript interfaces and React Query caching.',
       'Built TokenCard components with Swiper galleries, dynamic ROI calculations, and funding progress bars.',
       'Full SEO stack: Schema.org structured data, Open Graph tags, Google Analytics, and server-side rendering.',
     ],
-    tags: ['Next.js 15', 'Strapi CMS', 'TanStack Query', 'Radix UI', 'shadcn/ui', 'Swiper'],
+    tags: ['Next.js', 'Strapi CMS', 'TanStack Query', 'Radix UI', 'shadcn/ui', 'Swiper'],
   },
   {
     id: 10,
@@ -248,20 +340,20 @@ const CLIENT_PROJECTS: Project[] = [
       cover: 'projects/singularity/cover.webp',
       gallery: ['projects/singularity/gallery-1.webp', 'projects/singularity/gallery-2.webp', 'projects/singularity/gallery-3.webp'],
     },
-    desc: 'DeFi yield farming platform with Ethereum wallet connectivity, smart contract interaction, and real-time on-chain metrics dashboard.',
+    desc: 'DeFi yield-farming platform for wallet-based investments, ROI tracking, and secure deposits and withdrawals, with real-time Ethereum on-chain data.',
     highlights: [
-      'Implemented Ethereum wallet connectivity using Reown AppKit with wagmi/viem, supporting mainnet and Sepolia with automatic chain switching.',
-      'Built async data hooks using viem contract read functions integrated with React Query for real-time on-chain state.',
-      'Created protected routes validating wallet connection status with multi-chain header support.',
+      'Integrated Solidity smart contracts and Ethereum wallets with wagmi and viem, including automatic chain switching.',
+      'Built wallet-based investment, ROI tracking, and secure deposit and withdrawal flows.',
+      'Synchronized real-time on-chain data through React Query and protected application workflows with JWT authentication.',
     ],
-    tags: ['Next.js 16', 'Wagmi / viem', 'Reown AppKit', 'TanStack Query', 'Tailwind CSS 4', 'DeFi'],
+    tags: ['Next.js', 'TypeScript', 'Wagmi / viem', 'React Query', 'JWT', 'Tailwind CSS', 'Radix UI', 'Ethereum'],
   },
   {
     id: 11,
     title: 'Blockyfy',
     type: 'Agency Website',
-    url: '',
-    urlLabel: '',
+    url: 'https://www.blockyfy.com/',
+    urlLabel: 'blockyfy.com',
     accent: '#6EE7B7',
     num: '11',
     slug: 'blockyfy',
@@ -275,10 +367,10 @@ const CLIENT_PROJECTS: Project[] = [
   },
   {
     id: 12,
-    title: 'NextSense',
+    title: 'NextSense Solutions',
     type: 'Tech Website',
-    url: '',
-    urlLabel: '',
+    url: 'https://nextsensesolution.com/',
+    urlLabel: 'nextsensesolution.com',
     accent: '#93C5FD',
     num: '12',
     slug: 'nextsense',
@@ -286,7 +378,7 @@ const CLIENT_PROJECTS: Project[] = [
       cover: 'projects/nextsense/cover.webp',
       gallery: ['projects/nextsense/gallery-1.webp', 'projects/nextsense/gallery-2.webp', 'projects/nextsense/gallery-3.webp'],
     },
-    desc: 'Web3/AI tech site with complex multi-level dropdown nav and dynamic dark/light mode per page.',
+    desc: 'Service-company website with multi-level navigation and page-specific dark and light themes.',
     highlights: [],
     tags: ['Next.js', 'Tailwind', 'Dark Mode'],
   },
@@ -306,13 +398,13 @@ const CLIENT_PROJECTS: Project[] = [
   },
 ]
 
-const FEATURED_MERN: Project[] = [
+const FEATURED_PROJECTS: Project[] = [
   {
     id: 14,
-    title: 'Inglés Academics',
+    title: 'Inglés Ahorita — Academic Platform',
     type: 'Full-Stack LMS Platform',
-    url: '',
-    urlLabel: '',
+    url: 'https://academic.inglesahorita.com/',
+    urlLabel: 'academic.inglesahorita.com',
     accent: '#6EE7B7',
     num: '14',
     slug: 'ingles-academics',
@@ -320,20 +412,20 @@ const FEATURED_MERN: Project[] = [
       cover: 'projects/ingles-academics/cover.webp',
       gallery: ['projects/ingles-academics/gallery-1.webp', 'projects/ingles-academics/gallery-2.webp', 'projects/ingles-academics/gallery-3.webp'],
     },
-    desc: 'Class-management and analytics platform for an online English academy — weekly scheduling, attendance, student progress, live classes, and role-based staff access.',
+    desc: 'Academic platform for Inglés Ahorita with student and teacher portals, class scheduling, attendance, student progress, and connected education workflows.',
     highlights: [
-      'Built a full-stack MERN platform managing 480+ classes and 200+ students with weekly scheduling, attendance tracking, and live-class management.',
-      'Engineered an analytics dashboard (attendance over time, classes by level and time of day) powered by MongoDB aggregation pipelines.',
-      'Implemented role-based access control across teachers, students, and admins with JWT authentication and protected routes.',
+      'Built student and teacher portals with scheduling, attendance tracking, progress analytics, and live-class management.',
+      'Developed the education platform with React 19, TypeScript, Node.js, and Supabase (PostgreSQL).',
+      'Connected the wider Inglés Ahorita platform to scheduling tools, external APIs, and real-time data flows through WebSockets and webhooks.',
     ],
-    tags: ['React', 'Node.js', 'Express', 'MongoDB', 'Recharts', 'JWT'],
+    tags: ['React 19', 'TypeScript', 'Supabase', 'PostgreSQL', 'Node.js', 'WebSockets', 'Webhooks'],
   },
   {
     id: 15,
-    title: 'Inglés CRM',
-    type: 'Full-Stack Sales CRM',
-    url: '',
-    urlLabel: '',
+    title: 'Inglés Ahorita — CRM & Automation',
+    type: 'AI-Powered Sales CRM',
+    url: 'https://crm.inglesahorita.com/',
+    urlLabel: 'crm.inglesahorita.com',
     accent: '#93C5FD',
     num: '15',
     slug: 'ingles-crm',
@@ -341,43 +433,91 @@ const FEATURED_MERN: Project[] = [
       cover: 'projects/ingles-crm/cover.webp',
       gallery: ['projects/ingles-crm/gallery-1.webp', 'projects/ingles-crm/gallery-2.webp', 'projects/ingles-crm/gallery-3.webp'],
     },
-    desc: 'Sales CRM for a language-education business — lead pipelines, setter/closer workflows, show-up and recovery funnels, revenue goals, and commission tracking.',
+    desc: 'AI-powered CRM and automation for Inglés Ahorita, connecting booking workflows, call transcription, chatbot interactions, campaign processing, and Meta event synchronization.',
     highlights: [
-      'Developed a MERN sales CRM with lead management, booking/call scheduling, and setter/closer assignment across a multi-stage funnel.',
-      'Built real-time funnel analytics — confirmation, show-up, conversion, and recovery rates — plus revenue-goal and commission dashboards.',
-      'Integrated UTM attribution and opt-in tracking to measure top-of-funnel performance by channel.',
+      'Built a full-stack CRM with React 19, TypeScript, Node.js, and Supabase (PostgreSQL), plus a Kajabi landing page for call bookings.',
+      'Integrated Kajabi, ManyChat, Deepgram, Google Analytics, Zoom, Calendly, n8n, and external APIs across the wider Inglés Ahorita platform for scheduling, call transcription, and AI chatbot interactions.',
+      'Created n8n agentic workflows to process campaign data and synchronize events with Meta for ad tracking and optimization.',
     ],
-    tags: ['React', 'Node.js', 'Express', 'MongoDB', 'Chart.js', 'REST APIs'],
+    tags: ['React 19', 'TypeScript', 'Supabase', 'Node.js', 'OpenAI', 'Deepgram', 'n8n', 'ManyChat', 'Kajabi', 'WebSockets', 'Webhooks'],
+  },
+  {
+    id: 16,
+    title: 'TripPak',
+    type: 'AI-Powered OTC Health Assistant',
+    url: '',
+    urlLabel: '',
+    accent: '#C4B5FD',
+    num: '',
+    slug: 'trippak',
+    media: {
+      cover: 'projects/trippak/cover.webp',
+      coverAlt: 'Concept illustration of a mint travel health kit with a blister pack and capsules',
+      caption: 'Concept illustration',
+    },
+    desc: 'Mobile health assistant helping OTC health-kit users search products across 148 symptom categories, view drug facts, and access usage guidance through a retrieval-augmented AI assistant.',
+    highlights: [
+      'Cleaned and structured product and symptom data for vector-store retrieval across 148 symptom categories.',
+      'Developed a RAG assistant using OpenAI vector search with a local BM25 fallback.',
+      'Added safety triage, verified product-card responses, and virtual-care escalation for cases needing further support.',
+    ],
+    tags: ['Expo', 'React Native', 'TypeScript', 'Firebase Realtime Database', 'Cloudinary', 'OpenAI Vector Stores'],
   },
 ]
 
-/**
- * Display order: featured MERN work first, then client work.
- * `num` badges are derived from position — never hand-edit them.
- */
-export const PROJECTS: Project[] = [...FEATURED_MERN, ...CLIENT_PROJECTS].map(
-  (project, index) => ({ ...project, num: String(index + 1).padStart(2, '0') }),
-)
+const INTERNSHIP_PROJECTS: Project[] = [
+  {
+    id: 17,
+    title: 'The Flame',
+    type: 'Restaurant Website',
+    url: 'https://the-flame-4002c.web.app',
+    urlLabel: 'the-flame-4002c.web.app',
+    accent: '#FCA5A5',
+    num: '',
+    slug: 'the-flame',
+    media: { cover: 'projects/the-flame/cover.svg' },
+    desc: 'Responsive restaurant website built during the Stack One internship, with an interactive menu, gallery, contact section, and smooth navigation across a multi-page SPA.',
+    highlights: [
+      'Built reusable navigation, menu, testimonial, and contact-form components with React.',
+      'Created responsive styling and smooth transitions using CSS Modules and Bootstrap.',
+      'Implemented React Router navigation for a multi-page single-page application.',
+    ],
+    tags: ['React', 'React Router', 'CSS Modules', 'Bootstrap'],
+  },
+]
+
+const FEATURED_SLUGS = ['trippak', 'ingles-crm', 'ingles-academics', 'singularity', 'jitsuites']
+const ALL_PROJECTS = [...FEATURED_PROJECTS, ...CLIENT_PROJECTS, ...INTERNSHIP_PROJECTS]
 
 /**
- * Hero spotlight rotation — the featured cards that cycle in the intro.
- * Derived from the projects that ship a real cover image (`.webp`), keeping
- * the hero visual instead of showing generated placeholders. Order follows
- * PROJECTS (featured MERN work first).
+ * Explicit featured order, then the remaining client work and internship work.
+ * IDs and media stay stable; number badges are derived from display position.
  */
-export const SPOTLIGHT: Project[] = PROJECTS.filter(p => p.media.cover.endsWith('.webp')).slice(0, 5)
+export const PROJECTS: Project[] = [
+  ...FEATURED_SLUGS.flatMap(slug => ALL_PROJECTS.filter(project => project.slug === slug)),
+  ...ALL_PROJECTS.filter(project => !FEATURED_SLUGS.includes(project.slug)),
+].map((project, index) => ({ ...project, num: String(index + 1).padStart(2, '0') }))
+
+/** Featured selection includes SVG covers until real screenshots are supplied. */
+export const SPOTLIGHT: Project[] = PROJECTS.filter(project => FEATURED_SLUGS.includes(project.slug))
 
 /** Domains worked across — short editorial tagline in the hero. */
-export const HERO_DOMAINS = ['SaaS', 'Web3', 'E-Commerce', 'Fintech']
+export const HERO_DOMAINS = ['SaaS', 'CRM', 'AI', 'Web3', 'E-Commerce', 'Fintech']
 
 export const SKILLS = [
   { cat: 'Languages', items: ['JavaScript (ES6+)', 'TypeScript', 'HTML5', 'CSS3', 'GLSL'] },
   { cat: 'Frontend', items: ['React 18/19', 'Next.js (App Router)', 'TanStack Query/Router', 'Redux Toolkit', 'Zustand'] },
-  { cat: 'Backend', items: ['Node.js', 'Express.js', 'REST APIs', 'JWT / Auth', 'WebSockets'] },
-  { cat: 'Databases', items: ['MongoDB', 'Mongoose', 'Firebase', 'PostgreSQL'] },
+  { cat: 'Mobile', items: ['React Native', 'Expo'] },
+  { cat: 'Backend', items: ['Node.js', 'NestJS', 'Express.js', 'REST APIs', 'JWT / Auth', 'WebSockets / Webhooks'] },
+  { cat: 'Databases', items: ['Supabase / PostgreSQL', 'MongoDB / Mongoose', 'Firebase Firestore', 'Firebase Realtime Database', 'Firebase Authentication', 'Firebase Storage'] },
   { cat: 'Styling', items: ['Tailwind CSS', 'Radix UI', 'shadcn/ui', 'Framer Motion', 'Chakra UI'] },
-  { cat: 'Web3', items: ['Wagmi / viem', 'Reown AppKit', 'TronWeb', 'ERC-20', 'Three.js'] },
-  { cat: 'Integrations', items: ['Stripe', 'Google OAuth', 'Brevo', 'HubSpot', 'Cloudinary'] },
+  { cat: 'AI & Retrieval', items: ['OpenAI', 'RAG workflows', 'OpenAI Vector Stores', 'BM25 retrieval fallback', 'Deepgram'] },
+  { cat: 'Automation', items: ['n8n', 'Zapier', 'ManyChat', 'Kajabi', 'Meta event synchronization'] },
+  { cat: 'Web3', items: ['Wagmi / viem', 'Reown AppKit', 'TronWeb', 'ERC-20', 'Ethereum'] },
+  { cat: 'Graphics & Animation', items: ['Three.js', 'GLSL', 'Framer Motion'] },
+  { cat: 'Integrations', items: ['Stripe', 'Google OAuth', 'Brevo', 'HubSpot', 'Cloudinary', 'Zoom / Calendly', 'Google Analytics', 'Microsoft Clarity'] },
   { cat: 'Tooling', items: ['Git / GitHub', 'Vercel', 'Vite', 'Vitest', 'ESLint / Prettier'] },
+  { cat: 'Engineering Foundations', items: ['OOP', 'Data structures & algorithms', 'Synchronous / asynchronous programming', 'AWS — foundational knowledge'] },
+  { cat: 'AI Development Workflow', items: ['Claude / Codex', 'Reusable skills & plugins', 'Memory', 'Multi-agent workflows'] },
 ]
 

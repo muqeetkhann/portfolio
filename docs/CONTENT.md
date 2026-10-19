@@ -9,9 +9,13 @@ You never need to touch components to change your info.
 |---|---|
 | Name, role, bio, email, phone, links | `PERSONAL` |
 | Jobs / work history | `EXPERIENCE` |
+| Education | `EDUCATION` — dates are displayed as listed, without assuming enrollment or graduation |
 | Projects | `PROJECTS` (or run the `/add-project` skill in Claude Code) |
 | Skill categories | `SKILLS` |
-| My CV | Replace `public/m_muqeet_khan_CV.pdf` (keep the filename, or update the links in both layout components) |
+| My CV | Replace `public/m_muqeet_khan_CV.pdf` (keep the filename, or update `PERSONAL.resume`) |
+| Search and social previews | `SITE_METADATA`; rebuild the image with `node scripts/generate-social-preview.mjs` (Node 22+) |
+| Hero featured projects | `FEATURED_SLUGS` — explicit order, including SVG placeholder covers |
+| Case-study labels and empty states | `PROJECT_DETAIL_COPY` |
 
 After editing, run `npm run dev` and check http://localhost:3000. Deploys happen
 automatically when you push to `main` (GitHub Actions → GitHub Pages).

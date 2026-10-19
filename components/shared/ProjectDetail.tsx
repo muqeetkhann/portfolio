@@ -1,9 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
-import type { Project } from '@/lib/data'
+import { PROJECT_DETAIL_COPY as COPY, type Project } from '@/lib/data'
 import { getLenis } from '@/components/providers/SmoothScroll'
+import { useReducedMotion } from '@/lib/reduced-motion'
 import { asset, cn } from '@/lib/utils'
 
 type Slide = { type: 'video' | 'image'; src: string }
@@ -27,229 +29,285 @@ export function ProjectDetail({
   onChange?: (project: Project) => void
   onClose: () => void
 }) {
-  const [imageIndex, setImageIndex] = useState(0)
+  const reduced = useReducedMotion()
+  const titleId = useId()
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const bodyRef = useRef<HTMLDivElement>(null)
+  const copyRef = useRef<HTMLDivElement>(null)
+  const galleryRef = useRef<HTMLDivElement>(null)
+  const [selection, setSelection] = useState({ projectId: project?.id, index: 0 })
+  const isOpen = project !== null
 
-  // All media for the active project as ordered slides (video first, then cover + gallery).
   const slides = useMemo<Slide[]>(() => {
     if (!project) return []
     const list: Slide[] = []
-    if (project.media?.video) list.push({ type: 'video', src: project.media.video })
-    if (project.media?.cover) list.push({ type: 'image', src: project.media.cover })
-    project.media?.gallery?.forEach(src => list.push({ type: 'image', src }))
+    if (project.media.video) list.push({ type: 'video', src: project.media.video })
+    list.push({ type: 'image', src: project.media.cover })
+    project.media.gallery?.forEach(src => list.push({ type: 'image', src }))
     return list
   }, [project])
 
-  const projectIndex = project ? projects.findIndex(p => p.id === project.id) : -1
+  // A new project starts at its first preview on the same render, even when
+  // the previous gallery selection was beyond the new gallery's end.
+  const imageIndex = selection.projectId === project?.id ? selection.index : 0
+  const active = slides[imageIndex] ?? slides[0]
+  const projectIndex = project ? projects.findIndex(item => item.id === project.id) : -1
   const canNavProjects = Boolean(onChange) && projects.length > 1 && projectIndex >= 0
+  const previous = projects[(projectIndex - 1 + projects.length) % projects.length]
+  const next = projects[(projectIndex + 1) % projects.length]
   const hasMultipleImages = slides.length > 1
 
-  const goProject = useCallback(
-    (dir: number) => {
-      if (!onChange || projects.length < 2 || projectIndex < 0) return
-      const next = (projectIndex + dir + projects.length) % projects.length
-      onChange(projects[next])
-    },
-    [onChange, projects, projectIndex],
-  )
+  const selectImage = useCallback((index: number) => {
+    if (!project || !slides.length) return
+    setSelection({ projectId: project.id, index: (index + slides.length) % slides.length })
+  }, [project, slides.length])
 
-  const goImage = useCallback(
-    (dir: number) => {
-      setImageIndex(i => (slides.length ? (i + dir + slides.length) % slides.length : 0))
-    },
-    [slides.length],
-  )
+  const goImage = useCallback((direction: number) => {
+    if (!project || slides.length < 2) return
+    setSelection(current => ({
+      projectId: project.id,
+      index: ((current.projectId === project.id ? current.index : 0) + direction + slides.length) % slides.length,
+    }))
+  }, [project, slides.length])
 
-  // Restart the image carousel whenever the project changes.
+  const goProject = useCallback((direction: number) => {
+    if (!onChange || !canNavProjects) return
+    onChange(projects[(projectIndex + direction + projects.length) % projects.length])
+  }, [onChange, canNavProjects, projects, projectIndex])
+
   useEffect(() => {
-    setImageIndex(0)
+    setSelection({ projectId: project?.id, index: 0 })
+    bodyRef.current?.scrollTo({ top: 0, behavior: 'instant' })
+    copyRef.current?.scrollTo({ top: 0, behavior: 'instant' })
   }, [project?.id])
 
-  // Lock background scroll while open: body overflow AND Lenis (which hijacks
-  // the wheel and would keep scrolling the page behind the modal otherwise).
   useEffect(() => {
-    if (!project) return
-    const prevOverflow = document.body.style.overflow
+    const rail = galleryRef.current
+    const selected = rail?.querySelector<HTMLButtonElement>('[aria-pressed="true"]')
+    if (rail && selected) {
+      rail.scrollTo({ left: Math.max(0, selected.offsetLeft - (rail.clientWidth - selected.offsetWidth) / 2), behavior: 'instant' })
+    }
+  }, [project?.id, imageIndex])
+
+  // The portal keeps the fixed frame outside the translated desktop track.
+  // Lock the page once per opening, rather than unlocking on every project.
+  useEffect(() => {
+    if (!isOpen) return
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    const previousOverflow = document.body.style.overflow
+    const previousPadding = document.body.style.paddingRight
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+    const siblings = Array.from(document.body.children)
+      .filter((element): element is HTMLElement => element instanceof HTMLElement && element !== dialogRef.current?.parentElement)
+      .map(element => ({ element, inert: element.inert }))
+    siblings.forEach(({ element }) => { element.inert = true })
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${parseFloat(getComputedStyle(document.body).paddingRight) + scrollbarWidth}px`
+    }
     document.body.style.overflow = 'hidden'
     const lenis = getLenis()
+    const wasStopped = lenis?.isStopped
     lenis?.stop()
-    return () => {
-      document.body.style.overflow = prevOverflow
-      lenis?.start()
-    }
-  }, [project])
+    closeRef.current?.focus({ preventScroll: true })
 
-  // Keyboard: Esc closes, ←/→ steps through the current project's images.
+    return () => {
+      siblings.forEach(({ element, inert }) => { element.inert = inert })
+      document.body.style.overflow = previousOverflow
+      document.body.style.paddingRight = previousPadding
+      if (!wasStopped) lenis?.start()
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true })
+    }
+  }, [isOpen])
+
   useEffect(() => {
-    if (!project) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-      else if (e.key === 'ArrowLeft') goImage(-1)
-      else if (e.key === 'ArrowRight') goImage(1)
+    if (!isOpen) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        const target = event.target
+        if (target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return
+        if (target instanceof HTMLVideoElement) return
+        event.preventDefault()
+        goImage(event.key === 'ArrowRight' ? 1 : -1)
+      } else if (event.key === 'Tab') {
+        const controls = dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]):not([tabindex="-1"]), a[href], video[controls]')
+        if (!controls?.length) return
+        const first = controls[0]
+        const last = controls[controls.length - 1]
+        if (!dialogRef.current?.contains(document.activeElement)) {
+          event.preventDefault()
+          first.focus()
+        } else if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault()
+          last.focus()
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault()
+          first.focus()
+        }
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [project, onClose, goImage])
+  }, [isOpen, onClose, goImage])
 
-  const active = slides[imageIndex]
-
-  return (
+  return createPortal(
     <AnimatePresence>
       {project ? (
         <motion.div
-          className="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-8"
-          initial={{ opacity: 0 }}
+          className="case-study-overlay"
+          initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${project.title} case study`}
+          transition={{ duration: reduced ? 0 : 0.18 }}
+          onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}
         >
-          <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-black/80 backdrop-blur-md" />
-
           <motion.div
-            className="panel relative z-10 flex max-h-[88vh] w-full max-w-4xl flex-col overflow-hidden bg-[#0a0a0a]"
-            initial={{ y: 32, scale: 0.97, opacity: 0 }}
-            animate={{ y: 0, scale: 1, opacity: 1 }}
-            exit={{ y: 24, scale: 0.98, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+            ref={dialogRef}
+            className="case-study-dialog"
+            initial={reduced ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reduced ? 0 : 8 }}
+            transition={{ duration: reduced ? 0 : 0.18 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
           >
-            <button
-              type="button"
-              aria-label="Close case study"
-              onClick={onClose}
-              className="absolute right-4 top-4 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/60 text-white backdrop-blur transition hover:border-neon-cyan hover:text-neon-cyan"
-            >
-              <span aria-hidden className="text-lg leading-none">×</span>
-            </button>
+            <header className="case-study-header">
+              <div className="flex min-w-0 items-center gap-3">
+                <span aria-hidden className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: project.accent }} />
+                <p className="truncate text-[10px] font-bold uppercase tracking-[0.17em] text-white/60">
+                  {COPY.heading}<span aria-hidden className="mx-3 text-white/20">/</span>{project.type}
+                </p>
+              </div>
+              <button ref={closeRef} type="button" aria-label={COPY.close} onClick={onClose} className="case-study-icon">
+                <span aria-hidden className="text-xl leading-none">×</span>
+              </button>
+            </header>
 
-            <div className="min-h-0 overflow-y-auto">
-              {/* media carousel — cover + gallery, loops */}
-              <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-white/10 bg-black/40">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`${project.id}-${imageIndex}`}
-                    className="absolute inset-0"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {active?.type === 'video' ? (
-                      <video src={asset(active.src)} muted loop autoPlay playsInline className="h-full w-full object-cover" />
-                    ) : active ? (
-                      <img src={asset(active.src)} alt={`${project.title} — view ${imageIndex + 1}`} className="ken-burns h-full w-full object-cover" />
-                    ) : null}
-                  </motion.div>
-                </AnimatePresence>
-
-                <span
-                  className="absolute left-4 top-4 z-10 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-black"
-                  style={{ backgroundColor: project.accent }}
-                >
-                  {project.num} · {project.type}
-                </span>
-
-                {hasMultipleImages ? (
-                  <>
-                    <button
-                      type="button"
-                      aria-label="Previous image"
-                      onClick={() => goImage(-1)}
-                      className="absolute left-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white backdrop-blur transition hover:border-neon-cyan hover:text-neon-cyan"
-                    >
-                      <Chevron dir="left" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Next image"
-                      onClick={() => goImage(1)}
-                      className="absolute right-3 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/50 text-white backdrop-blur transition hover:border-neon-cyan hover:text-neon-cyan"
-                    >
-                      <Chevron dir="right" />
-                    </button>
-                    <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center gap-1.5">
-                      {slides.map((s, i) => (
+            <div ref={bodyRef} data-lenis-prevent className="case-study-body case-study-scroll">
+              <section aria-label={COPY.preview} className="case-study-media">
+                <div className="flex h-10 shrink-0 items-center justify-between gap-3 px-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/50">
+                  <span>{COPY.preview}</span>
+                  <div className="flex items-center gap-4">
+                    {active?.type === 'image' && !active.src.endsWith('.svg') ? <a href={asset(active.src)} target="_blank" rel="noreferrer" className="inline-flex min-h-8 items-center text-white/70 underline underline-offset-4 hover:text-neon-cyan">{COPY.fullSize}<span aria-hidden> ↗</span></a> : null}
+                    <span className="font-mono tracking-[0.1em]">{String(imageIndex + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}</span>
+                  </div>
+                </div>
+                <div className="case-study-stage">
+                  {active ? <MediaPreview key={`${project.id}-${active.src}`} project={project} slide={active} index={imageIndex} /> : null}
+                </div>
+                <div className="case-study-gallery">
+                  <button type="button" aria-label={COPY.previousImage} disabled={!hasMultipleImages} onClick={() => goImage(-1)} className="case-study-icon shrink-0"><Chevron dir="left" /></button>
+                  {hasMultipleImages ? (
+                    <div ref={galleryRef} className="case-study-thumbnails" role="group" aria-label={COPY.selectImage}>
+                      {slides.map((slide, index) => (
                         <button
-                          key={s.src}
+                          key={slide.src}
                           type="button"
-                          aria-label={`Go to image ${i + 1}`}
-                          onClick={() => setImageIndex(i)}
-                          className={cn('h-1.5 rounded-full transition-all duration-300', i === imageIndex ? 'w-6' : 'w-1.5 bg-white/40 hover:bg-white/70')}
-                          style={i === imageIndex ? { backgroundColor: project.accent } : undefined}
-                        />
+                          aria-label={`${COPY.selectImage} ${index + 1}`}
+                          aria-pressed={index === imageIndex}
+                          onClick={() => selectImage(index)}
+                          className={cn('case-study-thumbnail', index === imageIndex && 'case-study-thumbnail-active')}
+                        >
+                          {slide.type === 'image' ? <img src={asset(slide.src)} alt="" loading="lazy" /> : <span className="text-[10px]">{COPY.video}</span>}
+                        </button>
                       ))}
                     </div>
-                  </>
-                ) : null}
-              </div>
+                  ) : (
+                    <p className="px-2 text-center text-xs text-white/50">{project.media.caption ?? `${slides.length} ${COPY.image.toLowerCase()}`}</p>
+                  )}
+                  <button type="button" aria-label={COPY.nextImage} disabled={!hasMultipleImages} onClick={() => goImage(1)} className="case-study-icon shrink-0"><Chevron dir="right" /></button>
+                </div>
+              </section>
 
-              <div className="p-6 sm:p-8">
-                <h2 className="font-heading text-[clamp(1.8rem,4vw,3rem)] uppercase leading-[0.95] text-white">{project.title}</h2>
-                <p className="mt-4 max-w-2xl text-[15px] leading-7 text-white/70">{project.desc}</p>
-
+              <div ref={copyRef} data-lenis-prevent className="case-study-copy case-study-scroll">
+                <h2 id={titleId} className="font-heading text-[clamp(1.7rem,3vw,2.5rem)] leading-[1.08] tracking-[-0.025em] text-white">{project.title}</h2>
+                <section className="mt-7" aria-label={COPY.overview}>
+                  <h3 className="case-study-label">{COPY.overview}</h3>
+                  <p className="mt-3 text-sm leading-6 text-white/70">{project.desc}</p>
+                </section>
                 {project.highlights.length > 0 ? (
-                  <div className="mt-7">
-                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-white/40">Highlights</p>
-                    <ul className="space-y-3">
-                      {project.highlights.map(h => (
-                        <li key={h} className="flex gap-3 text-sm leading-6 text-white/70">
-                          <span aria-hidden className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ backgroundColor: project.accent }} />
-                          {h}
+                  <section className="mt-7" aria-label={COPY.highlights}>
+                    <h3 className="case-study-label">{COPY.highlights}</h3>
+                    <ul className="mt-3 space-y-3">
+                      {project.highlights.map(highlight => (
+                        <li key={highlight} className="flex gap-3 text-[13px] leading-6 text-white/65">
+                          <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full" style={{ backgroundColor: project.accent }} />
+                          {highlight}
                         </li>
                       ))}
                     </ul>
-                  </div>
+                  </section>
                 ) : null}
-
-                <div className="mt-7 flex flex-wrap gap-2">
-                  {project.tags.map(tag => (
-                    <span key={tag} className="rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-white/65">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
+                <section className="mt-7" aria-label={COPY.technologies}>
+                  <h3 className="case-study-label">{COPY.technologies}</h3>
+                  <ul className="mt-3 flex flex-wrap gap-2">
+                    {project.tags.map(tag => <li key={tag} className="rounded-md border border-white/10 bg-white/[0.025] px-2.5 py-1.5 text-[11px] text-white/65">{tag}</li>)}
+                  </ul>
+                </section>
                 {project.url ? (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-black transition hover:bg-neon-cyan"
-                  >
-                    Visit {project.urlLabel || 'project'} <span aria-hidden>-&gt;</span>
+                  <a href={project.url} target="_blank" rel="noreferrer" className="case-study-visit mt-7">
+                    <span>{COPY.visit}</span><span aria-hidden>↗</span>
                   </a>
                 ) : null}
               </div>
             </div>
 
-            {/* project navigation — loops through the full list */}
-            {canNavProjects ? (
-              <div className="flex shrink-0 items-center justify-between gap-3 border-t border-white/10 bg-[#0a0a0a] px-4 py-3 sm:px-6">
-                <button
-                  type="button"
-                  onClick={() => goProject(-1)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-white/70 transition hover:border-neon-cyan hover:text-neon-cyan"
-                >
-                  <Chevron dir="left" />
-                  <span className="hidden sm:inline">Previous</span>
-                </button>
-                <span className="font-mono text-[11px] font-bold tracking-[0.2em] text-white/40">
-                  {String(projectIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => goProject(1)}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-white/70 transition hover:border-neon-cyan hover:text-neon-cyan"
-                >
-                  <span className="hidden sm:inline">Next</span>
-                  <Chevron dir="right" />
-                </button>
-              </div>
-            ) : null}
+            <footer className="case-study-footer">
+              {canNavProjects ? (
+                <>
+                  <button type="button" aria-label={`${COPY.previousProject}: ${previous.title}`} onClick={() => goProject(-1)} className="case-study-project-nav">
+                    <Chevron dir="left" />
+                    <span><span className="block text-xs font-semibold">{COPY.previous}</span><span className="case-study-nav-title">{previous.title}</span></span>
+                  </button>
+                  <p aria-live="polite" aria-atomic="true" className="shrink-0 font-mono text-xs tracking-[0.13em] text-white/50">
+                    <span className="sr-only">{project.title} · </span>{String(projectIndex + 1).padStart(2, '0')} / {String(projects.length).padStart(2, '0')}
+                  </p>
+                  <button type="button" aria-label={`${COPY.nextProject}: ${next.title}`} onClick={() => goProject(1)} className="case-study-project-nav text-right">
+                    <span><span className="block text-xs font-semibold">{COPY.next}</span><span className="case-study-nav-title">{next.title}</span></span>
+                    <Chevron dir="right" />
+                  </button>
+                </>
+              ) : <span className="text-xs text-white/50">{COPY.heading}</span>}
+            </footer>
           </motion.div>
         </motion.div>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
+  )
+}
+
+function MediaPreview({ project, slide, index }: { project: Project; slide: Slide; index: number }) {
+  const [failed, setFailed] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const placeholder = slide.type === 'image' && slide.src.endsWith('.svg')
+
+  if (placeholder || failed) {
+    return (
+      <div className="case-study-empty">
+        <span className="mb-4 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/45">{failed ? COPY.unavailable : COPY.comingSoon}</span>
+        <p className="max-w-sm text-balance font-heading text-[clamp(1.6rem,3vw,2.8rem)] leading-tight text-white/80">{project.title}</p>
+      </div>
+    )
+  }
+
+  if (slide.type === 'video') {
+    return <video src={asset(slide.src)} poster={asset(project.media.cover)} aria-label={`${project.title} ${COPY.video.toLowerCase()}`} controls playsInline preload="metadata" onError={() => setFailed(true)} className="h-full w-full object-contain" />
+  }
+
+  return (
+    <img
+      src={asset(slide.src)}
+      alt={slide.src === project.media.cover && project.media.coverAlt ? project.media.coverAlt : `${project.title} · ${COPY.image.toLowerCase()} ${index + 1}`}
+      decoding="async"
+      onLoad={() => setLoaded(true)}
+      onError={() => setFailed(true)}
+      aria-busy={!loaded}
+      className={cn('h-full w-full object-contain transition-opacity duration-150 motion-reduce:transition-none', loaded ? 'opacity-100' : 'opacity-0')}
+    />
   )
 }

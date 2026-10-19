@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { PanelAmbient } from '@/components/backgrounds/PanelAmbient'
 import MobileNav from '@/components/layouts/MobileNav'
 import SmoothScroll from '@/components/providers/SmoothScroll'
 import { ContactCard } from '@/components/sections/ContactCard'
+import { EducationList } from '@/components/sections/EducationList'
 import { ExperienceList } from '@/components/sections/ExperienceList'
 import { HeroIntro } from '@/components/sections/HeroIntro'
 import { SkillsGrid } from '@/components/sections/SkillsGrid'
@@ -27,23 +29,27 @@ export default function MobilePortfolio() {
 
         <section
           id="intro"
-          className="section-shell grid min-h-screen items-start gap-10 pb-16 pt-[max(6rem,calc(4.5rem+env(safe-area-inset-top)))] sm:gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+          className="section-shell relative grid min-h-screen items-start gap-10 pb-16 pt-[max(6rem,calc(4.5rem+env(safe-area-inset-top)))] sm:gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
         >
+          <PanelAmbient panel="intro" />
           <HeroIntro />
           <ProjectSpotlight onOpen={setSelected} className="mx-auto w-full max-w-[30rem] lg:mx-0" />
         </section>
 
-        <section id="experience" className="bg-white py-16 text-black sm:py-20">
-          <div className="section-shell">
+        <section id="experience" className="relative overflow-hidden bg-white py-16 text-black sm:py-20">
+          <PanelAmbient panel="experience" />
+          <div className="section-shell relative z-10">
             <Reveal>
               <SectionHeader kicker="Journey" title="Professional" accent="Milestones" tone="light" />
             </Reveal>
             <ExperienceList />
+            <EducationList />
           </div>
         </section>
 
-        <section id="projects" className="py-16 sm:py-20">
-          <div className="section-shell">
+        <section id="projects" className="relative overflow-hidden py-16 sm:py-20">
+          <PanelAmbient panel="projects" />
+          <div className="section-shell relative z-10">
             <Reveal>
               <SectionHeader kicker="Selected Work" title="Projects" />
             </Reveal>
@@ -57,8 +63,9 @@ export default function MobilePortfolio() {
           </div>
         </section>
 
-        <section id="stack" className="bg-[#080808] py-16 sm:py-20">
-          <div className="section-shell">
+        <section id="stack" className="relative overflow-hidden bg-[#080808] py-16 sm:py-20">
+          <PanelAmbient panel="stack" />
+          <div className="section-shell relative z-10">
             <Reveal>
               <SectionHeader kicker="Technology" title="Technical" accent="Arsenal" />
             </Reveal>
@@ -66,8 +73,9 @@ export default function MobilePortfolio() {
           </div>
         </section>
 
-        <section id="contact" className="py-16 sm:py-20">
-          <div className="section-shell">
+        <section id="contact" className="relative overflow-hidden py-16 sm:py-20">
+          <PanelAmbient panel="contact" />
+          <div className="section-shell relative z-10">
             <Reveal>
               <SectionHeader kicker="Connect" title="Start a" accent="Conversation" />
             </Reveal>

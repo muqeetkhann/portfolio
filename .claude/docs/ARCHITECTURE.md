@@ -37,10 +37,16 @@ horizontally. Segment 2 is a *vertical* sub-scroll inside the projects panel, so
 the track parks, scrolls the card list, then continues sideways. Progress rail +
 `01/05` counter are fixed overlays driven by `activeIndex`/`progress`.
 
-Snapping is hand-rolled (`scheduleSnap`): ScrollTrigger's built-in `snap` never
-fires because Lenis owns the scroll position, so a debounced scroll listener
-glides to the nearest `NAV_TIME` rest point via `scrollToY()`. The projects
-sub-scroll window (`PROJECTS_FREE`) is deliberately exempt.
+Wheel input follows Lenis without automatic snapping: snapping to the nearest
+panel used to pull small gestures back to the same panel. Navigation still
+lands at the exact `NAV_TIME` positions via `scrollToY()`.
+
+Experience and Stack use native `PanelScrollArea` containers. Lenis enables
+`allowNestedScroll`, so those containers consume input while content remains
+in the requested direction and hand it back to the track at their boundaries.
+Keep `data-lenis-prevent` and `overscroll-contain` off these panel containers;
+together they trap scrolling even after the inner content reaches an edge.
+The modal keeps its separate scroll containment and page lock.
 
 Under `prefers-reduced-motion` the whole timeline is skipped and the panels
 stack vertically (`panelBase` swaps to `w-full min-h-screen`), with nav falling

@@ -1,19 +1,21 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { PanelAmbient } from '@/components/backgrounds/PanelAmbient'
 import { DESKTOP_NAV, DesktopNav } from '@/components/layouts/DesktopNav'
-import SmoothScroll, { getLenis, scrollToTarget, scrollToY } from '@/components/providers/SmoothScroll'
+import SmoothScroll, { scrollToTarget, scrollToY } from '@/components/providers/SmoothScroll'
 import { ContactCard } from '@/components/sections/ContactCard'
+import { EducationList } from '@/components/sections/EducationList'
 import { ExperienceList } from '@/components/sections/ExperienceList'
 import { HeroIntro } from '@/components/sections/HeroIntro'
 import { SkillsGrid } from '@/components/sections/SkillsGrid'
 import { ProjectCard } from '@/components/shared/ProjectCard'
 import { ProjectModal } from '@/components/shared/ProjectModal'
+import { PanelScrollArea } from '@/components/shared/PanelScrollArea'
 import ProjectSpotlight from '@/components/shared/ProjectSpotlight'
 import { SectionHeader } from '@/components/shared/SectionHeader'
 import WhatsAppButton from '@/components/shared/WhatsAppButton'
-import HeroCanvas from '@/components/three/HeroCanvas'
-import { PERSONAL, PROJECTS, type Project } from '@/lib/data'
+import { JOURNEY_COPY, PERSONAL, PROJECTS, SKILLS_REGION_LABEL, type Project } from '@/lib/data'
 import { gsap, ScrollTrigger, SplitText, useGSAP } from '@/lib/gsap'
 import { useReducedMotion } from '@/lib/reduced-motion'
 import { cn } from '@/lib/utils'
@@ -22,8 +24,6 @@ import { cn } from '@/lib/utils'
 // Segments (duration 1 each): 0 intro→exp, 1 exp→proj, 2 proj-vertical, 3 proj→stack, 4 stack→contact.
 const NAV_TIME = [0, 1, 2, 4, 5]
 const TL_DURATION = 5
-/** Timeline window (in NAV_TIME units) where projects sub-scroll vertically. */
-const PROJECTS_FREE = [2 / TL_DURATION, 3 / TL_DURATION]
 
 const SHELL = 'mx-auto w-full max-w-[92rem] px-8 2xl:max-w-[100rem] 2xl:px-10'
 
@@ -85,38 +85,14 @@ export default function DesktopPortfolio() {
         },
       })
 
-      // ── Section snapping ──────────────────────────────────────────────
-      // ScrollTrigger's built-in `snap` never fires here because Lenis owns
-      // the scroll position (its scroll-end detection never triggers). So we
-      // snap through Lenis ourselves: when the wheel/momentum settles, glide
-      // to the nearest section rest point. The projects panel is a vertical
-      // sub-scroll and stays free so cards can be browsed.
-      const snapPoints = NAV_TIME.map(t => t / TL_DURATION) // [0, .2, .4, .8, 1]
-      let snapTimer: ReturnType<typeof setTimeout> | undefined
-
-      const scheduleSnap = () => {
-        clearTimeout(snapTimer)
-        snapTimer = setTimeout(() => {
-          const st = stRef.current
-          if (!st || !st.isActive) return
-          const p = st.progress
-          if (p <= 0.001 || p >= 0.999) return //                       already parked at an edge
-          if (p > PROJECTS_FREE[0] && p < PROJECTS_FREE[1]) return //   browsing projects
-          const targetP = snapPoints.reduce((a, b) => (Math.abs(b - p) < Math.abs(a - p) ? b : a))
-          const targetScroll = st.start + targetP * (st.end - st.start)
-          if (Math.abs(window.scrollY - targetScroll) < 4) return //    close enough
-          scrollToY(targetScroll, 0.7)
-        }, 140)
-      }
-      window.addEventListener('scroll', scheduleSnap, { passive: true })
+      // Follow wheel input without snapping backward after small gestures.
+      // Navigation still lands exactly on a panel through NAV_TIME below.
 
       // Recompute once fonts/images settle.
       const refresh = () => ScrollTrigger.refresh()
       if (document.fonts?.ready) document.fonts.ready.then(refresh)
 
       return () => {
-        clearTimeout(snapTimer)
-        window.removeEventListener('scroll', scheduleSnap)
         stRef.current?.kill()
         stRef.current = null
       }
@@ -190,31 +166,36 @@ export default function DesktopPortfolio() {
           <div ref={trackRef} className={cn('flex', reduced ? 'flex-col' : 'h-screen flex-nowrap')}>
             {/* ── 0 · INTRO ── */}
             <section id="panel-0" className={cn(panelBase, 'pt-28 xl:pt-32')}>
-              <HeroCanvas className="absolute inset-y-0 right-[-8%] z-0 w-[62%] opacity-80" />
+              <PanelAmbient panel="intro" active={activeIndex === 0} variant="desktop" />
               <div className={cn(SHELL, 'relative z-10 grid w-full grid-cols-[minmax(0,1fr)_minmax(340px,460px)] items-center gap-14')}>
                 <HeroIntro variant="desktop" titleRef={heroTitleRef} />
-                <ProjectSpotlight onOpen={setSelected} />
+                <ProjectSpotlight onOpen={setSelected} active={activeIndex === 0} />
               </div>
             </section>
 
             {/* ── 1 · EXPERIENCE ── */}
             <section id="panel-1" className={cn(panelBase, 'bg-white pt-28 text-black xl:pt-32')}>
-              <div className={cn(SHELL, 'w-full')}>
-                <SectionHeader kicker="Journey" title="Professional" accent="Milestones" tone="light" className="mb-8" />
-                <ExperienceList variant="desktop" />
+              <PanelAmbient panel="experience" active={activeIndex === 1} variant="desktop" />
+              <div className={cn(SHELL, 'relative z-10 flex w-full flex-col pb-10', !reduced && 'h-full min-h-0')}>
+                <SectionHeader kicker="Journey" title="Professional" accent="Milestones" tone="light" className="mb-8 shrink-0" active={activeIndex === 1} variant="desktop" />
+                <PanelScrollArea label={JOURNEY_COPY.regionLabel} enabled={!reduced}>
+                  <ExperienceList variant="desktop" />
+                  <EducationList variant="desktop" />
+                </PanelScrollArea>
               </div>
             </section>
 
             {/* ── 2 · PROJECTS (vertical sub-scroll) ── */}
             <section id="panel-2" className={cn(panelBase, 'flex-col !items-stretch pt-28 xl:pt-32')}>
-              <div className={cn(SHELL, 'flex w-full items-end justify-between pb-6')}>
-                <SectionHeader kicker="Selected Work" title="Projects" className="mb-8" />
+              <PanelAmbient panel="projects" active={activeIndex === 2} variant="desktop" />
+              <div className={cn(SHELL, 'relative z-10 flex w-full items-end justify-between pb-6')}>
+                <SectionHeader kicker="Selected Work" title="Projects" className="mb-8" active={activeIndex === 2} variant="desktop" />
                 <p className="hidden text-[10px] font-bold uppercase tracking-[0.2em] text-white/35 xl:block">
                   {PROJECTS.length} builds · scroll to explore
                 </p>
               </div>
               {/* viewport window that the inner list scrolls within */}
-              <div className={cn('relative w-full flex-1', reduced ? '' : 'overflow-hidden')}>
+              <div className={cn('relative z-10 w-full flex-1', reduced ? '' : 'overflow-hidden')}>
                 <div ref={projectsInnerRef} className={cn(SHELL, reduced && 'pb-24')}>
                   <div className="grid grid-cols-2 gap-5 2xl:grid-cols-3">
                     {PROJECTS.map(project => (
@@ -227,16 +208,20 @@ export default function DesktopPortfolio() {
 
             {/* ── 3 · STACK ── */}
             <section id="panel-3" className={cn(panelBase, 'bg-[#080808] pt-28 xl:pt-32')}>
-              <div className={cn(SHELL, 'w-full')}>
-                <SectionHeader kicker="Technology" title="Technical" accent="Arsenal" className="mb-8" />
-                <SkillsGrid variant="desktop" />
+              <PanelAmbient panel="stack" active={activeIndex === 3} variant="desktop" />
+              <div className={cn(SHELL, 'relative z-10 flex w-full flex-col pb-10', !reduced && 'h-full min-h-0')}>
+                <SectionHeader kicker="Technology" title="Technical" accent="Arsenal" className="mb-8 shrink-0" active={activeIndex === 3} variant="desktop" />
+                <PanelScrollArea label={SKILLS_REGION_LABEL} enabled={!reduced}>
+                  <SkillsGrid variant="desktop" />
+                </PanelScrollArea>
               </div>
             </section>
 
             {/* ── 4 · CONTACT ── */}
             <section id="panel-4" className={cn(panelBase, 'pt-28 xl:pt-32')}>
-              <div className={cn(SHELL, 'w-full')}>
-                <SectionHeader kicker="Connect" title="Start a" accent="Conversation" className="mb-8" />
+              <PanelAmbient panel="contact" active={activeIndex === 4} variant="desktop" />
+              <div className={cn(SHELL, 'relative z-10 w-full')}>
+                <SectionHeader kicker="Connect" title="Start a" accent="Conversation" className="mb-8" active={activeIndex === 4} variant="desktop" />
                 <div className="grid grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] gap-6">
                   <ContactCard variant="desktop" />
                   <div className="relative flex h-fit min-w-0 flex-col justify-between gap-10 rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(188,19,254,0.14),transparent_45%),rgba(255,255,255,0.03)] p-8 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">

@@ -31,10 +31,12 @@ const projects = [
   { slug: 'travaleo', label: 'Travaleo', accent: '#FDE68A' },
   { slug: 'singularity', label: 'Singularity', accent: '#6EE7B7' },
   { slug: 'blockyfy', label: 'Blockyfy', accent: '#6EE7B7' },
-  { slug: 'nextsense', label: 'NextSense', accent: '#93C5FD' },
+  { slug: 'nextsense', label: 'NextSense Solutions', accent: '#93C5FD' },
   { slug: 'regen-digital', label: 'Regen Digital', accent: '#C4B5FD' },
-  { slug: 'ingles-academics', label: 'Inglés Academics', accent: '#6EE7B7' },
-  { slug: 'ingles-crm', label: 'Inglés CRM', accent: '#93C5FD' },
+  { slug: 'ingles-academics', label: 'Inglés Ahorita Academics', accent: '#6EE7B7' },
+  { slug: 'ingles-crm', label: 'Inglés Ahorita CRM', accent: '#93C5FD' },
+  { slug: 'trippak', label: 'TripPak', accent: '#C4B5FD' },
+  { slug: 'the-flame', label: 'The Flame', accent: '#FCA5A5' },
 ]
 
 const exists = async (p) => {
