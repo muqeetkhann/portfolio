@@ -1,97 +1,33 @@
 'use client'
 
-import type { RefObject } from 'react'
+import { ArrowRightIcon, ArrowUpRightIcon } from '@phosphor-icons/react'
 import { MagneticButton } from '@/components/shared/MagneticButton'
-import { HERO_DOMAINS, PERSONAL } from '@/lib/data'
-import { cn } from '@/lib/utils'
+import { HERO_COPY, PERSONAL } from '@/lib/data'
 
-const NAME_PARTS = PERSONAL.name.split(' ')
-const LAST_NAME = NAME_PARTS[NAME_PARTS.length - 1] ?? ''
-const FIRST_NAMES = NAME_PARTS.slice(0, -1).join(' ')
-
-const CTAS = [
-  { label: 'GitHub', href: PERSONAL.github, external: true, tone: 'bg-white text-black hover:bg-neon-cyan' },
-  { label: "Let's talk", href: `mailto:${PERSONAL.email}`, external: false, tone: 'border border-white/15 text-white hover:border-neon-cyan hover:text-neon-cyan' },
-  { label: 'Resume PDF', href: PERSONAL.resume, external: true, tone: 'border border-neon-purple/40 text-neon-purple hover:bg-neon-purple/10' },
-]
-
-/**
- * Hero copy block — availability + location, name, role + domains, bio, CTAs.
- * Shared by both layouts; `variant` tunes the type scale and, on desktop, opts
- * into the GSAP entrance (`data-hero-fade` targets + magnetic CTAs).
- */
-export function HeroIntro({
-  variant = 'mobile',
-  titleRef,
-}: {
-  variant?: 'desktop' | 'mobile'
-  titleRef?: RefObject<HTMLHeadingElement | null>
-}) {
-  const isDesktop = variant === 'desktop'
-  const fade: Record<string, string> = isDesktop ? { 'data-hero-fade': '' } : {}
-
+/** The shared introduction owns copy; the surrounding hero owns composition. */
+export function HeroIntro({ onExplore }: { onExplore: () => void }) {
   return (
-    <div className={cn('relative', isDesktop ? 'min-w-0 max-w-4xl' : 'max-w-3xl')}>
-      <div
-        className={cn(
-          'absolute top-10 rounded-full bg-neon-cyan/10 blur-3xl',
-          isDesktop ? '-left-10 h-28 w-28' : '-left-6 hidden h-24 w-24 sm:block',
-        )}
-      />
-
-      <div {...fade} className={cn('flex flex-wrap items-center gap-x-5 gap-y-2 text-[10px] font-bold uppercase tracking-[0.24em]', isDesktop ? 'mb-4' : 'mb-6')}>
-        <span className="inline-flex items-center gap-2 text-neon-cyan">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-neon-cyan/70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-neon-cyan" />
-          </span>
-          {PERSONAL.availability}
-        </span>
-        <span className="text-white/35">{PERSONAL.location}</span>
-      </div>
-
-      <h1
-        ref={titleRef}
-        className={cn(
-          'font-heading uppercase leading-[0.86] tracking-[-0.05em]',
-          isDesktop ? 'text-[clamp(3rem,4.4vw,6.4rem)]' : 'text-[clamp(2.2rem,9vw,6rem)]',
-        )}
-      >
-        {FIRST_NAMES} <span className="masked-text-dark">{LAST_NAME}</span>
-      </h1>
-
-      <div {...fade} className={cn('flex flex-wrap items-center gap-x-4 gap-y-3', isDesktop ? 'mt-4' : 'mt-5')}>
-        <p className={cn('font-semibold uppercase tracking-[0.1em] text-neon-cyan/90', isDesktop ? 'text-[17px]' : 'text-[15px] sm:text-lg')}>
-          {PERSONAL.role}
-        </p>
-        <span className="hidden h-4 w-px bg-white/15 sm:inline-block" />
-        <ul className="flex flex-wrap gap-2">
-          {HERO_DOMAINS.map(domain => (
-            <li key={domain} className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
-              {domain}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <p {...fade} className={cn('max-w-xl text-balance text-base font-medium leading-7 text-white/75 sm:text-lg', isDesktop ? 'mt-4' : 'mt-6')}>
-        {PERSONAL.bio}
+    <div className="hero-intro">
+      <p className="hero-identity" data-hero-reveal>
+        <span>{PERSONAL.name}</span><span aria-hidden className="hero-identity-dot" /><span>{PERSONAL.role}</span>
       </p>
-
-      <div {...fade} className={cn('flex flex-wrap gap-3', isDesktop ? 'mt-6' : 'mt-8')}>
-        {CTAS.map(cta => {
-          const link = (
-            <a
-              key={cta.label}
-              href={cta.href}
-              {...(cta.external ? { target: '_blank', rel: 'noreferrer' } : {})}
-              className={cn('rounded-full px-5 py-3 text-[11px] font-bold uppercase tracking-[0.18em] transition', isDesktop && 'inline-block', cta.tone)}
-            >
-              {cta.label}
-            </a>
-          )
-          return isDesktop ? <MagneticButton key={cta.label}>{link}</MagneticButton> : link
-        })}
+      <h1 className="hero-title" aria-label={HERO_COPY.lines.join(' ')}>
+        {HERO_COPY.lines.map((line, index) => (
+          <span className="hero-title-mask" key={line}><span className="hero-title-line" data-hero-line>
+            {index === HERO_COPY.lines.length - 1 ? <>{line.slice(0, -HERO_COPY.accent.length)}<span className="text-neon-cyan">{HERO_COPY.accent}</span></> : line}
+          </span></span>
+        ))}
+      </h1>
+      <p className="hero-description" data-hero-reveal>{HERO_COPY.description}</p>
+      <div className="hero-actions" data-hero-reveal>
+        <MagneticButton strength={0.12}>
+          <a className="primary-action" href={`mailto:${PERSONAL.email}`}>
+            {HERO_COPY.contact}<span className="primary-action-icon"><ArrowUpRightIcon size={22} aria-hidden /></span>
+          </a>
+        </MagneticButton>
+        <button type="button" className="text-action" onClick={onExplore}>
+          {HERO_COPY.explore}<ArrowRightIcon size={22} aria-hidden />
+        </button>
       </div>
     </div>
   )

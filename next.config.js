@@ -2,6 +2,7 @@
 const isStaticExport = process.env.STATIC_EXPORT === 'true'
 
 const nextConfig = {
+  experimental: { optimizePackageImports: ['@phosphor-icons/react'] },
   reactStrictMode: true,
   images: {
     unoptimized: isStaticExport,

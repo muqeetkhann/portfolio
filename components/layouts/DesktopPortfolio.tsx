@@ -1,242 +1,154 @@
 'use client'
 
-import { useRef, useState } from 'react'
-import { PanelAmbient } from '@/components/backgrounds/PanelAmbient'
-import { DESKTOP_NAV, DesktopNav } from '@/components/layouts/DesktopNav'
+import { useEffect, useRef, useState, type FocusEvent } from 'react'
+import { DesktopNav } from '@/components/layouts/DesktopNav'
 import SmoothScroll, { scrollToTarget, scrollToY } from '@/components/providers/SmoothScroll'
+import { BackgroundSection } from '@/components/sections/BackgroundSection'
+import type { BackgroundSequenceController } from '@/components/sections/BackgroundSequence'
 import { ContactCard } from '@/components/sections/ContactCard'
-import { EducationList } from '@/components/sections/EducationList'
-import { ExperienceList } from '@/components/sections/ExperienceList'
-import { HeroIntro } from '@/components/sections/HeroIntro'
-import { SkillsGrid } from '@/components/sections/SkillsGrid'
-import { ProjectCard } from '@/components/shared/ProjectCard'
+import { HeroSection } from '@/components/sections/HeroSection'
+import { ProjectGrid } from '@/components/sections/ProjectGrid'
 import { ProjectModal } from '@/components/shared/ProjectModal'
-import { PanelScrollArea } from '@/components/shared/PanelScrollArea'
-import ProjectSpotlight from '@/components/shared/ProjectSpotlight'
 import { SectionHeader } from '@/components/shared/SectionHeader'
+import { SiteFooter } from '@/components/shared/SiteFooter'
 import WhatsAppButton from '@/components/shared/WhatsAppButton'
-import { JOURNEY_COPY, PERSONAL, PROJECTS, SKILLS_REGION_LABEL, type Project } from '@/lib/data'
-import { gsap, ScrollTrigger, SplitText, useGSAP } from '@/lib/gsap'
-import { useReducedMotion } from '@/lib/reduced-motion'
+import { NAVIGATION, PROJECTS, UI_COPY, type Project } from '@/lib/data'
+import { gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
+import { prefersReducedMotion, useReducedMotion } from '@/lib/reduced-motion'
+import { backgroundSequenceProgress } from '@/lib/scroll-effects'
 import { cn } from '@/lib/utils'
 
-// Timeline time (out of TL_DURATION) at which each panel is settled in view.
-// Segments (duration 1 each): 0 intro→exp, 1 exp→proj, 2 proj-vertical, 3 proj→stack, 4 stack→contact.
-const NAV_TIME = [0, 1, 2, 4, 5]
-const TL_DURATION = 5
+const PROJECT_PANEL = NAVIGATION.findIndex(item => item.id === 'projects')
+const BACKGROUND_PANEL = NAVIGATION.findIndex(item => item.id === 'background')
+const LAST_PANEL = NAVIGATION.length - 1
 
-const SHELL = 'mx-auto w-full max-w-[92rem] px-8 2xl:max-w-[100rem] 2xl:px-10'
-
-function activeFromTime(t: number) {
-  if (t < 0.5) return 0
-  if (t < 1.5) return 1
-  if (t < 3.5) return 2
-  if (t < 4.5) return 3
-  return 4
-}
-
+/** Horizontal transitions and centered vertical segments share one timeline. */
 export default function DesktopPortfolio() {
   const reduced = useReducedMotion()
   const pinRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const projectsInnerRef = useRef<HTMLDivElement>(null)
-  const heroTitleRef = useRef<HTMLHeadingElement>(null)
+  const backgroundController = useRef<BackgroundSequenceController | null>(null)
+  const backgroundDistance = useRef(0)
+  const progressRef = useRef<HTMLDivElement>(null)
   const stRef = useRef<ScrollTrigger | null>(null)
-
+  const offsets = useRef(NAVIGATION.map((_, index) => index))
   const [activeIndex, setActiveIndex] = useState(0)
-  const [progress, setProgress] = useState(0)
   const [selected, setSelected] = useState<Project | null>(null)
 
-  useGSAP(
-    () => {
-      if (reduced) return
-      const track = trackRef.current
-      const pin = pinRef.current
-      const inner = projectsInnerRef.current
-      if (!track || !pin || !inner) return
-
-      const panelX = (i: number) => -(i * window.innerWidth)
-      const innerDist = () => {
-        const viewport = inner.parentElement?.clientHeight ?? window.innerHeight
-        return Math.max(0, inner.scrollHeight - viewport)
-      }
-
-      const tl = gsap.timeline({ defaults: { ease: 'none', duration: 1 } })
-      tl.to(track, { x: () => panelX(1) }) //         seg0: intro → experience
-        .to(track, { x: () => panelX(2) }) //         seg1: experience → projects
-        .to(inner, { y: () => -innerDist() }) //      seg2: vertical sub-scroll inside projects
-        .to(track, { x: () => panelX(3) }) //         seg3: projects → stack
-        .to(track, { x: () => panelX(4) }) //         seg4: stack → contact
-
-      stRef.current = ScrollTrigger.create({
-        trigger: pin,
-        start: 'top top',
-        end: () => '+=' + window.innerWidth * TL_DURATION,
-        pin: true,
-        // Lenis already smooths the input; keep scrub tight so the track tracks
-        // the wheel closely instead of lagging ~1s behind (felt sluggish).
-        scrub: 0.5,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        animation: tl,
-        onUpdate: self => {
-          setProgress(self.progress)
-          setActiveIndex(activeFromTime(self.progress * TL_DURATION))
-        },
+  useGSAP(() => {
+    if (reduced || prefersReducedMotion()) return
+    const track = trackRef.current
+    const pin = pinRef.current
+    const inner = projectsInnerRef.current
+    if (!track || !pin || !inner) return
+    const timeline = gsap.timeline({ defaults: { ease: 'none', immediateRender: false } })
+    const backgroundPhase = { progress: 0 }
+    const measure = () => {
+      const width = window.innerWidth
+      const distance = Math.max(1, inner.scrollHeight - (inner.parentElement?.clientHeight ?? window.innerHeight))
+      backgroundDistance.current = backgroundController.current?.measure() ?? 0
+      // A wheel pixel moves a project-list pixel instead of compressing all
+      // seventeen projects into a single viewport's worth of scrolling.
+      timeline.clear()
+      offsets.current = [0]
+      let cursor = 0
+      NAVIGATION.forEach((_, index) => {
+        if (index === PROJECT_PANEL) {
+          timeline.fromTo(inner, { y: 0 }, { y: -distance, duration: distance }, cursor)
+          cursor += distance
+        }
+        if (index === BACKGROUND_PANEL && backgroundDistance.current > 0) {
+          // Park the horizontal track, exactly as the Projects segment does.
+          timeline.fromTo(backgroundPhase, { progress: 0 }, { progress: 1, duration: backgroundDistance.current }, cursor)
+          cursor += backgroundDistance.current
+        }
+        if (index < LAST_PANEL) {
+          timeline.fromTo(track, { x: -width * index }, { x: -width * (index + 1), duration: width }, cursor)
+          cursor += width
+          offsets.current.push(cursor)
+        }
       })
+    }
+    measure()
+    const update = (self: ScrollTrigger) => {
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${self.progress})`
+      const position = self.progress * offsets.current[LAST_PANEL]
+      backgroundController.current?.render(backgroundSequenceProgress(position, offsets.current[BACKGROUND_PANEL], backgroundDistance.current))
+      const width = window.innerWidth
+      const index = offsets.current.reduce((current, offset, panelIndex) => position >= offset - width * 0.5 ? panelIndex : current, 0)
+      setActiveIndex(previous => previous === index ? previous : index)
+    }
+    stRef.current = ScrollTrigger.create({
+      trigger: pin, start: 'top top', end: () => `+=${offsets.current[LAST_PANEL]}`,
+      pin: true, scrub: true, anticipatePin: 1, invalidateOnRefresh: true, animation: timeline,
+      onRefreshInit: measure,
+      onUpdate: update,
+      onRefresh: update,
+    })
+    let cancelled = false
+    document.fonts?.ready.then(() => { if (!cancelled) ScrollTrigger.refresh() })
+    return () => { cancelled = true; stRef.current?.kill(); stRef.current = null }
+  }, { dependencies: [reduced], scope: pinRef, revertOnUpdate: true })
 
-      // Follow wheel input without snapping backward after small gestures.
-      // Navigation still lands exactly on a panel through NAV_TIME below.
-
-      // Recompute once fonts/images settle.
-      const refresh = () => ScrollTrigger.refresh()
-      if (document.fonts?.ready) document.fonts.ready.then(refresh)
-
-      return () => {
-        stRef.current?.kill()
-        stRef.current = null
-      }
-    },
-    { dependencies: [reduced], scope: pinRef },
-  )
-
-  // Hero entrance: masked line reveal on the headline + staggered fade-ups.
-  // Waits for fonts so SplitText measures correct line breaks.
-  useGSAP(
-    () => {
-      if (reduced) return
-      const h1 = heroTitleRef.current
-      if (!h1) return
-      let split: SplitText | undefined
-      // fonts.ready is async, so this can outlive the effect (StrictMode runs
-      // it twice) — the cancelled flag ensures only the live effect animates,
-      // and fromTo keeps targets explicit so a re-run can't capture opacity 0.
-      let cancelled = false
-      const run = () => {
-        if (cancelled) return
-        split = new SplitText(h1, { type: 'lines', mask: 'lines' })
-        gsap.from(split.lines, { yPercent: 110, duration: 0.9, ease: 'power3.out', stagger: 0.12 })
-        gsap.fromTo(
-          '[data-hero-fade]',
-          { opacity: 0, y: 22 },
-          { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', stagger: 0.09, delay: 0.35 },
-        )
-      }
-      if (document.fonts) document.fonts.ready.then(run)
-      else run()
-      return () => {
-        cancelled = true
-        split?.revert()
-      }
-    },
-    { dependencies: [reduced], scope: pinRef },
-  )
+  useEffect(() => {
+    if (!reduced) return
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) setActiveIndex(Number(entry.target.id.replace('panel-', ''))) })
+    }, { rootMargin: '-20% 0px -60% 0px' })
+    pinRef.current?.querySelectorAll('section[id^="panel-"]').forEach(section => observer.observe(section))
+    return () => observer.disconnect()
+  }, [reduced])
 
   const navigate = (index: number) => {
-    if (reduced) {
-      scrollToTarget(`#panel-${index}`)
-      return
-    }
-    const st = stRef.current
-    if (!st) return
-    scrollToY(st.start + (NAV_TIME[index] / TL_DURATION) * (st.end - st.start))
+    if (reduced) { scrollToTarget(`#panel-${index}`); return }
+    const trigger = stRef.current
+    if (trigger) scrollToY(trigger.start + offsets.current[index], 0.85)
   }
-
-  const panelBase = cn(
-    'section-inner relative overflow-hidden',
-    reduced ? 'w-full min-h-screen' : 'h-screen w-screen flex-shrink-0',
-  )
+  const focusProject = (event: FocusEvent<HTMLDivElement>) => {
+    const target = event.target
+    const inner = projectsInnerRef.current
+    const trigger = stRef.current
+    if (reduced || !inner || !trigger) return
+    const card = target.closest<HTMLElement>('.project-card')
+    const viewport = inner.parentElement
+    if (!card || !viewport) return
+    const bounds = target.getBoundingClientRect()
+    const frame = viewport.getBoundingClientRect()
+    if (bounds.top >= frame.top && bounds.bottom <= frame.bottom) return
+    // Keep keyboard navigation on the same timeline as wheel navigation.
+    // overflow:clip prevents native focus from creating a second inner scroll.
+    const distance = Math.max(0, inner.scrollHeight - viewport.clientHeight)
+    const wrapper = card.closest<HTMLElement>('[data-project-reveal]') ?? card
+    requestAnimationFrame(() => scrollToY(trigger.start + offsets.current[PROJECT_PANEL] + Math.min(distance, wrapper.offsetTop), 0))
+  }
+  const panel = (index: number) => ({
+    id: `panel-${index}`,
+    inert: !reduced && activeIndex !== index,
+    className: cn('desktop-panel', reduced && 'desktop-panel-static'),
+  })
 
   return (
     <SmoothScroll>
       <DesktopNav activeIndex={activeIndex} onNavigate={navigate} />
       <WhatsAppButton />
       <ProjectModal project={selected} projects={PROJECTS} onChange={setSelected} onClose={() => setSelected(null)} />
-
-      {/* progress rail + counter */}
-      <div className="fixed bottom-0 left-0 z-40 h-[2px] w-full bg-white/8">
-        <div className="h-full bg-neon-cyan transition-[width] duration-150" style={{ width: `${progress * 100}%` }} />
-      </div>
-      <div className="fixed bottom-5 right-[clamp(20px,4%,60px)] z-40 text-[10px] font-bold tracking-[0.3em] text-white/35">
-        {String(activeIndex + 1).padStart(2, '0')} / {String(DESKTOP_NAV.length).padStart(2, '0')}
-      </div>
-
-      <main className="bg-black text-white">
-        <div ref={pinRef} className={cn(reduced ? 'w-full' : 'h-screen w-screen overflow-hidden')}>
-          <div ref={trackRef} className={cn('flex', reduced ? 'flex-col' : 'h-screen flex-nowrap')}>
-            {/* ── 0 · INTRO ── */}
-            <section id="panel-0" className={cn(panelBase, 'pt-28 xl:pt-32')}>
-              <PanelAmbient panel="intro" active={activeIndex === 0} variant="desktop" />
-              <div className={cn(SHELL, 'relative z-10 grid w-full grid-cols-[minmax(0,1fr)_minmax(340px,460px)] items-center gap-14')}>
-                <HeroIntro variant="desktop" titleRef={heroTitleRef} />
-                <ProjectSpotlight onOpen={setSelected} active={activeIndex === 0} />
+      {!reduced ? <div className="scroll-progress" aria-hidden><div ref={progressRef} /></div> : null}
+      <main id="main-content" tabIndex={-1}>
+        <div ref={pinRef} className={cn(!reduced && 'desktop-pin')}>
+          <div ref={trackRef} className={cn('desktop-track', reduced && 'desktop-track-static')}>
+            <section {...panel(0)} className={cn(panel(0).className, 'hero-panel')}>
+              <HeroSection variant="desktop" active={activeIndex === 0} previewPaused={!!selected} onExplore={() => navigate(PROJECT_PANEL)} onOpen={setSelected} />
+            </section>
+            <section {...panel(1)} className={cn(panel(1).className, 'projects-panel')}>
+              <div className="site-container projects-heading"><SectionHeader {...UI_COPY.sections.projects} active={activeIndex === 1} /><p>{PROJECTS.length} {UI_COPY.projectCount}</p></div>
+              <div className={cn('projects-window', reduced && 'projects-window-static')} onFocusCapture={focusProject}>
+                <div ref={projectsInnerRef} className="site-container projects-inner"><ProjectGrid onOpen={setSelected} variant="desktop" active={activeIndex === PROJECT_PANEL} /></div>
               </div>
             </section>
-
-            {/* ── 1 · EXPERIENCE ── */}
-            <section id="panel-1" className={cn(panelBase, 'bg-white pt-28 text-black xl:pt-32')}>
-              <PanelAmbient panel="experience" active={activeIndex === 1} variant="desktop" />
-              <div className={cn(SHELL, 'relative z-10 flex w-full flex-col pb-10', !reduced && 'h-full min-h-0')}>
-                <SectionHeader kicker="Journey" title="Professional" accent="Milestones" tone="light" className="mb-8 shrink-0" active={activeIndex === 1} variant="desktop" />
-                <PanelScrollArea label={JOURNEY_COPY.regionLabel} enabled={!reduced}>
-                  <ExperienceList variant="desktop" />
-                  <EducationList variant="desktop" />
-                </PanelScrollArea>
-              </div>
-            </section>
-
-            {/* ── 2 · PROJECTS (vertical sub-scroll) ── */}
-            <section id="panel-2" className={cn(panelBase, 'flex-col !items-stretch pt-28 xl:pt-32')}>
-              <PanelAmbient panel="projects" active={activeIndex === 2} variant="desktop" />
-              <div className={cn(SHELL, 'relative z-10 flex w-full items-end justify-between pb-6')}>
-                <SectionHeader kicker="Selected Work" title="Projects" className="mb-8" active={activeIndex === 2} variant="desktop" />
-                <p className="hidden text-[10px] font-bold uppercase tracking-[0.2em] text-white/35 xl:block">
-                  {PROJECTS.length} builds · scroll to explore
-                </p>
-              </div>
-              {/* viewport window that the inner list scrolls within */}
-              <div className={cn('relative z-10 w-full flex-1', reduced ? '' : 'overflow-hidden')}>
-                <div ref={projectsInnerRef} className={cn(SHELL, reduced && 'pb-24')}>
-                  <div className="grid grid-cols-2 gap-5 2xl:grid-cols-3">
-                    {PROJECTS.map(project => (
-                      <ProjectCard key={project.id} project={project} onOpen={setSelected} variant="desktop" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* ── 3 · STACK ── */}
-            <section id="panel-3" className={cn(panelBase, 'bg-[#080808] pt-28 xl:pt-32')}>
-              <PanelAmbient panel="stack" active={activeIndex === 3} variant="desktop" />
-              <div className={cn(SHELL, 'relative z-10 flex w-full flex-col pb-10', !reduced && 'h-full min-h-0')}>
-                <SectionHeader kicker="Technology" title="Technical" accent="Arsenal" className="mb-8 shrink-0" active={activeIndex === 3} variant="desktop" />
-                <PanelScrollArea label={SKILLS_REGION_LABEL} enabled={!reduced}>
-                  <SkillsGrid variant="desktop" />
-                </PanelScrollArea>
-              </div>
-            </section>
-
-            {/* ── 4 · CONTACT ── */}
-            <section id="panel-4" className={cn(panelBase, 'pt-28 xl:pt-32')}>
-              <PanelAmbient panel="contact" active={activeIndex === 4} variant="desktop" />
-              <div className={cn(SHELL, 'relative z-10 w-full')}>
-                <SectionHeader kicker="Connect" title="Start a" accent="Conversation" className="mb-8" active={activeIndex === 4} variant="desktop" />
-                <div className="grid grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] gap-6">
-                  <ContactCard variant="desktop" />
-                  <div className="relative flex h-fit min-w-0 flex-col justify-between gap-10 rounded-[28px] border border-white/10 bg-[radial-gradient(circle_at_top,rgba(188,19,254,0.14),transparent_45%),rgba(255,255,255,0.03)] p-8 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-                    <div>
-                      <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.24em] text-white/45">Open to work</p>
-                      <h3 className="break-words font-heading text-[2rem] uppercase leading-[0.95] text-white">
-                        Full-stack products that feel sharp and ship fast
-                      </h3>
-                    </div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/35">
-                      Copyright {new Date().getFullYear()} {PERSONAL.name}
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <section {...panel(2)}><BackgroundSection variant="desktop" scrollable={!reduced} active={activeIndex === 2} sequenceController={backgroundController} /></section>
+            <section {...panel(3)}>
+              <div className="site-container desktop-section-shell contact-shell"><SectionHeader {...UI_COPY.sections.contact} active={activeIndex === 3} /><ContactCard /><SiteFooter onIntro={() => navigate(0)} /></div>
             </section>
           </div>
         </div>

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
-import { SITE_METADATA } from '@/lib/data'
+import { SITE_METADATA, UI_COPY } from '@/lib/data'
+import { StarfieldBackground } from '@/components/backgrounds/StarfieldBackground'
+import { SiteShell } from '@/components/layouts/SiteShell'
 import './globals.css'
 
 // Self-hosted from Fontshare (free). Variable fonts, weight range baked in.
@@ -43,7 +45,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${clashDisplay.variable} ${satoshi.variable} bg-black text-white antialiased`}>
-        {children}
+        <StarfieldBackground />
+        <SiteShell>
+          <a href="#main-content" className="skip-link">{UI_COPY.skip}</a>
+          {children}
+        </SiteShell>
       </body>
     </html>
   )

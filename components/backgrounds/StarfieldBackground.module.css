@@ -1,0 +1,50 @@
+.background {
+  position: fixed;
+  inset: 0;
+  width: 100dvw;
+  height: 100dvh;
+  z-index: -1;
+  overflow: clip;
+  pointer-events: none;
+  contain: strict;
+  background: var(--page, #050708);
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #d9e8ed;
+  opacity: var(--star-opacity);
+}
+
+.star:nth-child(5n) {
+  background: #79dce5;
+}
+
+.meteor {
+  position: absolute;
+  height: 1px;
+  opacity: 0;
+  border-radius: 100%;
+  background: linear-gradient(90deg, transparent, #8dcbd7 78%, #ecfbff);
+  transform-origin: right center;
+}
+
+.meteor::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -0.5px;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #ecfbff;
+}
+
+@media (max-width: 767px) {
+  .star:nth-child(n + 31) { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .meteor { display: none; }
+}

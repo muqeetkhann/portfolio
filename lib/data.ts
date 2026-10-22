@@ -34,6 +34,58 @@ export const PERSONAL = {
   bio: 'I build intuitive web and mobile apps that make complex work feel simple.',
 }
 
+export const NAVIGATION = [
+  { id: 'intro', label: 'Intro', mobileLabel: 'Introduction' },
+  { id: 'projects', label: 'Projects', mobileLabel: 'Projects' },
+  { id: 'background', label: 'Background', mobileLabel: 'Background' },
+  { id: 'contact', label: 'Contact', mobileLabel: 'Contact' },
+]
+
+export const HERO_COPY = {
+  lines: ['Your business.', 'Your workflows.', 'Better software.'],
+  accent: 'software.',
+  description: 'Web apps, mobile experiences and smarter workflows, brought together.',
+  contact: "Let's talk",
+  explore: 'Explore my work',
+  expertise: 'What I build',
+  recent: 'Recent build',
+  resume: 'Resume PDF',
+  previewLabel: 'View featured project',
+}
+
+export const EXPERTISE = [
+  { id: 'web', title: 'Web & SaaS', description: 'Dashboards, platforms and the systems behind them.', icon: 'web', project: 'ingles-academics' },
+  { id: 'mobile', title: 'Mobile apps', description: 'Practical experiences built for real people.', icon: 'mobile', project: 'trippak' },
+  { id: 'automation', title: 'AI & automation', description: 'Connected tools. Fewer repetitive tasks.', icon: 'automation', project: 'ingles-crm' },
+] as const
+
+export const UI_COPY = {
+  skip: 'Skip to content',
+  navigation: 'Main navigation',
+  openMenu: 'Open menu',
+  closeMenu: 'Close menu',
+  backToTop: 'Back to introduction',
+  projectCase: 'View case study',
+  projectPreview: 'Product preview coming soon',
+  projectCount: 'projects to explore',
+  loadMoreProjects: 'Load more',
+  showLessProjects: 'Show less',
+  builtWith: 'Built with',
+  copyright: 'Copyright',
+  contactTitle: 'Have something in mind?',
+  contactDescription: "Tell me what you're building. Let's work out what comes next.",
+  contactAction: 'Start a conversation',
+  contacts: ['Email', 'Phone', 'LinkedIn', 'GitHub'],
+  domains: 'Experience across',
+  whatsapp: 'Chat on WhatsApp',
+  whatsappMessage: 'Hi Muqeet, I found your portfolio and would like to discuss a project.',
+  sections: {
+    projects: { title: 'Selected', accent: 'work.' },
+    background: { title: 'Experience &', accent: 'expertise.' },
+    contact: { title: 'Good things', accent: 'start here.' },
+  },
+}
+
 export const SITE_METADATA = {
   url: 'https://muqeetkhann.github.io/portfolio',
   title: `${PERSONAL.name} | ${PERSONAL.role}`,
@@ -52,7 +104,32 @@ export const JOURNEY_COPY = {
   showLess: 'Show fewer responsibilities',
 }
 
-export const SKILLS_REGION_LABEL = 'Technical skills'
+export const BACKGROUND_COPY = {
+  regionLabel: 'Experience, education and technical skills',
+  experience: 'Work experience',
+  skills: 'Technical toolkit',
+  filterLabel: 'Filter technical skills',
+  groups: 'skill groups',
+  stages: ['Experience & education', 'Selected stack'],
+  selectedStack: 'A focused toolkit.',
+  stackDescription: 'The tools I use to build, connect and ship.',
+}
+
+export const FEATURED_SKILLS = [
+  { cat: 'Frontend', description: 'Responsive interfaces and product experiences.', items: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'] },
+  { cat: 'Backend & APIs', description: 'The services and logic behind the interface.', items: ['Node.js', 'NestJS', 'Express.js', 'REST APIs'] },
+  { cat: 'Mobile', description: 'Cross-platform apps for everyday use.', items: ['React Native', 'Expo'] },
+  { cat: 'Data', description: 'Structured data and connected app services.', items: ['PostgreSQL', 'Supabase', 'MongoDB', 'Firebase'] },
+  { cat: 'AI & automation', description: 'Useful AI features and connected workflows.', items: ['OpenAI', 'RAG workflows', 'n8n', 'Zapier'] },
+  { cat: 'Workflow & delivery', description: 'From development to a working release.', items: ['Git / GitHub', 'Vite', 'Vercel', 'Claude / Codex'] },
+]
+
+export const SKILL_COLLECTIONS = [
+  { id: 'all', label: 'All tools', categories: [] },
+  { id: 'development', label: 'Development', categories: ['Languages', 'Frontend', 'Mobile', 'Backend', 'Databases', 'Styling'] },
+  { id: 'connected', label: 'AI & integrations', categories: ['AI & Retrieval', 'Automation', 'Web3', 'Integrations', 'AI Development Workflow'] },
+  { id: 'workflow', label: 'Workflow', categories: ['Graphics & Animation', 'Tooling', 'Engineering Foundations'] },
+] as const
 
 export const SPOTLIGHT_COPY = {
   heading: 'Featured work',
@@ -67,7 +144,6 @@ export const SPOTLIGHT_COPY = {
   navigation: 'Choose a featured project',
   select: 'Show project',
   unavailable: 'Preview unavailable',
-  artwork: 'images/featured-sculpture.webp',
 }
 
 export const PROJECT_DETAIL_COPY = {
@@ -92,11 +168,20 @@ export const PROJECT_DETAIL_COPY = {
   image: 'Image',
 }
 
-export const EXPERIENCE = [
+export type Experience = {
+  role: string
+  company: string
+  period?: string
+  summary: string
+  bullets: string[]
+}
+
+export const EXPERIENCE: Experience[] = [
   {
     role: 'MERN Stack Developer',
     company: 'Fexen Smart Solutions',
     period: 'Dec 2024 – Present',
+    summary: 'Full-stack products across SaaS, CRM, AI and e-commerce, from product interfaces to APIs and connected workflows.',
     bullets: [
       'Delivered 10+ production-ready SaaS, CRM, AI, blockchain, and e-commerce products, translating business requirements into reliable, scalable features.',
       'Built and maintained product workflows covering onboarding, authentication, payments, AI features, REST APIs, and third-party integrations.',
@@ -107,15 +192,26 @@ export const EXPERIENCE = [
     ],
   },
   {
-    role: 'Frontend Developer Intern',
+    role: 'Frontend Developer',
     company: 'Stack One Technologies',
     period: 'May 2024 – Nov 2024',
+    summary: 'Responsive web interfaces with React and Next.js, with a focus on usability, performance and reusable components.',
     bullets: [
       'Built responsive websites using HTML, CSS, JavaScript, React, and Next.js.',
       'Used Tailwind CSS and Bootstrap to create responsive interfaces.',
       'Improved frontend performance by reducing DOM manipulations and lazily loading components.',
       'Added form validation and dynamic and conditional rendering to improve user experience.',
       'Collaborated through Git/GitHub version control and feature branches.',
+    ],
+  },
+  {
+    role: 'Accountant',
+    company: 'TQMS',
+    summary: 'Financial reporting, general ledger accounting, trial balance preparation, monthly reconciliations and audit documentation.',
+    bullets: [
+      'Progressed from Accounts Trainee to Junior Financial Accountant, supporting daily accounting operations and accuracy.',
+      'Handled general ledger postings, trial balance preparation, fixed asset depreciation, and monthly reconciliations.',
+      'Prepared audit documentation and supported reporting.',
     ],
   },
 ]
@@ -171,7 +267,11 @@ const CLIENT_PROJECTS: Project[] = [
     accent: '#6EE7B7',
     num: '01',
     slug: 'jitsuites',
-    media: { cover: 'projects/jitsuites/cover.svg' },
+    media: {
+      cover: 'projects/jitsuites/cover.webp',
+      coverAlt: 'JitSuites dashboard preview published on its sign-in page',
+      gallery: ['projects/jitsuites/gallery-1.webp', 'projects/jitsuites/gallery-2.webp'],
+    },
     desc: 'AI marketing SaaS for creators and businesses, combining email, SMS, social publishing, AI video, and funnel automation in a single platform.',
     highlights: [
       'Developed the complete frontend and a drag-and-drop funnel builder with dnd-kit for creating landing pages and campaigns.',
@@ -179,24 +279,6 @@ const CLIENT_PROJECTS: Project[] = [
       'Built reusable interfaces for connected email, SMS, social publishing, AI video, and campaign workflows.',
     ],
     tags: ['React 19', 'TypeScript', 'NestJS', 'TanStack Router', 'TanStack Query', 'Zustand', 'Tailwind CSS', 'shadcn/ui', 'dnd-kit', 'JWT', 'Stripe', 'OAuth', 'Brevo'],
-  },
-  {
-    id: 2,
-    title: 'Kompra',
-    type: 'E-Commerce Marketplace',
-    url: 'https://dropex-marketplace.pages.dev',
-    urlLabel: 'dropex-marketplace.pages.dev',
-    accent: '#93C5FD',
-    num: '02',
-    slug: 'kompra',
-    media: { cover: 'projects/kompra/cover.svg' },
-    desc: 'Full-featured multi-sided marketplace with a public storefront, seller dashboard, and role-based admin panel for order managers, staff, and procurement managers.',
-    highlights: [
-      'Architected three distinct interfaces — public storefront, seller dashboard with granular RBAC (order/staff/procurement managers), and admin panel.',
-      'Implemented dynamic category-based recommendations via recursive tree traversal and multi-step checkout with optimistic UI updates.',
-      'Integrated OTP authentication flow, i18next English/Spanish localization, and persistent cart state via Zustand.',
-    ],
-    tags: ['React 18', 'TanStack Router', 'TanStack Query', 'Zustand', 'TypeScript', 'Radix UI', 'i18next'],
   },
   {
     id: 3,
@@ -207,7 +289,11 @@ const CLIENT_PROJECTS: Project[] = [
     accent: '#FDE68A',
     num: '03',
     slug: 'kompra-seller',
-    media: { cover: 'projects/kompra-seller/cover.svg' },
+    media: {
+      cover: 'projects/kompra-seller/cover.webp',
+      coverAlt: 'Kompra Seller public landing page',
+      gallery: ['projects/kompra-seller/gallery-1.webp'],
+    },
     desc: 'B2B dropshipping and logistics SaaS for Latin American sellers — manages products, orders, warehouses, and earnings with role-based access control.',
     highlights: [
       'Implemented RBAC with three user types using TanStack Router beforeLoad hooks, dynamic sidebar filtering, and token-based redirects.',
@@ -225,7 +311,10 @@ const CLIENT_PROJECTS: Project[] = [
     accent: '#C4B5FD',
     num: '04',
     slug: 'extsy',
-    media: { cover: 'projects/extsy/cover.svg' },
+    media: {
+      cover: 'projects/extsy/cover.webp',
+      coverAlt: 'Client confidential. Product visuals are kept private.',
+    },
     desc: 'Contributed frontend features and UI/UX improvements to a large crypto exchange platform supporting P2P trading, staking, virtual cards, and Web3 wallets.',
     highlights: [
       'Integrated TronWeb and Wagmi for Web3 wallet connections; Stripe payments and Firebase authentication.',
@@ -243,7 +332,11 @@ const CLIENT_PROJECTS: Project[] = [
     accent: '#FCA5A5',
     num: '05',
     slug: 'asap-pay',
-    media: { cover: 'projects/asap-pay/cover.svg' },
+    media: {
+      cover: 'projects/asap-pay/cover.webp',
+      coverAlt: 'ASAP Pay sign-in page displaying KA$HY AI branding',
+      gallery: ['projects/asap-pay/gallery-1.webp'],
+    },
     desc: 'Fintech SaaS enabling crypto/fiat wallet management, P2P trading, currency swapping, virtual card issuance, bill payments, and AI-powered financial assistance.',
     highlights: [
       'Built 40+ routes with responsive layouts, Framer Motion animations, and Ant Design components.',
@@ -261,7 +354,10 @@ const CLIENT_PROJECTS: Project[] = [
     accent: '#6EE7B7',
     num: '06',
     slug: 'ethoro',
-    media: { cover: 'projects/ethoro/cover.svg' },
+    media: {
+      cover: 'projects/ethoro/cover.webp',
+      coverAlt: 'Client confidential. Product visuals are kept private.',
+    },
     desc: 'Developed the frontend and smart-contract integrations for a crypto staking platform, including yield tracking, Web3 wallets, and token deposit and withdrawal workflows.',
     highlights: [
       'Engineered Web3 deposit flow with ERC20 approval, smart contract interaction, token decimals conversion, and multi-step wallet confirmations.',
@@ -279,7 +375,11 @@ const CLIENT_PROJECTS: Project[] = [
     accent: '#93C5FD',
     num: '07',
     slug: 'katana-healthcare',
-    media: { cover: 'projects/katana-healthcare/cover.svg' },
+    media: {
+      cover: 'projects/katana-healthcare/cover.webp',
+      coverAlt: 'Katana Healthcare homepage',
+      gallery: ['projects/katana-healthcare/gallery-1.webp', 'projects/katana-healthcare/gallery-2.webp'],
+    },
     desc: 'Responsive Next.js healthcare website developed during the Stack One internship, with reusable components, optimized loading, and engagement analytics.',
     highlights: [
       'Built reusable, cross-device interfaces and smooth transitions for a responsive healthcare website.',
@@ -318,7 +418,11 @@ const CLIENT_PROJECTS: Project[] = [
     accent: '#FDE68A',
     num: '09',
     slug: 'travaleo',
-    media: { cover: 'projects/travaleo/cover.svg' },
+    media: {
+      cover: 'projects/travaleo/cover.webp',
+      coverAlt: 'Travaleo homepage for branded luxury real estate',
+      gallery: ['projects/travaleo/gallery-1.webp', 'projects/travaleo/gallery-2.webp'],
+    },
     desc: 'Developed the frontend for a tokenized luxury real-estate investment platform, enabling fractional property ownership and investment tracking.',
     highlights: [
       'Integrated dual CMS APIs (Strapi + custom REST) with unified TypeScript interfaces and React Query caching.',
@@ -382,20 +486,6 @@ const CLIENT_PROJECTS: Project[] = [
     highlights: [],
     tags: ['Next.js', 'Tailwind', 'Dark Mode'],
   },
-  {
-    id: 13,
-    title: 'Regen Digital',
-    type: 'RWA Tokenization',
-    url: '',
-    urlLabel: '',
-    accent: '#C4B5FD',
-    num: '13',
-    slug: 'regen-digital',
-    media: { cover: 'projects/regen-digital/cover.svg' },
-    desc: 'Real estate tokenization site with 8+ pages and reusable component system utilizing class-variance-authority for tight UI scaling.',
-    highlights: [],
-    tags: ['Next.js', 'CVA', 'Tailwind'],
-  },
 ]
 
 const FEATURED_PROJECTS: Project[] = [
@@ -452,8 +542,7 @@ const FEATURED_PROJECTS: Project[] = [
     slug: 'trippak',
     media: {
       cover: 'projects/trippak/cover.webp',
-      coverAlt: 'Concept illustration of a mint travel health kit with a blister pack and capsules',
-      caption: 'Concept illustration',
+      coverAlt: 'Client confidential. Product visuals are kept private.',
     },
     desc: 'Mobile health assistant helping OTC health-kit users search products across 148 symptom categories, view drug facts, and access usage guidance through a retrieval-augmented AI assistant.',
     highlights: [
@@ -475,7 +564,11 @@ const INTERNSHIP_PROJECTS: Project[] = [
     accent: '#FCA5A5',
     num: '',
     slug: 'the-flame',
-    media: { cover: 'projects/the-flame/cover.svg' },
+    media: {
+      cover: 'projects/the-flame/cover.webp',
+      coverAlt: 'The Flame restaurant homepage',
+      gallery: ['projects/the-flame/gallery-1.webp', 'projects/the-flame/gallery-2.webp'],
+    },
     desc: 'Responsive restaurant website built during the Stack One internship, with an interactive menu, gallery, contact section, and smooth navigation across a multi-page SPA.',
     highlights: [
       'Built reusable navigation, menu, testimonial, and contact-form components with React.',

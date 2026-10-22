@@ -1,44 +1,30 @@
-import { PERSONAL } from '@/lib/data'
-import { cn } from '@/lib/utils'
+import { ArrowUpRightIcon } from '@phosphor-icons/react'
+import { PERSONAL, UI_COPY } from '@/lib/data'
 
 const CONTACTS = [
-  { label: 'Email', href: `mailto:${PERSONAL.email}`, text: PERSONAL.email, display: 'heading', breakAll: true },
-  { label: 'Phone', href: `tel:${PERSONAL.phone}`, text: PERSONAL.phone, display: 'heading', breakAll: false },
-  { label: 'LinkedIn', href: PERSONAL.linkedin, text: PERSONAL.linkedin.replace('https://', ''), display: 'link', breakAll: true },
-  { label: 'GitHub', href: PERSONAL.github, text: PERSONAL.github.replace('https://', ''), display: 'link', breakAll: true },
-] as const
+  { label: UI_COPY.contacts[0], href: `mailto:${PERSONAL.email}`, text: PERSONAL.email },
+  { label: UI_COPY.contacts[1], href: `tel:${PERSONAL.phone}`, text: PERSONAL.phone },
+  { label: UI_COPY.contacts[2], href: PERSONAL.linkedin, text: PERSONAL.linkedin.replace('https://', '') },
+  { label: UI_COPY.contacts[3], href: PERSONAL.github, text: PERSONAL.github.replace('https://', '') },
+]
 
-/** Contact details panel — mailto / tel / profile links (no forms: static export). */
-export function ContactCard({ variant = 'mobile' }: { variant?: 'desktop' | 'mobile' }) {
-  const isDesktop = variant === 'desktop'
-
+export function ContactCard() {
   return (
-    <div className={cn('panel grid gap-6', isDesktop ? 'h-fit min-w-0 p-8' : 'p-6 sm:grid-cols-2 sm:p-8')}>
-      {CONTACTS.map(contact => {
-        const isHeading = contact.display === 'heading'
-        const isExternal = contact.href.startsWith('http')
-        // Long emails/URLs wrap; the desktop panel is wide enough to leave links intact.
-        const breakAll = isHeading ? contact.breakAll : !isDesktop
-
-        return (
-          <div key={contact.label}>
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white/45">{contact.label}</p>
-            <a
-              href={contact.href}
-              {...(isExternal ? { target: '_blank', rel: 'noreferrer' } : {})}
-              className={cn(
-                'transition',
-                breakAll && 'break-all',
-                isHeading
-                  ? cn('font-heading uppercase leading-tight hover:text-neon-cyan', isDesktop ? 'text-[1.9rem]' : 'text-[clamp(1rem,4vw,1.55rem)]')
-                  : cn('text-neon-cyan hover:text-white', isDesktop ? 'text-base' : 'text-sm'),
-              )}
-            >
-              {contact.text}
-            </a>
-          </div>
-        )
-      })}
+    <div className="contact-layout">
+      <div className="contact-invitation">
+        <h3>{UI_COPY.contactTitle}</h3>
+        <p>{UI_COPY.contactDescription}</p>
+        <a className="primary-action" href={`mailto:${PERSONAL.email}`}>{UI_COPY.contactAction}<span className="primary-action-icon"><ArrowUpRightIcon size={22} aria-hidden /></span></a>
+        <p className="contact-note">{PERSONAL.bio}</p>
+      </div>
+      <div className="contact-links">
+        {CONTACTS.map(contact => (
+          <a key={contact.label} href={contact.href} {...(contact.href.startsWith('http') ? { target: '_blank', rel: 'noreferrer' } : {})}>
+            <span><span className="contact-label">{contact.label}</span><span className="contact-value">{contact.text}</span></span>
+            <ArrowUpRightIcon size={23} aria-hidden />
+          </a>
+        ))}
+      </div>
     </div>
   )
 }

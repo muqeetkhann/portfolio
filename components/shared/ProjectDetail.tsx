@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import { PROJECT_DETAIL_COPY as COPY, type Project } from '@/lib/data'
 import { getLenis } from '@/components/providers/SmoothScroll'
+import { ScrollEdges } from '@/components/shared/ScrollEdges'
 import { useReducedMotion } from '@/lib/reduced-motion'
 import { asset, cn } from '@/lib/utils'
 
@@ -187,73 +188,79 @@ export function ProjectDetail({
               </button>
             </header>
 
-            <div ref={bodyRef} data-lenis-prevent className="case-study-body case-study-scroll">
-              <section aria-label={COPY.preview} className="case-study-media">
-                <div className="flex h-10 shrink-0 items-center justify-between gap-3 px-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/50">
-                  <span>{COPY.preview}</span>
-                  <div className="flex items-center gap-4">
-                    {active?.type === 'image' && !active.src.endsWith('.svg') ? <a href={asset(active.src)} target="_blank" rel="noreferrer" className="inline-flex min-h-8 items-center text-white/70 underline underline-offset-4 hover:text-neon-cyan">{COPY.fullSize}<span aria-hidden> ↗</span></a> : null}
-                    <span className="font-mono tracking-[0.1em]">{String(imageIndex + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}</span>
-                  </div>
-                </div>
-                <div className="case-study-stage">
-                  {active ? <MediaPreview key={`${project.id}-${active.src}`} project={project} slide={active} index={imageIndex} /> : null}
-                </div>
-                <div className="case-study-gallery">
-                  <button type="button" aria-label={COPY.previousImage} disabled={!hasMultipleImages} onClick={() => goImage(-1)} className="case-study-icon shrink-0"><Chevron dir="left" /></button>
-                  {hasMultipleImages ? (
-                    <div ref={galleryRef} className="case-study-thumbnails" role="group" aria-label={COPY.selectImage}>
-                      {slides.map((slide, index) => (
-                        <button
-                          key={slide.src}
-                          type="button"
-                          aria-label={`${COPY.selectImage} ${index + 1}`}
-                          aria-pressed={index === imageIndex}
-                          onClick={() => selectImage(index)}
-                          className={cn('case-study-thumbnail', index === imageIndex && 'case-study-thumbnail-active')}
-                        >
-                          {slide.type === 'image' ? <img src={asset(slide.src)} alt="" loading="lazy" /> : <span className="text-[10px]">{COPY.video}</span>}
-                        </button>
-                      ))}
+            <div className="case-study-content-frame scroll-frame">
+              <div ref={bodyRef} data-lenis-prevent className="case-study-body case-study-scroll">
+                <section aria-label={COPY.preview} className="case-study-media">
+                  <div className="flex h-10 shrink-0 items-center justify-between gap-3 px-5 text-[10px] font-semibold uppercase tracking-[0.14em] text-white/50">
+                    <span>{COPY.preview}</span>
+                    <div className="flex items-center gap-4">
+                      {active?.type === 'image' && !active.src.endsWith('.svg') ? <a href={asset(active.src)} target="_blank" rel="noreferrer" className="inline-flex min-h-8 items-center text-white/70 underline underline-offset-4 hover:text-neon-cyan">{COPY.fullSize}<span aria-hidden> ↗</span></a> : null}
+                      <span className="font-mono tracking-[0.1em]">{String(imageIndex + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}</span>
                     </div>
-                  ) : (
-                    <p className="px-2 text-center text-xs text-white/50">{project.media.caption ?? `${slides.length} ${COPY.image.toLowerCase()}`}</p>
-                  )}
-                  <button type="button" aria-label={COPY.nextImage} disabled={!hasMultipleImages} onClick={() => goImage(1)} className="case-study-icon shrink-0"><Chevron dir="right" /></button>
-                </div>
-              </section>
+                  </div>
+                  <div className="case-study-stage">
+                    {active ? <MediaPreview key={`${project.id}-${active.src}`} project={project} slide={active} index={imageIndex} /> : null}
+                  </div>
+                  <div className="case-study-gallery">
+                    <button type="button" aria-label={COPY.previousImage} disabled={!hasMultipleImages} onClick={() => goImage(-1)} className="case-study-icon shrink-0"><Chevron dir="left" /></button>
+                    {hasMultipleImages ? (
+                      <div ref={galleryRef} className="case-study-thumbnails" role="group" aria-label={COPY.selectImage}>
+                        {slides.map((slide, index) => (
+                          <button
+                            key={slide.src}
+                            type="button"
+                            aria-label={`${COPY.selectImage} ${index + 1}`}
+                            aria-pressed={index === imageIndex}
+                            onClick={() => selectImage(index)}
+                            className={cn('case-study-thumbnail', index === imageIndex && 'case-study-thumbnail-active')}
+                          >
+                            {slide.type === 'image' ? <img src={asset(slide.src)} alt="" loading="lazy" /> : <span className="text-[10px]">{COPY.video}</span>}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="px-2 text-center text-xs text-white/50">{project.media.caption ?? `${slides.length} ${COPY.image.toLowerCase()}`}</p>
+                    )}
+                    <button type="button" aria-label={COPY.nextImage} disabled={!hasMultipleImages} onClick={() => goImage(1)} className="case-study-icon shrink-0"><Chevron dir="right" /></button>
+                  </div>
+                </section>
 
-              <div ref={copyRef} data-lenis-prevent className="case-study-copy case-study-scroll">
-                <h2 id={titleId} className="font-heading text-[clamp(1.7rem,3vw,2.5rem)] leading-[1.08] tracking-[-0.025em] text-white">{project.title}</h2>
-                <section className="mt-7" aria-label={COPY.overview}>
-                  <h3 className="case-study-label">{COPY.overview}</h3>
-                  <p className="mt-3 text-sm leading-6 text-white/70">{project.desc}</p>
-                </section>
-                {project.highlights.length > 0 ? (
-                  <section className="mt-7" aria-label={COPY.highlights}>
-                    <h3 className="case-study-label">{COPY.highlights}</h3>
-                    <ul className="mt-3 space-y-3">
-                      {project.highlights.map(highlight => (
-                        <li key={highlight} className="flex gap-3 text-[13px] leading-6 text-white/65">
-                          <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full" style={{ backgroundColor: project.accent }} />
-                          {highlight}
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ) : null}
-                <section className="mt-7" aria-label={COPY.technologies}>
-                  <h3 className="case-study-label">{COPY.technologies}</h3>
-                  <ul className="mt-3 flex flex-wrap gap-2">
-                    {project.tags.map(tag => <li key={tag} className="rounded-md border border-white/10 bg-white/[0.025] px-2.5 py-1.5 text-[11px] text-white/65">{tag}</li>)}
-                  </ul>
-                </section>
-                {project.url ? (
-                  <a href={project.url} target="_blank" rel="noreferrer" className="case-study-visit mt-7">
-                    <span>{COPY.visit}</span><span aria-hidden>↗</span>
-                  </a>
-                ) : null}
+                <div className="case-study-copy-frame scroll-frame">
+                  <div ref={copyRef} data-lenis-prevent className="case-study-copy case-study-scroll">
+                    <h2 id={titleId} className="font-heading text-[clamp(1.7rem,3vw,2.5rem)] leading-[1.08] tracking-[-0.025em] text-white">{project.title}</h2>
+                    <section className="mt-7" aria-label={COPY.overview}>
+                      <h3 className="case-study-label">{COPY.overview}</h3>
+                      <p className="mt-3 text-sm leading-6 text-white/70">{project.desc}</p>
+                    </section>
+                    {project.highlights.length > 0 ? (
+                      <section className="mt-7" aria-label={COPY.highlights}>
+                        <h3 className="case-study-label">{COPY.highlights}</h3>
+                        <ul className="mt-3 space-y-3">
+                          {project.highlights.map(highlight => (
+                            <li key={highlight} className="flex gap-3 text-[13px] leading-6 text-white/65">
+                              <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full" style={{ backgroundColor: project.accent }} />
+                              {highlight}
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    ) : null}
+                    <section className="mt-7" aria-label={COPY.technologies}>
+                      <h3 className="case-study-label">{COPY.technologies}</h3>
+                      <ul className="mt-3 flex flex-wrap gap-2">
+                        {project.tags.map(tag => <li key={tag} className="rounded-md border border-white/10 bg-white/[0.025] px-2.5 py-1.5 text-[11px] text-white/65">{tag}</li>)}
+                      </ul>
+                    </section>
+                    {project.url ? (
+                      <a href={project.url} target="_blank" rel="noreferrer" className="case-study-visit mt-7">
+                        <span>{COPY.visit}</span><span aria-hidden>↗</span>
+                      </a>
+                    ) : null}
+                  </div>
+                  <ScrollEdges target={copyRef} refreshKey={project.id} />
+                </div>
               </div>
+              <ScrollEdges target={bodyRef} refreshKey={project.id} />
             </div>
 
             <footer className="case-study-footer">

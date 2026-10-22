@@ -1,98 +1,22 @@
 'use client'
 
 import { useRef } from 'react'
-import type { Project } from '@/lib/data'
+import { ArrowUpRightIcon } from '@phosphor-icons/react'
+import { UI_COPY, type Project } from '@/lib/data'
+import { prefersReducedMotion } from '@/lib/reduced-motion'
 import { asset, cn } from '@/lib/utils'
 
-export function ProjectCard({
-  project,
-  onOpen,
-  variant = 'mobile',
-}: {
-  project: Project
-  onOpen?: (project: Project) => void
-  variant?: 'desktop' | 'mobile'
-}) {
-  const isDesktop = variant === 'desktop'
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const { title, type, desc, tags, media } = project
-  const hasVideo = Boolean(media?.video)
-
-  const handleEnter = () => {
-    if (videoRef.current) videoRef.current.play().catch(() => {})
-  }
-  const handleLeave = () => {
-    const v = videoRef.current
-    if (v) {
-      v.pause()
-      v.currentTime = 0
-    }
-  }
-
+export function ProjectCard({ project, onOpen }: { project: Project; onOpen?: (project: Project) => void; variant?: 'desktop' | 'mobile' }) {
+  const video = useRef<HTMLVideoElement>(null)
+  const placeholder = project.media.cover.endsWith('.svg')
   return (
-    <article
-      role="button"
-      tabIndex={0}
-      aria-label={title}
-      onClick={() => onOpen?.(project)}
-      onKeyDown={event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-          onOpen?.(project)
-        }
-      }}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      className="panel group flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-neon-cyan"
-    >
-      {/* cover */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-white/10 bg-black/40">
-        <img
-          src={asset(media.cover)}
-          alt={media.coverAlt ?? `${title} — ${type}`}
-          loading="lazy"
-          className={cn(
-            'h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]',
-            hasVideo && 'group-hover:opacity-0',
-          )}
-        />
-        {hasVideo ? (
-          <video
-            ref={videoRef}
-            src={asset(media.video!)}
-            muted
-            loop
-            playsInline
-            preload="none"
-            className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100"
-          />
-        ) : null}
-        <span
-          className="pointer-events-none absolute left-3 top-3 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.16em] text-black"
-          style={{ backgroundColor: project.accent }}
-        >
-          {project.num}
-        </span>
+    <article className="project-card" onPointerEnter={event => { if (event.pointerType === 'mouse' && !prefersReducedMotion()) video.current?.play().catch(() => {}) }} onPointerLeave={() => { if (video.current) { video.current.pause(); video.current.currentTime = 0 } }}>
+      <div className={cn('project-media', project.media.video && 'has-video')}>
+        {placeholder ? <div className="project-empty"><strong>{project.title}</strong><span>{UI_COPY.projectPreview}</span></div> : <img src={asset(project.media.cover)} alt={project.media.coverAlt ?? `${project.title} · ${project.type}`} loading="lazy" decoding="async" width={1600} height={900} />}
+        {project.media.video ? <video ref={video} src={asset(project.media.video)} muted loop playsInline preload="none" aria-hidden /> : null}
+        <span className="project-number" aria-hidden>{project.num}</span>
       </div>
-
-      {/* body */}
-      <div className={cn('flex flex-1 flex-col', isDesktop ? 'p-4' : 'p-5')}>
-        <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">{type}</p>
-        <h3 className={cn('mb-2 font-heading uppercase leading-[1.02] text-white', isDesktop ? 'text-[1.15rem]' : 'text-[clamp(1.1rem,2.6vw,1.6rem)]')}>
-          {title}
-        </h3>
-        <p className={cn('mb-4 flex-1 text-sm leading-6 text-white/60', isDesktop && 'line-clamp-3')}>{desc}</p>
-        <div className="flex flex-wrap gap-1.5">
-          {tags.slice(0, isDesktop ? 3 : 4).map(tag => (
-            <span key={`${title}-${tag}`} className="rounded-full border border-white/10 bg-black/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-white/60">
-              {tag}
-            </span>
-          ))}
-        </div>
-        <span className="mt-4 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.2em] text-neon-cyan opacity-0 transition group-hover:opacity-100">
-          View case <span aria-hidden>-&gt;</span>
-        </span>
-      </div>
+      <div className="project-body"><p className="project-category">{project.type}</p><h3>{project.title}</h3><p className="project-description">{project.desc}</p><ul className="project-tags" aria-label={UI_COPY.builtWith}>{project.tags.slice(0,3).map(tag => <li key={tag}>{tag}</li>)}</ul><button type="button" className="project-card-open" aria-label={`${UI_COPY.projectCase}: ${project.title}`} onClick={() => onOpen?.(project)}>{UI_COPY.projectCase}<ArrowUpRightIcon size={20} aria-hidden /></button></div>
     </article>
   )
 }

@@ -1,7 +1,7 @@
 # Muhammad Muqeet Khan — Portfolio
 
 Futuristic dark-neon portfolio. **Next.js 15 · React 19 · TypeScript · Tailwind**,
-with GSAP + Lenis scroll choreography and a React Three Fiber 3D layer.
+with GSAP + Lenis scroll choreography and a lightweight fixed starfield.
 Desktop scrolls horizontally; mobile scrolls vertically. Statically exported to
 GitHub Pages.
 
@@ -39,7 +39,7 @@ content guide. Branded SVG placeholders are already in place until you add real 
 | Framework | Next.js 15 (App Router, static export), React 19, TypeScript |
 | Styling | Tailwind CSS, Clash Display + Satoshi (next/font/local) |
 | Scroll & motion | GSAP 3 + ScrollTrigger (`@gsap/react`), Lenis, Motion (`motion/react`) |
-| 3D | Three.js, React Three Fiber v9, drei, postprocessing |
+| Background | One fixed starfield, native opacity/transform animations, reduced-motion support |
 
 ## Structure
 
@@ -50,7 +50,7 @@ content guide. Branded SVG placeholders are already in place until you add real 
 │   ├── sections/            # section bodies shared by both layouts
 │   ├── shared/              # ProjectCard, SectionHeader, spotlight, modal, …
 │   ├── providers/           # SmoothScroll (Lenis ↔ GSAP)
-│   └── three/               # lazy R3F hero (HeroCanvas → HeroScene)
+│   └── backgrounds/         # single fixed StarfieldBackground + CSS module
 ├── lib/
 │   ├── data.ts              # ⭐ ALL CONTENT
 │   ├── gsap.ts              # single plugin registration

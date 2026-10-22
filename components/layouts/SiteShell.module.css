@@ -1,0 +1,27 @@
+.shell {
+  --site-content-max: 1680px;
+  --site-gutter: clamp(32px, 4vw, 80px);
+  width: 100%;
+  min-width: 0;
+}
+
+/* Keep viewport panels full-width for the horizontal track. Only their
+   content and the fixed navigation wrapper use the shared inset. The navigation
+   capsule sizes to its own contents inside that wrapper. */
+.shell :global(.site-container) {
+  width: min(var(--site-content-max), calc(100% - var(--site-gutter) * 2));
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1279px) {
+  .shell {
+    --site-content-max: 1080px;
+    --site-gutter: 32px;
+  }
+}
+
+@media (max-width: 639px) {
+  .shell { --site-gutter: 20px; }
+}

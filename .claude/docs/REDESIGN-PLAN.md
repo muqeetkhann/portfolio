@@ -1,5 +1,10 @@
 # Redesign Plan
 
+> Historical July plan. The October 20 update replaces the former 3D/per-panel
+> backdrops with one fixed, lightweight starfield across the site. Old scenes,
+> shaders, sync script and Three.js dependencies are removed. Current design
+> and architecture are documented in DESIGN-SYSTEM.md and ARCHITECTURE.md.
+
 Direction agreed July 2026. This is the blueprint development starts from —
 update it as decisions evolve rather than letting it go stale.
 

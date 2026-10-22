@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
-import { prefersReducedMotion } from '@/lib/reduced-motion'
+import { prefersReducedMotion, useReducedMotion } from '@/lib/reduced-motion'
 
 declare global {
   // eslint-disable-next-line no-var
@@ -24,8 +24,9 @@ export function getLenis() {
  * Exposes the instance via getLenis() so nav/snap logic can scroll it.
  */
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const reduced = useReducedMotion()
   useEffect(() => {
-    if (prefersReducedMotion()) return
+    if (reduced || prefersReducedMotion()) return
 
     // Let inner panels consume input only while they can scroll in that direction.
     // At either edge Lenis takes over again to move through the horizontal track.
@@ -43,7 +44,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
       lenis.destroy()
       globalThis.__lenis = undefined
     }
-  }, [])
+  }, [reduced])
 
   return <>{children}</>
 }
@@ -52,7 +53,7 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
 export function scrollToY(y: number, duration?: number) {
   const lenis = getLenis()
   if (lenis) lenis.scrollTo(y, duration === undefined ? undefined : { duration })
-  else window.scrollTo({ top: y, behavior: 'smooth' })
+  else window.scrollTo({ top: y, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
 }
 
 /** Smoothly scroll to a target (selector or element), Lenis-aware. */
@@ -63,5 +64,5 @@ export function scrollToTarget(target: string | HTMLElement, offset = 0) {
     return
   }
   const el = typeof target === 'string' ? document.querySelector(target) : target
-  el?.scrollIntoView({ behavior: 'smooth' })
+  if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + offset, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
 }

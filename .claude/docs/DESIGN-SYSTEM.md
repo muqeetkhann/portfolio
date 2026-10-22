@@ -1,93 +1,97 @@
 # Design System
 
-Current visual language + where the redesign is allowed to push it. Keep this file
-updated whenever tokens change — it is the single source of truth for "what does
-this site look like".
-
 ## Identity
 
-Dark, high-contrast, neon-accented, editorial-brutalist. Big uppercase display
-type, tight tracking, tiny bold kickers with wide letterspacing, rounded-pill
-buttons, soft glass panels on pure black. One section (Experience) deliberately
-inverts to white for rhythm.
+Near-black, cyan, editorial type and open service rows. One fixed, sparse starfield supports every section. White and pale cyan stars
+twinkle independently, with occasional shooting stars at varied speeds. No white inverted panel,
+glow blobs, background shaders, or hover-only primary actions.
 
 ## Type
 
-| Role | Font | Source | CSS var |
-|---|---|---|---|
-| Display / headings | **Clash Display** (variable 200–700) | self-hosted, next/font/local (`app/fonts/`) | `--font-clash` |
-| Body / UI | **Satoshi** (variable 300–900) | self-hosted, next/font/local (`app/fonts/`) | `--font-satoshi` |
-| Code accents | monospace stack | — | — |
+Both variable fonts remain self-hosted through `next/font/local`. Satoshi
+(`--font-satoshi`, weights 300–900) handles the current hero, section headings,
+project titles, body and UI. Clash Display (`--font-clash`, weights 200–700) remains
+available through `font-heading` and is used by the existing case-study modal.
 
-Fonts are from Fontshare (free). WOFF2 files live in `app/fonts/`; re-fetch via the
-Fontshare CSS API (`https://api.fontshare.com/v2/css?f[]=clash-display@1`) if lost.
-Tailwind maps `font-heading` → Clash, `font-sans` → Satoshi. Old Syne/Space Grotesk
-remain only as named fallbacks.
+- Hero: Satoshi 900, fluid 28–93px from its content container width, uppercase,
+  0.98–1 line height, -0.055em tracking. The three-line heading reads “Your business.
+  Your workflows. Better software.”, with “software.” in cyan.
+- Section headings: Satoshi 600, fluid 32–72px, sentence case, -0.045em tracking.
+- Body: 14–22px, 1.6–1.8 line height, restrained secondary ink.
+- Metadata: 10–12px; monospace for indices and dates.
+- Solid cyan emphasis; selection inherits text color with a neutral gray background.
 
-Patterns in use:
-- Hero: `clamp(3.4rem, 7vw, 6.2rem)`, `leading-[0.88]`, `tracking-[-0.05em]`, uppercase.
-- Section titles: `.section-title` → `clamp(1.7rem, 6vw, 4.5rem)`, uppercase.
-- Kickers: `.section-kicker` — 10px, `font-bold`, `tracking-[0.24em]`, uppercase,
-  `color: inherit` at 45% opacity so it reads on both the black and the inverted
-  white sections.
-- Gradient text via `.masked-text-dark` (white→cyan) and `.masked-text-light`
-  (near-black→sky, for the inverted section). `SectionHeader`'s `tone` prop picks
-  between them — pass `tone="light"` on any white-background section.
+## Tokens
 
-Redesign may add a third variable-font display face if it earns its bytes —
-document it here if so.
+Current CSS variables in `app/globals.css`:
 
-## Color tokens (tailwind.config.ts)
+| Token | Value | Purpose |
+|---|---|---|
+| `--page` | `#050708` | Base surface |
+| `--surface` | `#0b1013` | Raised cards |
+| `--ink` | `#f4f6f7` | Primary text |
+| `--muted` | `#b1bbc1` | Supporting text |
+| `--line` | pale ink at 14% | Dividers and borders |
+| `--accent` | `#00f5ff` | Actions, active states, focus |
 
-```
-bg        #000000        base
-card      #0D0D0D        raised surfaces
-border    rgba(255,255,255,0.1)
-neon.cyan     #00F5FF    primary accent (links, active, progress)
-neon.purple   #BC13FE    secondary accent (roles, alt CTA)
-neon.magenta  #FF00CC    unused — candidate for redesign
-neon.green    #39FF14    unused
-neon.yellow   #FFCC00    unused
-muted     #A1A1AA        unused
-dim       #3F3F46        unused
-```
+The broader Tailwind palette and per-project accent values remain intact.
 
-The tokens marked unused are declared palette, not dead code — Tailwind emits
-nothing for a token no class references, so they cost zero bytes and stay
-available. Everything shipping today uses `neon.cyan`, `neon.purple`, and raw
-`white/N` alphas.
+## Layout and surfaces
 
-Per-project accent hexes also live on each project in `lib/data.ts`
-(`#6EE7B7` mint, `#93C5FD` sky, `#FDE68A` sand, `#C4B5FD` lavender, `#FCA5A5` rose)
-— softer pastels used for cards/covers, intentionally distinct from the neon set.
+- One `SiteShell` wraps all site content in the root layout. Its `.site-container`
+  primitive aligns navigation and every section: 1680px maximum on desktop,
+  `clamp(32px, 4vw, 80px)` side gutters; tablet maximum 1080px with 32px gutters;
+  mobile 20px gutters. Widths are declared only in `SiteShell.module.css`.
+  Viewport panels and the GSAP track stay full-width.
+- Rounded navigation capsule: intrinsic width, centered within the shared site
+  container, 60–64px high. The desktop active pill moves between labels with a
+  restrained Motion spring as the current scroll panel changes. Reduced motion
+  switches immediately. Mobile keeps a compact centered brand/menu capsule.
+- Hero: balanced two columns on wide screens, stacked below 960px.
+- Project grid: three columns at 1536px, two on laptop/tablet, one below 640px.
+- Cards: 18px radius, subtle border, no heavy shadow; real images use `contain`.
+- Missing product images: restrained textual previews, never fabricated screenshots.
+- Background: two scroll stages in one shared viewport. The first pairs high-level
+  experience and education timelines without dates; the second shows six curated
+  stack groups in a full-width grid (three desktop columns, two tablet, one phone).
+  No stage toolbar or Background edge shadows. Content is vertically balanced
+  within each stage; taller content receives its full scroll travel. Desktop
+  vertical movement starts only after the panel is horizontally centered.
+- Scrollbars are hidden throughout the site; wheel, touch and keyboard scrolling
+  remain available.
+- Global backdrop: `StarfieldBackground`, fixed at `100dvw × 100dvh`, mounted once
+  in the root layout. 60 stars on desktop / 30 on phones and one reusable meteor.
+  Random timing, brightness, position, angle and speed; only opacity/transform
+  animate. Hidden tabs stop motion; reduced motion keeps static stars.
 
-## Surfaces & effects
+## Interaction and motion
 
-- `.panel` — 1px white/10 border, 28px radius, white/3 fill, deep shadow.
-- Body has two fixed pseudo-layers: radial neon glows + SVG fractal noise at 3%.
-- Glass: `backdrop-blur-xl` + `rgba(0,0,0,0.88)` (header pills).
-- Glow blobs: large `rounded-full` divs with `blur-3xl` at 10–16% accent alpha.
-- Selection: cyan at 20%.
+- Hero heading entrance: 600ms masked opacity/translate, 75ms stagger.
+- Section headings: one-time 550ms masked reveal, triggered by the active desktop
+  panel or mobile viewport entry. Headings preserve their original type dimensions.
+- Project cards: one-time 500ms opacity/20px translate, up to 60ms between cards
+  with total stagger capped at 180ms. Focus reveals a card immediately.
+- Background sequence: page scroll controls a 40px slide/fade exit and entrance,
+  with no overlapping text or wheel interception. Each scene's full height remains
+  reachable before the next enters. Timeline accents stay static within scenes.
+  Reduced motion uses normal vertical flow without hidden scenes.
+- Native modal overflow uses restrained 22px edge shadows, fading over
+  140ms. They disappear at each boundary and do not capture pointer input.
+- Microinteractions: 180–240ms transform/color; subtle magnetic primary CTA.
+- Expertise hover/focus selects a contextual preview; click opens the case study.
+- Compact preview keeps previous/next and image crossfade, with a borderless 2px
+  cyan timing bar flush below the image, spanning its full width. It has no autoplay button.
+- Compact autoplay runs on a five-second cycle, pausing for hover, focus, open
+  case studies, hidden tabs and inactive/offscreen panels. Manual navigation
+  resets the countdown; it resumes when interaction ends. The default card
+  variant retains its explicit Play/Pause control and holds manual selections.
+- Desktop horizontal shell remains; scrolling has no snapping or second scrub delay.
+- Reduced motion skips Lenis/pinning, reveals final content and disables autoplay.
 
-## Spacing & layout
+## Accessibility
 
-- `.section-shell` — max-w 72rem, responsive inline padding (1.25 → 3rem).
-- Desktop shell — `max-w-[92rem] px-8`, `2xl:max-w-[100rem]`.
-- Radii: pills `rounded-full`; cards 28px; large surfaces 32–36px.
-- Buttons: pill, 10–11px bold uppercase label, `tracking-[0.18em]`.
-
-## Motion rules (redesign)
-
-1. Durations: micro 150–250ms; reveals 500–800ms; scroll-scrubbed = no duration.
-2. Easing: GSAP `power2/power3.out` for reveals; springs (Motion) for gestures.
-3. Stagger children 60–90ms.
-4. Nothing auto-plays longer than ~5s; loops must be subtle (glow pulse ≈ 5s).
-5. `prefers-reduced-motion` → kill Lenis, skip pins, render final states, pause R3F.
-6. 3D scenes cap DPR at 2, pause when tab hidden / off-screen.
-
-## Accessibility floor
-
-- Text on black: minimum white/65 for body copy.
-- Neon cyan on black passes AA for large text only — don't use it for small body text.
-- Focus states must survive the redesign (visible outline or equivalent).
-- All media in `public/projects/` needs meaningful `alt` text from `lib/data.ts`.
+Semantic buttons/links, cyan focus outlines, skip link, native dialog mobile menu,
+44px compact controls, offscreen desktop panels marked inert, meaningful media
+alt text, and readable supporting ink. The timing bar is decorative and hidden
+from assistive technology; focus pauses rotation. Long text wraps; modal content scrolls inside
+a stable viewport frame.

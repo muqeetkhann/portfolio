@@ -1,4 +1,4 @@
-# Animation & 3D Libraries — Usage Rules
+# Animation Libraries — Usage Rules
 
 Installed stack, what each library is *for*, and the gotchas specific to this repo
 (client-only rendering + static export to GitHub Pages).
@@ -10,13 +10,10 @@ Installed stack, what each library is *for*, and the gotchas specific to this re
 | `gsap` + `@gsap/react` | Scroll choreography | Pinned horizontal track, scrubbed timelines, section snapping, SplitText headlines |
 | `lenis` | Smooth momentum scroll | Site-wide scroll feel; drives ScrollTrigger via `lenis.on('scroll', ScrollTrigger.update)` |
 | `motion` (`motion/react`) | UI micro-interactions | Hover/tap gestures, layout animations, presence (menus, modals, cards) |
-| `three` + `@react-three/fiber` | 3D scenes | The hero showpiece and any WebGL section |
-| `@react-three/drei` | R3F helpers | Cameras, `Environment`, `Text3D`, `Float`, `MeshTransmissionMaterial`, loaders |
-| `@react-three/postprocessing` | Post FX | Bloom, chromatic aberration, noise — the "futuristic" grade |
 | `clsx` + `tailwind-merge` | Class utils | Conditional Tailwind classes (`cn()` helper) |
 
 Division of labor: **GSAP owns the scroll axis. Motion owns pointer-driven UI.
-R3F owns the canvas.** Don't animate the same property from two systems.
+Native Web Animations own the fixed starfield.** Don't animate the same property from two systems.
 
 ## GSAP
 
@@ -70,24 +67,16 @@ gsap.ticker.lagSmoothing(0)
 - Keep bundle small with `LazyMotion` + `m.` components if usage grows.
 - Do **not** use `useScroll`/`useTransform` for anything GSAP already scrubs.
 
-## React Three Fiber (v9 — React 19 pairing)
+## Fixed starfield
 
-- R3F v9 requires React 19 — we're on it. drei v10 / postprocessing v3 match.
-- **Every** canvas entry point must be client-only and lazy:
-
-```tsx
-const Scene = dynamic(() => import('@/components/three/HeroScene'), {
-  ssr: false,
-  loading: () => <div className="static-fallback" />,
-})
-```
-
-- Canvas defaults for this site: `dpr={[1, 2]}`, `gl={{ antialias: true, alpha: true }}`,
-  `frameloop="demand"` where the scene is idle-capable.
-- Pause rendering when off-screen (`useInView`) and when tab hidden.
-- Post FX budget: Bloom + one more effect max; each pass costs a full-screen render.
-- Assets (GLTF/HDR) go in `public/` and load via **relative** paths (basePath!).
-- Provide a static-image fallback for reduced-motion and WebGL-less browsers.
+- `StarfieldBackground` is the only background component, mounted in the root
+  layout outside all transformed/pinned containers.
+- Use native Web Animations for star opacity and meteor opacity/transform.
+  Randomize on animation completion; never add a JavaScript drawing loop.
+- Reduced motion is static. Hidden tabs cancel animations and timers. Keep
+  cleanup for listeners, animations and scheduling on unmount/preference changes.
+- Keep counts capped (60 desktop / 30 phones) and reuse one meteor element.
+- No Three.js, R3F or shader dependencies remain installed.
 
 ## Static-export landmines (GitHub Pages)
 
@@ -99,9 +88,19 @@ const Scene = dynamic(() => import('@/components/three/HeroScene'), {
 4. Test both `npm run build` and `npm run build:static` after animation work;
    pins/measurements can differ when `trailingSlash` rewrites URLs.
 
-## Performance budget
+## Performance
 
-- First Load JS for `/` was **113 kB** right after the upgrade (before any 3D).
-  Keep the non-3D route under ~180 kB; everything Three-related must arrive in
-  lazy chunks only after first paint.
-- Lighthouse targets: Performance ≥ 90 desktop / ≥ 80 mobile with 3D enabled.
+The background adds no dependency, image request, canvas or WebGL context. Keep
+its fixed surface viewport-sized even on the long mobile Projects section, and
+avoid blur filters or pointer listeners. Check desktop and mobile navigation,
+transparent panels, motion cleanup, and both build modes after animation work.
+
+
+## Scroll effects
+
+Keep one page scroll controller. `SectionHeader` and `ProjectGrid` use scoped
+GSAP with `revertOnUpdate`, active-panel gating on desktop and one-shot observers.
+`ExperienceList` and `ScrollEdges` schedule frames only on scroll/resize/load;
+never add a perpetual measurement loop or per-frame React state. Disconnect
+observers, cancel queued frames and guard delayed callbacks during cleanup.
+Reduced motion must leave content visible without relying on animation completion.

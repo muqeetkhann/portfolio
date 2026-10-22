@@ -21,7 +21,6 @@ const root = join(__dirname, '..')
 // The `add-project` skill updates both places together.
 const projects = [
   { slug: 'jitsuites', label: 'JitSuites', accent: '#6EE7B7' },
-  { slug: 'kompra', label: 'Kompra', accent: '#93C5FD' },
   { slug: 'kompra-seller', label: 'Kompra Seller', accent: '#FDE68A' },
   { slug: 'extsy', label: 'Extsy', accent: '#C4B5FD' },
   { slug: 'asap-pay', label: 'ASAP Pay', accent: '#FCA5A5' },
@@ -32,7 +31,6 @@ const projects = [
   { slug: 'singularity', label: 'Singularity', accent: '#6EE7B7' },
   { slug: 'blockyfy', label: 'Blockyfy', accent: '#6EE7B7' },
   { slug: 'nextsense', label: 'NextSense Solutions', accent: '#93C5FD' },
-  { slug: 'regen-digital', label: 'Regen Digital', accent: '#C4B5FD' },
   { slug: 'ingles-academics', label: 'Inglés Ahorita Academics', accent: '#6EE7B7' },
   { slug: 'ingles-crm', label: 'Inglés Ahorita CRM', accent: '#93C5FD' },
   { slug: 'trippak', label: 'TripPak', accent: '#C4B5FD' },
