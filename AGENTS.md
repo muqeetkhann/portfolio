@@ -116,7 +116,7 @@ input. Keep the modal's independent containment and page lock.
 
 - TypeScript strict; no `any` unless unavoidable.
 - Tailwind utility-first; shared visual primitives live in `app/globals.css`
-  (`.panel`, `.section-title`, masked-text classes). Content widths belong in
+  (`.section-title`, heading masks, card surfaces). Content widths belong in
   `SiteShell.module.css`; do not duplicate them in section or navigation styles.
 - Fonts via `next/font/local` with CSS variables (`--font-clash` headings,
   `--font-satoshi` body); files in `app/fonts/`.

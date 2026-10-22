@@ -111,10 +111,10 @@ export function BackgroundSequence({ variant, enabled, controller }: {
   }, { scope: root, dependencies: [variant, enabled, reduced, controller], revertOnUpdate: true })
   const bodies = [
     <div key="career" className="background-career-overview">
-      <div><h3 className="background-stage-title">{BACKGROUND_COPY.experience}</h3><ExperienceList variant={variant} animateTimeline={false} overview /></div>
-      <EducationList variant={variant} overview />
+      <div><h3 className="background-stage-title">{BACKGROUND_COPY.experience}</h3><ExperienceList variant={variant} /></div>
+      <EducationList variant={variant} />
     </div>,
-    <SkillsGrid key="skills" variant={variant} featured />,
+    <SkillsGrid key="skills" variant={variant} />,
   ]
 
   return (

@@ -17,8 +17,7 @@ The compact hero preview rotates automatically every five seconds and pauses
 for hover, focus, open case studies, hidden tabs and inactive/offscreen panels.
 Manual navigation resets the countdown; it resumes when interaction ends. A
 borderless timing bar spans the full width directly below the image, preserving remaining
-time during temporary pauses. The default card variant retains its opt-in
-Play/Pause control and holds manual selections. Project images crossfade with a
+time during temporary pauses. Project images crossfade with a
 small directional slide while the text transitions separately, keeping the
 card dimensions and case-study button stable. Reduced motion disables these
 transitions and autoplay.

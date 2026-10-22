@@ -5,8 +5,6 @@ import { LayoutGroup, motion } from 'motion/react'
 import { NAVIGATION, UI_COPY } from '@/lib/data'
 import { useReducedMotion } from '@/lib/reduced-motion'
 
-export const DESKTOP_NAV = NAVIGATION.map(item => item.label)
-
 export function DesktopNav({ activeIndex, onNavigate }: { activeIndex: number; onNavigate: (index: number) => void }) {
   const layoutId = useId()
   const reduced = useReducedMotion()

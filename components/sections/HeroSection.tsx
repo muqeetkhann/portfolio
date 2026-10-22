@@ -51,7 +51,7 @@ export function HeroSection({
         <div className="hero-left">
           <HeroIntro onExplore={onExplore} />
           <div className="hero-recent" data-hero-reveal>
-            <ProjectSpotlight variant="compact" initialSlug={EXPERTISE[0].project} projectSlug={preview} onOpen={onOpen} active={active} suspended={previewPaused} />
+            <ProjectSpotlight initialSlug={EXPERTISE[0].project} projectSlug={preview} onOpen={onOpen} active={active} suspended={previewPaused} />
           </div>
         </div>
         <div className="expertise" data-hero-reveal>

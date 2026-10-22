@@ -6,7 +6,7 @@ import { UI_COPY, type Project } from '@/lib/data'
 import { prefersReducedMotion } from '@/lib/reduced-motion'
 import { asset, cn } from '@/lib/utils'
 
-export function ProjectCard({ project, onOpen }: { project: Project; onOpen?: (project: Project) => void; variant?: 'desktop' | 'mobile' }) {
+export function ProjectCard({ project, onOpen }: { project: Project; onOpen?: (project: Project) => void }) {
   const video = useRef<HTMLVideoElement>(null)
   const placeholder = project.media.cover.endsWith('.svg')
   return (

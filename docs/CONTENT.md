@@ -9,9 +9,10 @@ You never need to touch components to change your info.
 |---|---|
 | Name, role, bio, email, phone, links | `PERSONAL` |
 | Jobs / work history | `EXPERIENCE` |
-| Education | `EDUCATION` — dates are displayed as listed, without assuming enrollment or graduation |
+| Education | `EDUCATION` — qualifications and institutions are displayed; dates, location and level remain in the data |
 | Projects | `PROJECTS` (or run the `/add-project` skill in Claude Code) |
-| Skill categories | `SKILLS` |
+| Visible stack groups | `FEATURED_SKILLS` |
+| Complete resume skills | `SKILLS` — retained for content reuse |
 | My CV | Replace `public/m_muqeet_khan_CV.pdf` (keep the filename, or update `PERSONAL.resume`) |
 | Search and social previews | `SITE_METADATA`; rebuild the image with `node scripts/generate-social-preview.mjs` (Node 22+) |
 | Hero featured projects | `FEATURED_SLUGS` — explicit order, including SVG placeholder covers |

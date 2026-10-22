@@ -28,13 +28,13 @@ Current CSS variables in `app/globals.css`:
 | Token | Value | Purpose |
 |---|---|---|
 | `--page` | `#050708` | Base surface |
-| `--surface` | `#0b1013` | Raised cards |
 | `--ink` | `#f4f6f7` | Primary text |
 | `--muted` | `#b1bbc1` | Supporting text |
 | `--line` | pale ink at 14% | Dividers and borders |
 | `--accent` | `#00f5ff` | Actions, active states, focus |
 
-The broader Tailwind palette and per-project accent values remain intact.
+Tailwind extends the default palette with `neon.cyan`. Per-project accent values
+remain in `lib/data.ts`.
 
 ## Layout and surfaces
 
@@ -83,8 +83,7 @@ The broader Tailwind palette and per-project accent values remain intact.
   cyan timing bar flush below the image, spanning its full width. It has no autoplay button.
 - Compact autoplay runs on a five-second cycle, pausing for hover, focus, open
   case studies, hidden tabs and inactive/offscreen panels. Manual navigation
-  resets the countdown; it resumes when interaction ends. The default card
-  variant retains its explicit Play/Pause control and holds manual selections.
+  resets the countdown; it resumes when interaction ends.
 - Desktop horizontal shell remains; scrolling has no snapping or second scrub delay.
 - Reduced motion skips Lenis/pinning, reveals final content and disables autoplay.
 

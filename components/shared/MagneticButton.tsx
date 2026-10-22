@@ -7,8 +7,7 @@ import { prefersReducedMotion } from '@/lib/reduced-motion'
 import { cn } from '@/lib/utils'
 
 /**
- * Wraps a CTA so it eases toward the cursor while hovered (GSAP quickTo —
- * intentionally not Motion, which stays out of the main bundle).
+ * Wraps a CTA so it eases toward the cursor while hovered using GSAP quickTo.
  * Wrap ONE interactive child: <MagneticButton><a …>Label</a></MagneticButton>
  */
 export function MagneticButton({

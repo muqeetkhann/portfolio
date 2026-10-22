@@ -92,7 +92,7 @@ export function ProjectGrid({ onOpen, variant = 'mobile', active }: {
       <div ref={root} id={gridId} className="projects-grid" onFocusCapture={revealFocused}>
         {projects.map(project => (
           <div key={project.id} className="project-reveal" data-project-reveal>
-            <ProjectCard project={project} onOpen={onOpen} variant={variant} />
+            <ProjectCard project={project} onOpen={onOpen} />
           </div>
         ))}
       </div>

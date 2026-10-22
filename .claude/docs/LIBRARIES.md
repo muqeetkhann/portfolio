@@ -7,7 +7,7 @@ Installed stack, what each library is *for*, and the gotchas specific to this re
 
 | Library | Role | Reach for it when |
 |---|---|---|
-| `gsap` + `@gsap/react` | Scroll choreography | Pinned horizontal track, scrubbed timelines, section snapping, SplitText headlines |
+| `gsap` + `@gsap/react` | Scroll choreography | Pinned horizontal track, scrubbed timelines, masked reveals |
 | `lenis` | Smooth momentum scroll | Site-wide scroll feel; drives ScrollTrigger via `lenis.on('scroll', ScrollTrigger.update)` |
 | `motion` (`motion/react`) | UI micro-interactions | Hover/tap gestures, layout animations, presence (menus, modals, cards) |
 | `clsx` + `tailwind-merge` | Class utils | Conditional Tailwind classes (`cn()` helper) |
@@ -17,15 +17,11 @@ Native Web Animations own the fixed starfield.** Don't animate the same property
 
 ## GSAP
 
-- Always use the `useGSAP` hook from `@gsap/react` (auto cleanup, StrictMode-safe):
+- Import the shared GSAP setup and use its `useGSAP` hook (auto cleanup, StrictMode-safe):
 
 ```tsx
 'use client'
-import { useGSAP } from '@gsap/react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(useGSAP, ScrollTrigger)
+import { gsap, useGSAP } from '@/lib/gsap'
 
 useGSAP(() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -33,9 +29,8 @@ useGSAP(() => {
 }, { scope: containerRef })
 ```
 
-- **All plugins are free** since 2025 (ScrollTrigger, ScrollSmoother, SplitText,
-  MorphSVG…). Import from `gsap/<Plugin>` and register once per module.
-- Register plugins at module top level, inside `'use client'` files only.
+- `lib/gsap.ts` registers `useGSAP` and `ScrollTrigger` once, guarded for the
+  browser. Add another plugin there only when an active component needs it.
 - Horizontal pinned track pattern: tall wrapper (`height: ${panels * 100}vh`),
   pinned viewport, `gsap.to(track, { xPercent, scrollTrigger: { scrub, pin, snap } })`.
 - Use `gsap.matchMedia()` for the ≥1280px / mobile split *inside* animation code —
@@ -100,7 +95,7 @@ transparent panels, motion cleanup, and both build modes after animation work.
 
 Keep one page scroll controller. `SectionHeader` and `ProjectGrid` use scoped
 GSAP with `revertOnUpdate`, active-panel gating on desktop and one-shot observers.
-`ExperienceList` and `ScrollEdges` schedule frames only on scroll/resize/load;
-never add a perpetual measurement loop or per-frame React state. Disconnect
+`ExperienceList` renders static timeline accents. `ScrollEdges` schedules frames
+only on scroll/resize/load; never add a perpetual measurement loop or per-frame React state. Disconnect
 observers, cancel queued frames and guard delayed callbacks during cleanup.
 Reduced motion must leave content visible without relying on animation completion.

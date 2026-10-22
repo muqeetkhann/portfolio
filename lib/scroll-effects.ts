@@ -10,12 +10,6 @@ export function scrollEdges(top: number, content: number, viewport: number) {
   }
 }
 
-/** Fill from the lower part of the frame until the role passes its midpoint. */
-export function timelineProgress(top: number, height: number, frameTop: number, frameHeight: number) {
-  if (frameHeight <= 0 || height <= 0) return 0
-  return clamp((frameTop + frameHeight * 0.8 - top) / (height + frameHeight * 0.35))
-}
-
 /** Content gets its full overflow distance before the next stage enters. */
 export function backgroundSequenceLayout(viewport: number, heights: number[]) {
   const hold = Math.max(160, viewport * 0.35)

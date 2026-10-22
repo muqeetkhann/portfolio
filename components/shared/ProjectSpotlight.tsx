@@ -14,29 +14,20 @@ const previewVariants: Variants = {
   visible: { opacity: 1, x: 0, scale: 1 },
   exit: (direction: number) => ({ opacity: 0, x: direction * -16, scale: 0.985 }),
 }
-const detailsVariants: Variants = {
-  enter: (direction: number) => ({ opacity: 0, x: direction * 14, y: 4 }),
-  visible: { opacity: 1, x: 0, y: 0 },
-  exit: (direction: number) => ({ opacity: 0, x: direction * -10, y: -2 }),
-}
 
 type Slide = { index: number; direction: number; revision: number }
 
 /** The compact carousel rotates automatically; interaction pauses its countdown. */
 export default function ProjectSpotlight({
   onOpen,
-  className,
   active,
-  variant = 'default',
   initialSlug,
   projectSlug,
   suspended = false,
 }: {
   onOpen?: (project: Project) => void
-  className?: string
   /** Desktop must use the panel index; mobile uses intersection visibility. */
   active?: boolean
-  variant?: 'default' | 'compact'
   initialSlug?: string
   projectSlug?: string
   suspended?: boolean
@@ -45,21 +36,19 @@ export default function ProjectSpotlight({
   const rootRef = useRef<HTMLElement>(null)
   const [slide, setSlide] = useState<Slide>({ index: Math.max(0, SPOTLIGHT.findIndex(project => project.slug === initialSlug)), direction: 1, revision: 0 })
   const cycleRef = useRef({ revision: 0, remaining: ROTATE_MS })
-  const [manuallyPaused, setManuallyPaused] = useState(variant !== 'compact')
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
   const [visible, setVisible] = useState(false)
   const [documentVisible, setDocumentVisible] = useState(true)
   const { index } = slide
-  const playing = !reduced && !suspended && !manuallyPaused && !hovered && !focused && documentVisible && (active ?? visible)
+  const playing = !reduced && !suspended && !hovered && !focused && documentVisible && (active ?? visible)
   const current = SPOTLIGHT[index]
 
   useEffect(() => {
     const next = SPOTLIGHT.findIndex(project => project.slug === projectSlug)
     if (next < 0) return
-    setManuallyPaused(variant !== 'compact')
     setSlide(value => value.index === next ? value : { index: next, direction: next > value.index ? 1 : -1, revision: value.revision + 1 })
-  }, [projectSlug, variant])
+  }, [projectSlug])
 
   useEffect(() => {
     if (active !== undefined || reduced) return
@@ -118,10 +107,9 @@ export default function ProjectSpotlight({
       const index = (target + SPOTLIGHT.length) % SPOTLIGHT.length
       return index === value.index ? value : { index, direction, revision: value.revision + 1 }
     })
-    setManuallyPaused(variant !== 'compact')
   }
 
-  if (variant === 'compact') return (
+  return (
     <section ref={rootRef} className="spotlight spotlight-compact" aria-label={SPOTLIGHT_COPY.heading} aria-roledescription="carousel"
       onPointerEnter={event => { if (event.pointerType === 'mouse') setHovered(true) }}
       onPointerLeave={event => { if (event.pointerType === 'mouse') setHovered(false) }}
@@ -161,109 +149,6 @@ export default function ProjectSpotlight({
       </div>
     </section>
   )
-
-  return (
-    <section
-      ref={rootRef}
-      aria-label={SPOTLIGHT_COPY.heading}
-      aria-roledescription="carousel"
-      className={cn('spotlight relative w-full max-w-[30rem]', className)}
-      onPointerEnter={event => { if (event.pointerType === 'mouse') setHovered(true) }}
-      onPointerLeave={event => { if (event.pointerType === 'mouse') setHovered(false) }}
-      onFocusCapture={() => setFocused(true)}
-      onBlurCapture={event => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false)
-      }}
-      onKeyDown={event => {
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-          event.preventDefault()
-          const direction = event.key === 'ArrowRight' ? 1 : -1
-          select(value => value + direction, direction)
-        }
-      }}
-    >
-      <div className="spotlight-card">
-        <div className="flex min-h-[68px] items-center justify-between gap-3 px-5 py-2 sm:px-6">
-          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/65">{SPOTLIGHT_COPY.heading}</p>
-          {!reduced && SPOTLIGHT.length > 1 ? (
-            <button
-              type="button"
-              aria-label={manuallyPaused ? SPOTLIGHT_COPY.resumeLabel : SPOTLIGHT_COPY.pauseLabel}
-              onClick={() => {
-                setManuallyPaused(value => !value)
-                // An explicit Play request can start while this button has focus.
-                setHovered(false)
-                setFocused(false)
-              }}
-              className="spotlight-rotation"
-              data-enabled={!manuallyPaused}
-              data-playing={playing}
-              title={SPOTLIGHT_COPY.autoplay}
-            >
-              <span aria-hidden className={cn('spotlight-playback-icon', !manuallyPaused && 'is-pause')} />
-              <span>{manuallyPaused ? SPOTLIGHT_COPY.resume : SPOTLIGHT_COPY.pause}</span>
-              <span aria-hidden className="spotlight-playback-track">
-                <span key={slide.revision} className="spotlight-playback-progress" style={{ animationDuration: `${ROTATE_MS}ms` }} />
-              </span>
-            </button>
-          ) : null}
-        </div>
-
-        {/* Animate the visual layers, keeping the stretched CTA mounted for focus and its full-card hit area. */}
-        <div aria-live={playing ? 'off' : 'polite'} aria-atomic="true" className="group relative text-left">
-            <div className="spotlight-stage relative mx-3 overflow-hidden rounded-[20px] bg-[#102023] sm:mx-4">
-              <AnimatePresence initial={false} custom={slide.direction}>
-                <SpotlightVisual key={slide.revision} project={current} direction={slide.direction} reduced={reduced} />
-              </AnimatePresence>
-            </div>
-
-            <div className="px-5 pb-5 pt-5 sm:px-6">
-              <div className="spotlight-details relative">
-                <AnimatePresence initial={false} custom={slide.direction}>
-                  <SpotlightMetadata key={slide.revision} project={current} direction={slide.direction} reduced={reduced} />
-                </AnimatePresence>
-              </div>
-
-              <button
-                type="button"
-                aria-label={`${SPOTLIGHT_COPY.open}: ${current.title}`}
-                onClick={() => {
-                  setManuallyPaused(true)
-                  onOpen?.(current)
-                }}
-                className="spotlight-open mt-3 flex w-full items-center justify-between border-t border-white/10 pt-4 text-left text-[12px] font-semibold text-neon-cyan before:absolute before:inset-0 before:cursor-pointer"
-              >
-                <span>{SPOTLIGHT_COPY.open}</span>
-                <span aria-hidden className="text-xl leading-none transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transform-none">↗</span>
-              </button>
-            </div>
-        </div>
-
-        {SPOTLIGHT.length > 1 ? (
-          <div className="flex items-center justify-between gap-2 border-t border-white/10 px-4 py-2 sm:px-5">
-            <div role="group" aria-label={SPOTLIGHT_COPY.navigation} className="flex items-center">
-              {SPOTLIGHT.map((project, position) => (
-                <button
-                  key={project.id}
-                  type="button"
-                  aria-label={`${SPOTLIGHT_COPY.select}: ${project.title}`}
-                  aria-pressed={position === index}
-                  onClick={() => select(position, position >= index ? 1 : -1)}
-                  className="spotlight-dot flex h-10 w-7 items-center justify-center rounded-full sm:w-8"
-                >
-                  <span aria-hidden className={cn('h-1.5 rounded-full transition-[background-color,transform] duration-200', position === index ? 'w-5 bg-neon-cyan' : 'w-1.5 bg-white/30')} />
-                </button>
-              ))}
-            </div>
-            <div className="flex items-center gap-1">
-              <button type="button" aria-label={SPOTLIGHT_COPY.previous} onClick={() => select(value => value - 1, -1)} className="spotlight-arrow">←</button>
-              <button type="button" aria-label={SPOTLIGHT_COPY.next} onClick={() => select(value => value + 1, 1)} className="spotlight-arrow">→</button>
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </section>
-  )
 }
 
 function SpotlightVisual({ project, direction, reduced }: { project: Project; direction: number; reduced: boolean }) {
@@ -281,31 +166,6 @@ function SpotlightVisual({ project, direction, reduced }: { project: Project; di
       transition={{ duration: reduced ? 0 : 0.65, ease: SLIDE_EASE }}
     >
       <SpotlightPreview project={project} />
-    </motion.div>
-  )
-}
-
-function SpotlightMetadata({ project, direction, reduced }: { project: Project; direction: number; reduced: boolean }) {
-  const present = useIsPresent()
-  // The category distinguishes the two portals while their shared name stays compact.
-  const title = project.title.split(' — ')[0]
-
-  return (
-    <motion.div
-      aria-hidden={!present || undefined}
-      className="pointer-events-none absolute inset-0"
-      custom={direction}
-      variants={detailsVariants}
-      initial={reduced ? false : 'enter'}
-      animate={reduced ? { opacity: 1, x: 0, y: 0 } : 'visible'}
-      exit={reduced ? { opacity: 0 } : 'exit'}
-      transition={{ duration: reduced ? 0 : 0.45, ease: SLIDE_EASE }}
-    >
-      <p className="text-[10px] font-semibold uppercase leading-5 tracking-[0.14em] text-white/60">{project.type}</p>
-      <h2 className="mt-1 font-heading text-[clamp(1.65rem,3vw,2.15rem)] leading-[1.08] tracking-[-0.025em] text-white">{title}</h2>
-      <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[10px] font-semibold uppercase leading-4 tracking-[0.08em] text-white/65">
-        {project.tags.slice(0, 3).map(tag => <li key={tag}>{tag}</li>)}
-      </ul>
     </motion.div>
   )
 }
